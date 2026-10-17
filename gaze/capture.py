@@ -86,7 +86,8 @@ class CameraThread:
 
     def __init__(self, source: str | int, name: str = "camera", mirror: bool | None = None):
         self.name = name
-        source = resolve(source, "eye" if name == "eye" else "front")
+        self._spec, self._kind = source, ("eye" if name == "eye" else "front")  # re-resolved on reconnect
+        source = resolve(source, self._kind)
         print(f"{name} camera: {source}", flush=True)
         self._source = source
         self._network = not str(source).isdigit()
@@ -110,10 +111,17 @@ class CameraThread:
             ok, frame = self._cap.read()
             if not ok:
                 failures += 1
-                if self._network and failures >= 2:  # stalled stream: drop it and connect again
+                # A stalled Wi-Fi stream, or a USB board that reset (it comes back, maybe under a new
+                # number): drop it and connect again.
+                if failures >= (2 if self._network else 100):
                     self._cap.release()
                     time.sleep(0.5)
-                    self._cap = open_camera(self._source)
+                    try:
+                        self._source = resolve(self._spec, self._kind)
+                        self._cap = open_camera(self._source)
+                    except RuntimeError:  # not back on USB / the hotspot yet: try again shortly
+                        time.sleep(0.5)
+                        self._cap = cv2.VideoCapture()
                     self.reconnects += 1
                     failures = 0
                 else:
