@@ -1,19 +1,19 @@
 {
   "objects": [
     {
-      "name": "granola",
-      "cls": "granola_bar",
-      "x": 91,
-      "y": 91,
-      "yaw": -2.3,
-      "grasp_mm": 15,
-      "axis": -85.8,
+      "name": "foam",
+      "cls": "foam",
+      "x": 253,
+      "y": 292,
+      "yaw": 10.3,
+      "grasp_mm": 19,
+      "axis": -0.9,
       "size_mm": [
-        148,
-        73
+        43,
+        15
       ],
-      "seen_s_ago": 0.2,
-      "reachable": true
+      "seen_s_ago": 0.0,
+      "reachable": false
     }
   ],
   "drop": {
@@ -21,7 +21,7 @@
     "y": 344
   },
   "live": {
-    "t": 1792259205.1,
+    "t": 1792267407.33,
     "camera": "side"
   }
 }

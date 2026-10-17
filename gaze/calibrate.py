@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import ctypes
 import time
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -89,6 +90,9 @@ def run_table(args, detector, validity, eye_cam, scene_cam) -> None:
     pupil_pts, scene_pts = [], []
     message, eye_count = "Put the phone on the first spot, look at its red dot, press SPACE.", 0
     eye_ok = False
+    logs = Path(__file__).resolve().parents[1] / "logs"
+    logs.mkdir(exist_ok=True)
+    last_snap, eye_hits, seen_hits, frames = 0.0, 0, 0, 0  # a status copy others can read while this holds the cameras
     while True:
         frame, _, count = eye_cam.latest()
         if frame is not None and count != eye_count:
@@ -115,6 +119,15 @@ def run_table(args, detector, validity, eye_cam, scene_cam) -> None:
         cv2.putText(canvas, "SPACE record   r remove last   f finish & fit   Esc quit", (20, 840),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (160, 160, 160), 1)
         cv2.imshow(window, canvas)
+        frames, eye_hits, seen_hits = frames + 1, eye_hits + eye_ok, seen_hits + bool(centre)
+        if time.monotonic() - last_snap > 1.0:
+            (logs / "calib_status.txt").write_text(
+                f"{status}\nlast second: eye OK {100 * eye_hits / max(frames, 1):.0f}%, target seen "
+                f"{100 * seen_hits / max(frames, 1):.0f}%\n{message}\n")
+            cv2.imwrite(str(logs / "calib_view.jpg"), canvas)
+            if frame is not None:
+                cv2.imwrite(str(logs / "calib_eye.jpg"), frame)
+            last_snap, eye_hits, seen_hits, frames = time.monotonic(), 0, 0, 0
         key = cv2.waitKey(1) & 0xFF
         if key == 27:
             return
