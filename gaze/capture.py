@@ -47,8 +47,20 @@ def resolve(source: str | int, which: str) -> str:
     import re
     import subprocess
 
-    table = subprocess.run(["arp", "-a"], capture_output=True, text=True).stdout.lower()
-    m = re.search(r"(\d+\.\d+\.\d+\.\d+)\s+" + BOARD_B_MAC, table)  # asks no one: Board B serves one viewer at a time
+    def lookup():
+        table = subprocess.run(["arp", "-a"], capture_output=True, text=True).stdout.lower()
+        return re.search(r"(\d+\.\d+\.\d+\.\d+)\s+" + BOARD_B_MAC, table)
+
+    m = lookup()  # asks no one over HTTP: Board B serves one viewer at a time
+    if not m:
+        # On a hotspot the laptop doesn't run (the iPhone's), the laptop only learns Board B's address
+        # after talking to it: ping the hotspot ranges once to fill the ARP table, then look again.
+        from concurrent.futures import ThreadPoolExecutor
+
+        ips = [f"172.20.10.{i}" for i in range(2, 15)] + [f"192.168.137.{i}" for i in range(2, 255)]
+        with ThreadPoolExecutor(64) as pool:
+            list(pool.map(lambda ip: subprocess.run(["ping", "-n", "1", "-w", "400", ip], capture_output=True), ips))
+        m = lookup()
     if not m:
         raise RuntimeError("Board B isn't on the hotspot (not in the laptop's ARP table) - power it and wait ~30 s")
     return f"http://{m.group(1)}/"
