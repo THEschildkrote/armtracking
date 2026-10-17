@@ -90,8 +90,15 @@ class Kinematics:
     def _vector(self, deg: dict[str, float]) -> np.ndarray:
         q = np.zeros(len(self.names))
         for j, i in self.index.items():
-            q[i] = math.radians(deg.get(j, 0.0))
+            lo, hi = self.chain.links[i].bounds
+            q[i] = min(max(math.radians(deg.get(j, 0.0)), lo if lo is not None else -np.inf),
+                       hi if hi is not None else np.inf)  # the solver refuses a start outside the joint limits
         return q
+
+    def _roll_ok(self, roll_deg: float) -> bool:
+        lo, hi = self.chain.links[self.index["wrist_roll"]].bounds
+        r = math.radians(roll_deg)
+        return (lo is None or r >= lo) and (hi is None or r <= hi)
 
     def fk(self, deg: dict[str, float]) -> np.ndarray:
         """4x4 pose of the gripper tip frame in the robot base frame (metres)."""
@@ -132,20 +139,31 @@ class Kinematics:
 
     def with_yaw(self, deg: dict[str, float], yaw: float, xyz) -> dict[str, float]:
         """Tip still at xyz pointing down, wrist rolled so jaw_yaw == yaw. Jaws are symmetric, so a
-        half-turn either way grips the same; take whichever leaves the roll nearest its centre.
+        half-turn either way grips the same: try the roll nearest its centre first, then the others.
         The tip sits off the roll axis, so after each roll the position is re-solved with the roll held."""
-        for _ in range(4):
+        best, best_err = None, float("inf")
+        for choice in range(3):
+            out = self._roll_to(deg, yaw, xyz, choice)
+            err = float(np.linalg.norm(self.fk(out)[:3, 3] - xyz))
+            if err <= 0.015:
+                return out
+            if err < best_err:
+                best, best_err = out, err
+        raise RuntimeError(f"can't reach {np.round(xyz, 3)} m with that grip angle (IK error {best_err * 1000:.0f} mm)")
+
+    def _roll_to(self, deg: dict[str, float], yaw: float, xyz, choice: int) -> dict[str, float]:
+        for step in range(4):
             probe = {**deg, "wrist_roll": deg["wrist_roll"] + 10}
             sign = 1.0 if _wrap(self.jaw_yaw(probe) - self.jaw_yaw(deg)) > 0 else -1.0
             delta = _wrap(yaw - self.jaw_yaw(deg))
-            options = [deg["wrist_roll"] + sign * (delta + k * 180) for k in (-2, -1, 0, 1, 2)]
-            deg = {**deg, "wrist_roll": min(options, key=abs)}
+            options = sorted((r for r in (deg["wrist_roll"] + sign * (delta + k * 180) for k in (-2, -1, 0, 1, 2))
+                              if self._roll_ok(r)), key=abs) or [deg["wrist_roll"]]
+            # first step: the chosen half-turn; after that stay with it (nearest to where the roll already is)
+            roll = options[min(choice, len(options) - 1)] if step == 0 else min(options, key=lambda r: abs(r - deg["wrist_roll"]))
+            deg = {**deg, "wrist_roll": roll}
             q = self.chain_fixed_roll.inverse_kinematics(xyz, [0, 0, -1], orientation_mode=self.down_axis,
                                                          initial_position=self._vector(deg))
             deg = {j: math.degrees(q[i]) for j, i in self.index.items()}
-        err = float(np.linalg.norm(self.fk(deg)[:3, 3] - xyz))
-        if err > 0.015:
-            raise RuntimeError(f"can't reach {np.round(xyz, 3)} m with that grip angle (IK error {err * 1000:.0f} mm)")
         return deg
 
 
@@ -338,13 +356,51 @@ def heights(obj: dict) -> tuple[float, float, float]:
     return grasp, hover, max(HANDOVER_M, hover)
 
 
+def reachable_height(kin, table: dict, x: float, y: float, yaw: float | None, want: float, lowest: float) -> float:
+    """The highest tip height from want down to lowest (metres above the table) the arm reaches pointing
+    down at that grip angle. Far out on the board it can't get as high, so the approach comes in lower."""
+    seed = {k: 0.0 for k in ARM_JOINTS}
+    h = want
+    while h >= lowest - 1e-9:
+        p = table_point(table, x, y, h)
+        try:
+            q = kin.ik(p, seed)
+            if yaw is not None:
+                kin.with_yaw(q, yaw, p)
+            return h
+        except RuntimeError:
+            h -= 0.01
+    return want  # nothing reachable: let the move report it (nothing moves)
+
+
+def plan(kin, table: dict, obj: dict) -> dict:
+    """Where to go for this object at its current spot.
+
+    above: straight-down approach right over it at the grip angle - as high as the arm reaches,
+           which far out on the board can be only a little over the grip.
+    high:  the full hover height, gripper tilted if that's the only way to get there; used before
+           and after the low approach when "above" had to come down (None when it didn't).
+    """
+    grasp, hover_h, handover_h = heights(obj)
+    yaw = grip_yaw(table, obj)
+    low = reachable_height(kin, table, obj["x"], obj["y"], yaw, hover_h, grasp + 0.008)
+    lowered = low < hover_h - 1e-9
+    return {"yaw": yaw, "at": table_point(table, obj["x"], obj["y"], grasp),
+            "above": table_point(table, obj["x"], obj["y"], low),
+            "high": table_point(table, obj["x"], obj["y"], hover_h) if lowered else None,
+            "lift": table_point(table, obj["x"], obj["y"], max(handover_h, hover_h)),
+            "hover_h": hover_h}
+
+
 def hover(name: str, port: str = "COM4") -> None:
     """Move above the object with the gripper open, and keep holding there (no descent)."""
     obj, _, table, cal, kin = _setup(name)
+    route = plan(kin, table, obj)
+    target = (route["high"], GRIPPER_OPEN, None) if route["high"] is not None else (route["above"], GRIPPER_OPEN, route["yaw"])
     bus = open_bus(port)
     try:
         hold(bus)
-        _run(bus, kin, cal, [(table_point(table, obj["x"], obj["y"], heights(obj)[1]), GRIPPER_OPEN, grip_yaw(table, obj))])
+        _run(bus, kin, cal, [target])
     finally:
         bus.disconnect(disable_torque=False)
 
@@ -356,20 +412,21 @@ def pick_from_hover(name: str, port: str = "COM4", on_descend=None) -> bool:
     on_descend() is called right before the arm starts moving down (log the real descent there).
     """
     obj, drop_spot, table, cal, kin = _setup(name)
-    grasp_h, hover_h, handover_h = heights(obj)
-    above = table_point(table, obj["x"], obj["y"], hover_h)
-    at = table_point(table, obj["x"], obj["y"], grasp_h)
-    yaw = grip_yaw(table, obj)
+    route = plan(kin, table, obj)
+    yaw, above, at, high = route["yaw"], route["above"], route["at"], route["high"]
+    up = [(above, GRIPPER_CLOSED, yaw)] + ([(high, GRIPPER_CLOSED)] if high is not None else [])
     if drop_spot:
-        finish = [(above, GRIPPER_CLOSED, yaw), (table_point(table, drop_spot["x"], drop_spot["y"], hover_h), GRIPPER_CLOSED)]
-    else:  # hand-over: straight up, hold it there for the user
-        finish = [(table_point(table, obj["x"], obj["y"], handover_h), GRIPPER_CLOSED, yaw)]
+        finish = up + [(table_point(table, drop_spot["x"], drop_spot["y"], route["hover_h"]), GRIPPER_CLOSED)]
+    else:  # hand-over: up, hold it there for the user
+        finish = up + [(route["lift"], GRIPPER_CLOSED)]
+    down = ([(high, GRIPPER_OPEN)] if high is not None else []) + [(above, GRIPPER_OPEN, yaw), (at, GRIPPER_OPEN, yaw),
+                                                                    (at, GRIPPER_CLOSED, yaw)]
+    first_down = 1  # waypoint 0 is where hover() left the arm; the move to waypoint 1 goes down
     bus = open_bus(port)
     held = False
     try:
         hold(bus)
-        _run(bus, kin, cal, [(above, GRIPPER_OPEN, yaw), (at, GRIPPER_OPEN, yaw), (at, GRIPPER_CLOSED, yaw)],
-             on_waypoint=lambda i: on_descend() if i == 1 and on_descend else None)
+        _run(bus, kin, cal, down, on_waypoint=lambda i: on_descend() if i == first_down and on_descend else None)
         # An empty gripper closes all the way; one holding an object stops short of the target.
         grip_now = read(bus)["gripper"]
         held = grip_now > gripper_raw(GRIPPER_CLOSED, cal) + 0.08 * (cal["gripper"]["range_max"] - cal["gripper"]["range_min"])
@@ -426,10 +483,10 @@ def teach(name: str, port: str = "COM4") -> None:
     OBJECTS.write_text(json.dumps(objects, indent=2))
     if name != "drop":
         try:  # the approach starts above the grip: check the arm can get there pointing down
-            kin.with_yaw(kin.ik(table_point(table, x, y, heights(obj)[1]), deg), grip_yaw(table, obj),
-                         table_point(table, x, y, heights(obj)[1]))
+            p = table_point(table, x, y, heights(obj)[0] + 0.008)  # the lowest straight-down approach
+            kin.with_yaw(kin.ik(p, deg), grip_yaw(table, obj), p)
         except RuntimeError:
-            print(f"WARNING: the arm can't come down onto this grip from {heights(obj)[1] * 1000:.0f} mm up - grip lower"
+            print("WARNING: the arm can't come straight down onto this grip - grip lower"
                   " (lay tall things on their side) or move it closer to the arm")
     print(f"{name} saved at table ({x}, {y}) mm" +
           ("" if name == "drop" else f", grip angle {obj['yaw']} deg, grip height {obj['grasp_mm']} mm"))
