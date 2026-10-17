@@ -155,6 +155,11 @@ def find_blobs(frame: np.ndarray, H: np.ndarray, config: TableConfig) -> list[Bl
     hue_gap = np.abs(hue.astype(np.int16) - int(board_hue)) % 180
     hue_gap = np.minimum(hue_gap, 180 - hue_gap)
     coloured = (sat >= max(SAT_MIN, board_sat + 45)) & (val >= VAL_MIN)
+    # Dark but only moderately saturated (a teal wrapper far from the camera reads sat ~60, val ~90): still an
+    # object if it's clearly darker than the board AND its hue is far from the board's tint. The arm's black
+    # parts and shadows sit close to the board's tint (~20 apart), so they stay out.
+    board_val = float(np.median(val[bright]))
+    coloured |= (val < 0.6 * board_val) & (sat >= 40) & (hue_gap > 30)
     board_like = (hue_gap <= 15) & (sat < board_sat + 90)  # a shadow or a tinted patch of board
     # only what sits on the white board: its outline (holes and all) rules out the table around it
     white = ((sat < board_sat + 30) & (val > 150) & (region > 0)).astype(np.uint8)
