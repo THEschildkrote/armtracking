@@ -37,11 +37,15 @@ class ValidityConfig:
     normal_ratio: float = 0.4
     sudden_from_s: float = 0.25  # the pupil must have looked normal from this long before it vanished...
     sudden_to_s: float = 0.06  # ...until this long before (the lid itself takes a few frames)
-    min_blink_s: float = 0.05  # shorter dropouts are detector glitches, not blinks
+    # Shorter dropouts are glitches or saccade blur (fast glances blur the pupil for ~45-80 ms);
+    # the shortest real blinks measured were ~78 ms.
+    min_blink_s: float = 0.08
     long_blink_s: float = 0.8  # natural blinks are ~0.1-0.4 s, but some reached ~0.48 s in testing
     max_blink_s: float = 2.0  # gone longer than this = eyes shut / tracking lost, no command
     double_gap_s: float = 0.5  # second short blink must start this soon after the first reopens
-    same_spot_px: float = 30.0  # command blinks must reopen within this distance of where they closed
+    # A blink reopens where it closed (measured: <= ~18 px); reappearing further away means the pupil
+    # was lost during a glance, which is not a blink of any kind.
+    same_spot_px: float = 20.0
     settle_s: float = 0.10  # samples right after reopening are unreliable
     pre_blink_s: float = 0.15  # gaze_before is taken this long before the pupil vanished
     max_jump_px: float = 15.0  # bigger single-frame jumps need the next frame to confirm them
@@ -156,9 +160,11 @@ class EyeValidity:
         if duration < c.min_blink_s or duration > c.max_blink_s:
             return []
         same_spot = self._gaze_at_close is not None and math.dist(xy_after, self._gaze_at_close) <= c.same_spot_px
+        if not same_spot:
+            return []  # pupil lost during a glance and found somewhere else: not a blink
         if duration >= c.long_blink_s:
             self._pending_blink = None
-            return [BlinkEvent(t, "long", duration, self._gaze_at_close)] if same_spot else []
+            return [BlinkEvent(t, "long", duration, self._gaze_at_close)]
         if self._pending_blink and self._closed_at - self._pending_reopen <= c.double_gap_s:
             first = self._pending_blink
             self._pending_blink = None
