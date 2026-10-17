@@ -43,3 +43,25 @@ The `.cmd` launchers call the env's Python directly, so no `conda activate` is n
 - `check_arm.py`, `wave_arm.py`, `view_cams.py` quick hardware checks
 
 Hardware ports used here: follower COM4, leader COM7, eye camera = DirectShow camera 3, front camera Board B at `http://172.20.10.2/` on the phone hotspot.
+
+## Sharing the cameras (YOLO on another machine)
+
+`relay.cmd` opens each camera once on this laptop and re-serves it to any number of viewers
+(Board B allows only one viewer; USB cameras only one program):
+
+| URL (laptop IP on the hotspot, e.g. 172.20.10.4) | Camera |
+|---|---|
+| `http://<ip>:8080/` | index page, all streams |
+| `http://<ip>:8080/side` | arm side camera (rotation from `arm/cameras.json`) |
+| `http://<ip>:8080/wrist` | arm wrist camera |
+| `http://<ip>:8080/eye` | glasses eye camera |
+| `http://<ip>:8080/front` | glasses front camera (un-mirrored) |
+| `http://<ip>:8080/<name>.jpg` | latest single frame |
+
+On the MacBook: `pip install ultralytics opencv-python`, then `python streams/mac_yolo.py --host <ip>`
+(or any `cv2.VideoCapture(url)` / `YOLO(...).predict(url, stream=True)`).
+Our own tools can read the relay too: `gaze.cmd --eye http://localhost:8080/eye --scene http://localhost:8080/front`.
+
+Both machines must be on the iPhone hotspot (Harvard Wi-Fi blocks device-to-device traffic), and Windows
+must allow Python through its firewall the first time. Stop the relay (or use `--only eye front`) while
+LeRobot records, evaluates or teleoperates with cameras - it needs the arm cameras itself.

@@ -24,7 +24,7 @@ os.environ.setdefault("OPENCV_FFMPEG_CAPTURE_OPTIONS", "fflags;nobuffer|flags;lo
 import cv2  # noqa: E402
 import numpy as np  # noqa: E402
 
-from gaze.capture import FRONT_MIRRORED  # noqa: E402
+from gaze.capture import FRONT_MIRRORED, is_raw_board_stream  # noqa: E402
 from scene.markers import CONFIG_PATH, TableConfig, TableTracker, pixels_to_table, table_to_pixels  # noqa: E402
 
 WINDOW = "front"
@@ -76,7 +76,7 @@ def main() -> None:
             if cv2.waitKey(100) & 0xFF in (ord("q"), 27):
                 break
             continue
-        if FRONT_MIRRORED and not args.camera.isdigit():
+        if FRONT_MIRRORED and not args.camera.isdigit() and is_raw_board_stream(args.camera):
             frame = cv2.flip(frame, 1)  # Board B sends a mirrored picture
         t = time.monotonic()
         if last_t is not None:

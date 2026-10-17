@@ -17,6 +17,13 @@ import numpy as np  # noqa: E402
 FRONT_MIRRORED = True
 
 
+def is_raw_board_stream(url: str) -> bool:
+    """True for an OpenIris board's own stream (root path), False for relay streams like /front."""
+    from urllib.parse import urlparse
+
+    return urlparse(url).path in ("", "/")
+
+
 def open_camera(source: str | int) -> cv2.VideoCapture:
     source = str(source)
     if source.isdigit():
@@ -36,7 +43,8 @@ class CameraThread:
         self.name = name
         self._source = source
         self._network = not str(source).isdigit()
-        self._mirror = (self._network and FRONT_MIRRORED) if mirror is None else mirror
+        # Only Board B's own stream (http://<ip>/) is mirrored; relay streams (http://<ip>:8080/front) are not.
+        self._mirror = (self._network and FRONT_MIRRORED and is_raw_board_stream(str(source))) if mirror is None else mirror
         self._cap = open_camera(source)
         if not self._cap.isOpened():
             raise RuntimeError(f"Could not open {name} camera {source}")
