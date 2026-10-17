@@ -12,14 +12,14 @@ Usage (call from a worker thread at ~10 Hz, not the control loop):
 from __future__ import annotations
 
 import concurrent.futures as cf
-import itertools
+import uuid
 import json
 import time
 from typing import Callable, Sequence
 
-from .scoring import Decision, Obj, Params, decide
+from .scoring import Decision, Obj, Params, decide, params_json, parse_params
 
-_ids = itertools.count()
+
 
 
 class IntentService:
@@ -33,29 +33,32 @@ class IntentService:
         self._client = None
         self._pending = None
         self._chalk_down_until = 0.0  # circuit breaker after failures
-        if use_chalk and params != Params():
-            raise ValueError("Deploy matching Chalk parameters before using non-default Params")
+        parse_params(params_json(params))
+        self.last_query = {}
         if use_chalk:
             try:
                 from chalk.client import ChalkClient  # noqa: WPS433
                 self._client = ChalkClient()  # reads CHALK_CLIENT_ID / CHALK_CLIENT_SECRET
             except Exception as e:  # missing package or credentials
-                self.log({"type": "intent_chalk_unavailable", "error": repr(e)})
+                self.log({"type": "intent_chalk_unavailable", "t": 0.0, "error": type(e).__name__})
 
-    def _query_chalk(self, objects, gaze, history, t_now) -> Decision:
+    def _query_chalk(self, objects, gaze, history, t_now, corrections, query_id) -> Decision:
         from chalk_features import IntentRequest  # import only when Chalk is used
         res = self._client.query(
             input={
-                IntentRequest.id: f"{self.user_id}-{next(_ids)}",
+                IntentRequest.id: query_id,
                 IntentRequest.user_id: self.user_id,
                 IntentRequest.t_now: t_now,
                 IntentRequest.gaze_json: json.dumps([list(g) for g in gaze]),
                 IntentRequest.objects_json: json.dumps(
                     [{"id": o.id, "cls": o.cls, "x": o.x, "y": o.y} for o in objects]),
                 IntentRequest.history_json: json.dumps(list(history)),
+                IntentRequest.corrections_json: json.dumps(corrections),
+                IntentRequest.params_json: params_json(self.params),
             },
             output=[IntentRequest.top_object_id, IntentRequest.confidence,
                     IntentRequest.should_prehover, IntentRequest.probs_json],
+            request_timeout=self.timeout_s, connect_timeout=self.timeout_s,
         )
         top = res.get_feature_value(IntentRequest.top_object_id) or None
         return Decision(
@@ -66,13 +69,15 @@ class IntentService:
         )
 
     def predict(self, objects: Sequence[Obj], gaze, history: Sequence[str],
-                t_now: float) -> Decision:
+                t_now: float, corrections=()) -> Decision:
         t0 = time.perf_counter()
         source, d = "local", None
         gaze = list(gaze)
+        corrections = list(corrections)
+        query_id = f"{self.user_id}-{uuid.uuid4().hex}"
         if (self._client is not None and time.monotonic() >= self._chalk_down_until
                 and (self._pending is None or self._pending.done())):
-            fut = self._pool.submit(self._query_chalk, objects, list(gaze), history, t_now)
+            fut = self._pool.submit(self._query_chalk, list(objects), list(gaze), list(history), t_now, corrections, query_id)
             self._pending = fut
             try:
                 d = fut.result(timeout=self.timeout_s)
@@ -80,10 +85,13 @@ class IntentService:
             except Exception as e:
                 fut.cancel()
                 self._chalk_down_until = time.monotonic() + 5.0  # back off 5 s
-                self.log({"type": "intent_chalk_error", "error": repr(e)[:200]})
+                self.log({"type": "intent_chalk_error", "t": t_now, "error": type(e).__name__})
         if d is None:
-            d = decide(objects, gaze, history, t_now, self.params)
-        self.log({"type": "intent_query", "t": t_now, "source": source,
+            d = decide(objects, gaze, history, t_now, self.params, corrections)
+        self.last_query = {"query_id": query_id, "source": source,
+                           "latency_ms": round((time.perf_counter() - t0) * 1000, 1),
+                           "correction_count": len(corrections)}
+        self.log({**self.last_query, "type": "intent_query", "t": t_now, "source": source,
                   "latency_ms": round((time.perf_counter() - t0) * 1000, 1),
                   "object_id": d.object_id, "confidence": round(d.confidence, 3),
                   "prehover": d.prehover})

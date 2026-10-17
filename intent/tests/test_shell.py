@@ -57,10 +57,14 @@ class ShellTests(unittest.TestCase):
         self.assertIsNone(self.arm.hover)
 
 class ServiceTests(unittest.TestCase):
-    def test_custom_chalk_params_are_not_silently_ignored(self):
+    def test_custom_params_round_trip(self):
         from look_intent.scoring import Params
-        with self.assertRaises(ValueError):
-            IntentService('test', params=Params(beta=0))
+        from look_intent.scoring import params_json, parse_params
+        p = Params(beta=0)
+        self.assertEqual(parse_params(params_json(p)), p)
+        service = IntentService('test', use_chalk=False, params=p)
+        self.assertEqual(service.params.beta, 0)
+        service.close()
 
     def test_timeout_does_not_accumulate_queries(self):
         import concurrent.futures as cf

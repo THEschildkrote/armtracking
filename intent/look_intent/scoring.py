@@ -18,7 +18,7 @@ to descend.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from typing import Iterable, Sequence
 
 
@@ -96,20 +96,23 @@ def current_dwell(gaze: Sequence[Sequence[float]], obj: Obj, t_now: float,
 
 
 def transition_prior(history: Sequence[str], classes: Sequence[str],
-                     p: Params = Params()) -> dict[str, float]:
+                     p: Params = Params(), corrections=()) -> dict[str, float]:
     """history: picked classes, oldest first. Returns P(next class | last class)."""
     classes = sorted(set(classes))
     k = len(classes)
     if k == 0:
         return {}
-    if not history:
-        return {c: 1.0 / k for c in classes}
-    last = history[-1]
+    last = history[-1] if history else None
     counts = {c: 0 for c in classes}
     n = 0
     for a, b in zip(history, history[1:]):
         if a == last and b in counts:
             counts[b] += 1
+            n += 1
+    # User-confirmed next-intent labels, without advancing successful-pick history.
+    for c in corrections:
+        if c.get("previous_cls") == last and c.get("correct_cls") in counts:
+            counts[c["correct_cls"]] += 1
             n += 1
     return {c: (counts[c] + p.alpha) / (n + p.alpha * k) for c in classes}
 
@@ -129,9 +132,9 @@ def score(objects: Sequence[Obj], shares: dict[str, float], prior: dict[str, flo
 
 
 def decide(objects: Sequence[Obj], gaze, history: Sequence[str], t_now: float,
-           p: Params = Params()) -> Decision:
+           p: Params = Params(), corrections=()) -> Decision:
     shares = gaze_shares(gaze, objects, t_now, p)
-    prior = transition_prior(history, [o.cls for o in objects], p)
+    prior = transition_prior(history, [o.cls for o in objects], p, corrections)
     probs = score(objects, shares, prior, p)
     if not probs:
         return Decision(None, 0.0, False, {})
@@ -154,3 +157,24 @@ def should_prehover(objects, gaze, shares, prior, top, conf, t_now,
         return False
     obj = next(o for o in objects if o.id == top)
     return current_dwell(gaze, obj, t_now, p) >= required_dwell(prior, obj.cls, p)
+
+
+def params_json(p: Params) -> str:
+    import json
+    return json.dumps(asdict(p), sort_keys=True, allow_nan=False)
+
+
+def parse_params(raw: str) -> Params:
+    import json
+    data = json.loads(raw)
+    if not isinstance(data, dict) or set(data) != {f.name for f in fields(Params)}:
+        raise ValueError("Params must contain exactly the supported fields")
+    if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v)
+           for v in data.values()):
+        raise ValueError("Params must be finite numbers")
+    p = Params(**data)
+    if (min(p.window_s, p.tau_s, p.radius_mm, p.alpha, p.eps, p.max_gap_s) <= 0
+            or p.beta < 0 or not 0 <= p.threshold <= 1 or not 0 <= p.min_share <= 1
+            or p.floor_dwell_s < 0.15 or p.min_dwell_s < p.floor_dwell_s):
+        raise ValueError("Invalid scoring parameters")
+    return p

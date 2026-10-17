@@ -1,0 +1,16 @@
+---
+description: Look intent, voice and hardware adapter contracts
+globs: "intent/**"
+alwaysApply: true
+---
+
+Read @ARCHITECTURE.md before changing the integration.
+
+- Keep scoring in look_intent/scoring.py for Chalk and local fallback parity.
+- Prediction authorizes hover only; completed dwell or validated voice authorizes picks.
+- Keep voice actions scoped to current expiring questions; validate IDs locally.
+- Learn only from explicit corrections and successful outcome callbacks.
+- Use MockArm until the physical adapter independently enforces motion checks.
+- Keep synthetic logs labelled and separate from reported rehearsal results.
+- Run `PYTHONPATH=intent python -m unittest discover -s intent/tests`.
+- Never commit API keys, personal logs or user memory files.

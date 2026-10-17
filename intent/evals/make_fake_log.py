@@ -22,6 +22,7 @@ def generate(seed: int = 0, tasks: int = 30, hz: float = 30.0, noise_mm: float =
     ev, t = [], 0.0
     objs = {o[0]: {"id": o[0], "cls": o[1], "x": o[2], "y": o[3]} for o in OBJECTS}
     by_cls = {o["cls"]: o for o in objs.values()}
+    ev.append({"t": t, "type": "session", "synthetic": True})
     ev.append({"t": t, "type": "scene", "objects": list(objs.values())})
 
     def gaze_at(x, y, dur):

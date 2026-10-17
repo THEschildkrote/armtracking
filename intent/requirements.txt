@@ -1,2 +1,4 @@
-chalkpy
+chalkpy>=2.163.1,<3
 matplotlib  # optional: charts in evals/replay.py
+
+pandas>=2,<4  # offline-query result materialization
