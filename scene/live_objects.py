@@ -136,7 +136,7 @@ def main() -> None:
     LOGS.mkdir(exist_ok=True)
     last_name = last_write = last_snap = 0.0
     names: list = []
-    print("Running. q to quit, L to relearn from taught objects.", flush=True)
+    print("Running. q quit, s/space STOP the arm, m reach map, L relearn taught objects.", flush=True)
     while True:
         ok, frame = cap.read()
         if not ok:
@@ -204,6 +204,11 @@ def main() -> None:
         key = cv2.waitKey(1) & 0xFF
         if key in (ord("q"), 27):
             break
+        if key in (ord("s"), ord("S"), ord(" ")):
+            from arm.motion import request_stop
+
+            request_stop()
+            print("STOP sent - the arm freezes where it is (home.cmd parks it)", flush=True)
         if key in (ord("m"), ord("M")):
             show_map = not show_map
         if key in (ord("l"), ord("L")):

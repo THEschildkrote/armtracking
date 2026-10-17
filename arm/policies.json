@@ -8,5 +8,11 @@
   "wave": {
     "type": "wave",
     "waves": 3
+  },
+  "inhaler": {
+    "type": "scripted"
+  },
+  "water_bottle": {
+    "type": "scripted"
   }
 }

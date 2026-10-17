@@ -17,6 +17,38 @@ MOTORS = ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_ro
 HOME_PATH = Path(__file__).with_name("home_pose.json")
 RATE_HZ = 50
 
+# STOP from any window (live views, stop.cmd): a timestamp in this file. Every glide checks it and
+# freezes the arm where it is (torque stays on, so nothing drops) if it was pressed after the
+# current command began.
+STOP_PATH = Path(__file__).resolve().parents[1] / "logs" / "STOP"
+_started = [time.time()]
+
+
+class Stopped(RuntimeError):
+    pass
+
+
+def begin() -> None:
+    """A new arm command starts: STOPs pressed before now no longer apply."""
+    _started[0] = time.time()
+
+
+def request_stop() -> None:
+    STOP_PATH.parent.mkdir(exist_ok=True)
+    STOP_PATH.write_text(f"{time.time():.3f}")
+
+
+def stop_requested() -> bool:
+    try:
+        return float(STOP_PATH.read_text()) > _started[0]
+    except (OSError, ValueError):
+        return False
+
+
+def freeze(bus) -> None:
+    """Hold exactly where the arm is now."""
+    bus.sync_write("Goal_Position", read(bus), normalize=False)
+
 
 def open_bus(port: str) -> SerialMotorsBus:
     bus = SerialMotorsBus(
@@ -50,6 +82,9 @@ def glide(bus: SerialMotorsBus, start: dict[str, int], target: dict[str, int], s
     steps = max(1, int(seconds * RATE_HZ))
     for i in range(1, steps + 1):
         s = (1 - math.cos(math.pi * i / steps)) / 2
+        if stop_requested():
+            freeze(bus)
+            raise Stopped("STOP pressed - arm frozen in place")
         goal = {k: int(round(start[k] + (target[k] - start[k]) * s)) for k in target}
         bus.sync_write("Goal_Position", goal, normalize=False)
         time.sleep(1 / RATE_HZ)
@@ -70,10 +105,13 @@ def load_home() -> dict[str, int]:
 def go_home(port: str, relax: bool = True) -> None:
     """Glide the follower to the saved rest pose; relax=True turns torque off once it's there."""
     home = load_home()
+    begin()
     bus = open_bus(port)
     try:
         here = hold(bus)
         glide(bus, here, home, glide_time(here, home))
         time.sleep(0.3)
-    finally:
-        bus.disconnect(disable_torque=relax)
+    except BaseException:
+        bus.disconnect(disable_torque=False)  # stopped or failed mid-air: keep holding, don't drop it
+        raise
+    bus.disconnect(disable_torque=relax)

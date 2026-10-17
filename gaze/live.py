@@ -279,6 +279,13 @@ def main() -> None:
                 cv2.putText(view, line, (8, 24 + 24 * k), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
             cv2.imshow(WINDOW, view)
             key = cv2.waitKey(1) & 0xFF
+            if key in (ord("s"), ord("S"), ord(" ")):
+                from arm.motion import request_stop
+
+                request_stop()
+                if intent:
+                    intent.cancel_all(now)
+                print("STOP sent - the arm freezes where it is (home.cmd parks it)", flush=True)
             if key in (ord("q"), 27) or cv2.getWindowProperty(WINDOW, cv2.WND_PROP_VISIBLE) < 1:
                 break
     finally:

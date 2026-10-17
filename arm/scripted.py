@@ -332,9 +332,14 @@ def settle(bus, target: dict[str, int], rounds: int = 3) -> None:
     """Under the arm's weight (worse when the servos are warm) a joint stops short of its goal - the
     elbow by ~5 deg, 1-2 cm at the gripper. Push each arm joint's goal by what it is still off, a few
     times, so it actually arrives. The gripper is left alone (squeezing an object is meant to stop short)."""
+    from arm.motion import Stopped, freeze, stop_requested
+
     cmd = {j: target[j] for j in ARM_JOINTS}
     for _ in range(rounds):
         time.sleep(0.15)
+        if stop_requested():
+            freeze(bus)
+            raise Stopped("STOP pressed - arm frozen in place")
         here = read(bus)
         for j in ARM_JOINTS:
             cmd[j] = int(min(max(cmd[j] + (target[j] - here[j]), target[j] - SAG_MAX_TICKS), target[j] + SAG_MAX_TICKS))
@@ -421,6 +426,9 @@ def plan(kin, table: dict, obj: dict) -> dict:
 
 def hover(name: str, port: str = "COM4") -> None:
     """Move above the object with the gripper open, and keep holding there (no descent)."""
+    from arm.motion import begin
+
+    begin()
     obj, _, table, cal, kin = _setup(name)
     _LOCKED[name] = (dict(obj), time.time())
     print(f"{name}: at ({obj['x']}, {obj['y']}) mm, grip angle {obj.get('yaw')} deg, grip height {obj.get('grasp_mm')} mm",
@@ -435,12 +443,29 @@ def hover(name: str, port: str = "COM4") -> None:
         bus.disconnect(disable_torque=False)
 
 
+PICK_LOG = ARM_DIR.parent / "logs" / "picks.jsonl"
+
+
+def log_pick(obj: dict, held: bool, route: dict) -> None:
+    """One line per grasp attempt (logs/picks.jsonl): what, where, at what angle, and whether the gripper
+    held something (it stops short of fully closed). python -m arm.pick_stats summarises it."""
+    PICK_LOG.parent.mkdir(exist_ok=True)
+    entry = {"t": round(time.time(), 2), "name": obj["name"], "cls": obj.get("cls", obj["name"]),
+             "x": obj["x"], "y": obj["y"], "yaw": obj.get("yaw"), "axis": obj.get("axis"),
+             "grasp_mm": obj.get("grasp_mm"), "low_approach": route.get("high") is not None, "held": bool(held)}
+    with open(PICK_LOG, "a") as f:
+        f.write(json.dumps(entry) + "\n")
+
+
 def pick_from_hover(name: str, port: str = "COM4", on_descend=None) -> bool:
     """Descend, grasp, lift, then drop it at the drop spot - or hand it over if there is none.
     Returns True if the gripper held something.
 
     on_descend() is called right before the arm starts moving down (log the real descent there).
     """
+    from arm.motion import begin
+
+    begin()
     obj, drop_spot, table, cal, kin = _setup(name, locked=True)
     route = plan(kin, table, obj)
     yaw, above, at, high = route["yaw"], route["above"], route["at"], route["high"]
@@ -460,6 +485,7 @@ def pick_from_hover(name: str, port: str = "COM4", on_descend=None) -> bool:
         # An empty gripper closes all the way; one holding an object stops short of the target.
         grip_now = read(bus)["gripper"]
         held = grip_now > gripper_raw(GRIPPER_CLOSED, cal) + 0.08 * (cal["gripper"]["range_max"] - cal["gripper"]["range_min"])
+        log_pick(obj, held, route)
         last = _run(bus, kin, cal, finish)
         if not drop_spot:
             time.sleep(HANDOVER_S)  # the user takes it
@@ -525,13 +551,16 @@ def teach(name: str, port: str = "COM4") -> None:
 def pick(name: str, port: str = "COM4") -> bool:
     """Full scripted pick: hover, descend, grasp, drop or hand over, then park at home and let the servos
     rest (holding the arm up between picks heats them, and hot servos sag). Returns True if something was held."""
-    from arm.motion import go_home
+    from arm.motion import Stopped, go_home
 
     try:
         hover(name, port)
-        return pick_from_hover(name, port)
-    finally:
-        go_home(port, relax=True)
+        held = pick_from_hover(name, port)
+    except Stopped as e:
+        print(f"{e}. Run home.cmd to park it.", flush=True)
+        return False
+    go_home(port, relax=True)
+    return held
 
 
 def main() -> None:
