@@ -12,7 +12,7 @@ snapshots/
 outputs/
 
 # Per-person / per-setup calibration (regenerate with calib.cmd / cameras.cmd)
-gaze/calib.json
+gaze/calib*.json
 arm/camera_reference/
 
 # Third-party download and generated preview

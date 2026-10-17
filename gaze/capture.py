@@ -12,6 +12,10 @@ os.environ.setdefault("OPENCV_FFMPEG_CAPTURE_OPTIONS", "fflags;nobuffer|flags;lo
 import cv2  # noqa: E402
 import numpy as np  # noqa: E402
 
+# Board B (OpenIris over Wi-Fi) sends its picture mirrored left-right; un-mirror it everywhere so the
+# table's ArUco markers decode and screen/table left is image left.
+FRONT_MIRRORED = True
+
 
 def open_camera(source: str | int) -> cv2.VideoCapture:
     source = str(source)
@@ -28,10 +32,11 @@ class CameraThread:
     Network streams (the Wi-Fi front camera) reconnect by themselves when they stall.
     """
 
-    def __init__(self, source: str | int, name: str = "camera"):
+    def __init__(self, source: str | int, name: str = "camera", mirror: bool | None = None):
         self.name = name
         self._source = source
         self._network = not str(source).isdigit()
+        self._mirror = (self._network and FRONT_MIRRORED) if mirror is None else mirror
         self._cap = open_camera(source)
         if not self._cap.isOpened():
             raise RuntimeError(f"Could not open {name} camera {source}")
@@ -60,6 +65,8 @@ class CameraThread:
                     time.sleep(0.01)
                 continue
             failures = 0
+            if self._mirror:
+                frame = cv2.flip(frame, 1)
             with self._lock:
                 self._frame, self._t, self._count = frame, time.monotonic(), self._count + 1
 
