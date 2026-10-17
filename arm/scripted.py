@@ -118,7 +118,13 @@ class Kinematics:
 # ---------- table <-> robot ----------
 
 def fit_table_to_robot(table_mm: np.ndarray, robot_m: np.ndarray) -> dict:
-    """2D rigid fit (rotation + translation, no scale) from table mm to robot metres, plus table height."""
+    """Map table mm -> robot metres from touched points.
+
+    rigid (rotation + translation) is the honest check: its error shows how far the arm's
+    model and the measured marker positions disagree. With 4+ points an affine map (adds
+    scale and shear) plus a tilted table plane is used for moving, which soaks up smooth
+    errors from joint offsets in the arm model.
+    """
     a = table_mm[:, :2] / 1000.0
     b = robot_m[:, :2]
     ca, cb = a.mean(axis=0), b.mean(axis=0)
@@ -127,14 +133,51 @@ def fit_table_to_robot(table_mm: np.ndarray, robot_m: np.ndarray) -> dict:
     if np.linalg.det(r) < 0:  # reflection: table axes don't match how the markers were measured
         raise RuntimeError("table axes look mirrored - check the marker positions in scene/config.json")
     t = cb - r @ ca
-    resid = np.linalg.norm((a @ r.T + t) - b, axis=1)
-    return {"R": r.tolist(), "t": t.tolist(), "table_z": float(robot_m[:, 2].mean()),
-            "rms_mm": float(np.sqrt((resid**2).mean()) * 1000), "points": len(a)}
+    rigid_err = np.linalg.norm((a @ r.T + t) - b, axis=1)
+    result = {"R": r.tolist(), "t": t.tolist(), "table_z": float(robot_m[:, 2].mean()),
+              "rigid_mm": float(np.sqrt((rigid_err**2).mean()) * 1000), "points": len(a),
+              "touched": {"table_mm": table_mm[:, :2].tolist(), "robot_m": robot_m.tolist()}}
+    err = rigid_err
+    if len(a) >= 4:
+        h = np.c_[a, np.ones(len(a))]
+        result["A"] = np.linalg.lstsq(h, b, rcond=None)[0].T.tolist()  # 2x3: xy = A @ [x, y, 1]
+        result["z_plane"] = np.linalg.lstsq(h, robot_m[:, 2], rcond=None)[0].tolist()  # z = p . [x, y, 1]
+        err = np.linalg.norm(h @ np.asarray(result["A"]).T - b, axis=1)
+    result["per_point_mm"] = (err * 1000).round(1).tolist()
+    result["rms_mm"] = float(np.sqrt((err**2).mean()) * 1000)
+    return result
 
 
 def table_point(calib: dict, x_mm: float, y_mm: float, height_m: float) -> np.ndarray:
-    xy = np.asarray(calib["R"]) @ (np.array([x_mm, y_mm]) / 1000.0) + np.asarray(calib["t"])
-    return np.array([xy[0], xy[1], calib["table_z"] + height_m])
+    p = np.array([x_mm / 1000.0, y_mm / 1000.0, 1.0])
+    if "A" in calib:
+        xy = np.asarray(calib["A"]) @ p
+        z = float(np.asarray(calib["z_plane"]) @ p)
+    else:
+        xy = np.asarray(calib["R"]) @ p[:2] + np.asarray(calib["t"])
+        z = calib["table_z"]
+    return np.array([xy[0], xy[1], z + height_m])
+
+
+def table_from_robot(calib: dict, xy_m: np.ndarray) -> np.ndarray:
+    """Robot-frame x, y (metres) -> table mm (inverse of table_point)."""
+    if "A" in calib:
+        m = np.asarray(calib["A"])
+        return np.linalg.solve(m[:, :2], np.asarray(xy_m) - m[:, 2]) * 1000
+    return np.asarray(calib["R"]).T @ (np.asarray(xy_m) - np.asarray(calib["t"])) * 1000
+
+
+def report(result: dict) -> None:
+    """Explain a fit: per-point error and, side by side, marker spacing measured vs as the arm felt it."""
+    tm = np.asarray(result["touched"]["table_mm"])
+    rm = np.asarray(result["touched"]["robot_m"]) * 1000
+    print("  point error (mm):", result["per_point_mm"])
+    print("  tip height per point (mm):", rm[:, 2].round(0).tolist(), "(should all be about equal)")
+    for i in range(len(tm)):
+        for j in range(i + 1, len(tm)):
+            print(f"  {tm[i].round(0).tolist()} -> {tm[j].round(0).tolist()}: measured {np.linalg.norm(tm[i] - tm[j]):5.0f} mm,"
+                  f" arm says {np.linalg.norm(rm[i, :2] - rm[j, :2]):5.0f} mm")
+    print(f"  rigid fit error {result['rigid_mm']:.1f} mm (measured layout vs arm model)")
 
 
 def calibrate(port: str) -> None:
@@ -173,16 +216,16 @@ def calibrate(port: str) -> None:
     TABLE_CALIB.write_text(json.dumps(result, indent=2))
     if drop_tip is not None or answer.startswith("n"):
         if drop_tip is not None:
-            r, t = np.asarray(result["R"]), np.asarray(result["t"])
-            x, y = (r.T @ (drop_tip[:2] - t)) * 1000
+            x, y = table_from_robot(result, drop_tip[:2])
             objects["drop"] = {"x": round(float(x)), "y": round(float(y))}
             print(f"Drop spot saved at table ({x:.0f}, {y:.0f}) mm")
         else:
             objects.pop("drop", None)
             print("No drop spot: picks hand the item over")
         OBJECTS.write_text(json.dumps(objects, indent=2))
+    report(result)
     print(f"Saved {TABLE_CALIB.name}: fit error {result['rms_mm']:.1f} mm over {result['points']} points "
-          f"(over ~10 mm: re-touch more carefully, or the marker / object positions are off)")
+          f"(over ~10 mm: re-touch more carefully, or the marker positions are off)")
 
 
 # ---------- pick ----------
