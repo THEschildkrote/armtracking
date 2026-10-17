@@ -11,6 +11,7 @@ Usage (from the armproject folder):
     gaze.cmd --eye 3 --scene http://172.20.10.2/
     gaze.cmd --arm                             # a long-blink selection makes the follower pick it
     gaze.cmd --blink-action wave               # test: any long blink makes the arm wave
+    gaze.cmd --intent                          # team intent agent: dwell pre-hovers, long blink descends
 
 Keys: q/Esc quit.
 """
@@ -52,9 +53,24 @@ def main() -> None:
     parser.add_argument("--blink-action", metavar="NAME",
                         help="Test mode: any long blink runs this arm/policies.json entry (e.g. wave) - "
                              "no table markers or object selection needed")
+    parser.add_argument("--intent", action="store_true",
+                        help="Team intent agent drives the arm: dwell pre-hovers, LONG BLINK confirms the descent; "
+                             "logs logs/session-*.jsonl for intent/evals")
+    parser.add_argument("--chalk", action="store_true", help="With --intent: query Chalk (needs chalk login)")
     args = parser.parse_args()
     runner = None
-    if args.arm or args.blink_action:
+    intent = None
+    if args.intent:
+        import threading
+
+        from gaze.intent_bridge import make_intent
+
+        shell, intent_arm, intent_log = make_intent(use_chalk=args.chalk)
+        intent_stop = threading.Event()
+        threading.Thread(target=shell.run, args=(intent_stop, time.monotonic), daemon=True).start()
+        intent = shell
+        print(f"Intent agent on ({'Chalk' if args.chalk else 'local scoring'}); logging to {intent_log.path}")
+    elif args.arm or args.blink_action:
         from arm.runner import ArmRunner
 
         runner = ArmRunner()
@@ -101,12 +117,31 @@ def main() -> None:
                 else:
                     raw_uv = None
                 fix = fixations.update(now, *(mm if mm else (math.nan, math.nan)), mm is not None)
+                if intent:
+                    intent.set_eyes_closed(state.closed)
+                    if fixations.position and mm is not None:
+                        intent.sample(now, *fixations.position)  # filtered gaze, table mm
+                    elif not state.closed:
+                        intent.sample(now, math.nan, math.nan, False)  # lost with the eyes open
                 if fix:
                     ev = selector.on_fixation(now, fix.x, fix.y)
                     if ev.kind == "ambiguous":
                         banner = (ev, now + 1.5)
                 for blink in blinks:
                     if blink.kind not in ("long", "double"):
+                        continue
+                    if intent:  # the intent shell owns the arm: long blink confirms, double blink cancels
+                        if blink.kind == "double":
+                            intent.cancel_all(now)
+                            print("DOUBLE BLINK -> cancel pre-hover", flush=True)
+                            continue
+                        bx = by = None
+                        if blink.gaze_before:
+                            b_mm = table_mm(*calib.map(*blink.gaze_before))
+                            if b_mm:
+                                bx, by = b_mm
+                        picked = intent.blink_confirm(now, bx, by)
+                        print(f"LONG BLINK -> {'descend on ' + picked if picked else 'ignored (no completed dwell)'}", flush=True)
                         continue
                     if args.blink_action:  # test mode: the blink itself is the command
                         if blink.kind == "long":
@@ -176,6 +211,9 @@ def main() -> None:
                 lines.append(f"FRONT CAMERA STALLED - reconnecting ({scene_cam.reconnects} so far)")
             if runner:
                 lines.append(f"ARM: {runner.status}")
+            if intent:
+                conf = intent.confirmable[0] if intent.confirmable else None
+                lines.append(f"INTENT: hover {intent_arm.hover_id or '-'}  confirmable {conf or '-'}  ARM: {intent_arm.status}")
             for k, line in enumerate(lines):
                 cv2.putText(view, line, (8, 24 + 24 * k), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
             cv2.imshow(WINDOW, view)
@@ -183,6 +221,9 @@ def main() -> None:
             if key in (ord("q"), 27) or cv2.getWindowProperty(WINDOW, cv2.WND_PROP_VISIBLE) < 1:
                 break
     finally:
+        if intent:
+            intent_stop.set()
+            intent_log.close()
         eye_cam.close()
         scene_cam.close()
         cv2.destroyAllWindows()

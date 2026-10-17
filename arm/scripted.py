@@ -159,7 +159,8 @@ def calibrate(port: str) -> None:
 
 # ---------- pick ----------
 
-def pick(name: str, port: str = "COM4") -> None:
+def _setup(name: str):
+    """Everything a move needs: the object, drop spot, table fit, robot calibration and kinematics."""
     objects = json.loads(OBJECTS.read_text())
     obj = next((o for o in objects["objects"] if o["name"] == name), None)
     if obj is None:
@@ -169,29 +170,68 @@ def pick(name: str, port: str = "COM4") -> None:
     if not TABLE_CALIB.exists():
         raise RuntimeError("no arm/table_to_robot.json - run: scripted.cmd calibrate")
     table = json.loads(TABLE_CALIB.read_text())
-    cal = load_robot_calibration()
-    kin = Kinematics()
+    return obj, objects["drop"], table, load_robot_calibration(), Kinematics()
 
-    above = table_point(table, obj["x"], obj["y"], HOVER_M)
-    at = table_point(table, obj["x"], obj["y"], GRASP_M)
-    drop = table_point(table, objects["drop"]["x"], objects["drop"]["y"], HOVER_M)
 
+def _run(bus, kin, cal, waypoints, on_waypoint=None) -> dict[str, float]:
+    """Solve every waypoint first (nothing moves if any is unreachable), then glide through them.
+
+    waypoints: [(xyz metres, gripper %), ...]; on_waypoint(i) is called just before moving to waypoint i.
+    """
+    seed = to_deg(read(bus), cal)
+    plan = []
+    for xyz, grip in waypoints:
+        seed = kin.ik(xyz, seed)
+        plan.append((dict(seed), grip))
+    for i, (deg, grip) in enumerate(plan):
+        if on_waypoint:
+            on_waypoint(i)
+        target = {**to_raw(deg, cal), "gripper": gripper_raw(grip, cal)}
+        start = read(bus)
+        glide(bus, start, target, glide_time(start, target))
+        time.sleep(0.25 if grip == GRIPPER_CLOSED else 0.1)
+    return seed
+
+
+def hover(name: str, port: str = "COM4") -> None:
+    """Move above the object with the gripper open, and keep holding there (no descent)."""
+    obj, _, table, cal, kin = _setup(name)
     bus = open_bus(port)
     try:
-        here = hold(bus)
-        seed = to_deg(here, cal)
-        plan = []  # (joint degrees, gripper %) waypoints, solved before anything moves
-        for xyz, grip in [(above, GRIPPER_OPEN), (at, GRIPPER_OPEN), (at, GRIPPER_CLOSED),
-                          (above, GRIPPER_CLOSED), (drop, GRIPPER_CLOSED), (drop, GRIPPER_OPEN)]:
-            seed = kin.ik(xyz, seed)
-            plan.append((dict(seed), grip))
-        for deg, grip in plan:
-            target = {**to_raw(deg, cal), "gripper": gripper_raw(grip, cal)}
-            start = read(bus)
-            glide(bus, start, target, glide_time(start, target))
-            time.sleep(0.25 if grip == GRIPPER_CLOSED else 0.1)
+        hold(bus)
+        _run(bus, kin, cal, [(table_point(table, obj["x"], obj["y"], HOVER_M), GRIPPER_OPEN)])
     finally:
-        bus.disconnect(disable_torque=False)  # keep holding; the runner / home tool takes it from here
+        bus.disconnect(disable_torque=False)
+
+
+def pick_from_hover(name: str, port: str = "COM4", on_descend=None) -> bool:
+    """Descend, grasp, lift, carry to the drop spot and release. Returns True if the gripper held something.
+
+    on_descend() is called right before the arm starts moving down (log the real descent there).
+    """
+    obj, drop_spot, table, cal, kin = _setup(name)
+    above = table_point(table, obj["x"], obj["y"], HOVER_M)
+    at = table_point(table, obj["x"], obj["y"], GRASP_M)
+    drop = table_point(table, drop_spot["x"], drop_spot["y"], HOVER_M)
+    bus = open_bus(port)
+    held = False
+    try:
+        hold(bus)
+        _run(bus, kin, cal, [(above, GRIPPER_OPEN), (at, GRIPPER_OPEN), (at, GRIPPER_CLOSED)],
+             on_waypoint=lambda i: on_descend() if i == 1 and on_descend else None)
+        # An empty gripper closes all the way; one holding an object stops short of the target.
+        grip_now = read(bus)["gripper"]
+        held = grip_now > gripper_raw(GRIPPER_CLOSED, cal) + 0.08 * (cal["gripper"]["range_max"] - cal["gripper"]["range_min"])
+        _run(bus, kin, cal, [(above, GRIPPER_CLOSED), (drop, GRIPPER_CLOSED), (drop, GRIPPER_OPEN)])
+    finally:
+        bus.disconnect(disable_torque=False)  # keep holding; the caller glides home
+    return held
+
+
+def pick(name: str, port: str = "COM4") -> bool:
+    """Full scripted pick: hover, descend, grasp, drop. Returns True if something was held."""
+    hover(name, port)
+    return pick_from_hover(name, port)
 
 
 def main() -> None:
