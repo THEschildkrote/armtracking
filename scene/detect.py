@@ -31,7 +31,7 @@ from scene.markers import TableConfig, pixels_to_table, table_to_pixels
 ROOT = Path(__file__).resolve().parents[1]
 CLASSES_PATH = ROOT / "gaze" / "classes.json"
 SAT_MIN = 80  # HSV saturation (0-255) that counts as "coloured"
-VAL_MIN = 40
+VAL_MIN = 25  # dark wrappers in the arm's shadow read ~45
 MIN_AREA_MM2 = 250  # ignore specks smaller than ~1.6 cm square
 MATCH_MM = 50  # a blob this close to a track is the same object
 MERGE_MM = 35  # two tracks this close are one object seen twice
