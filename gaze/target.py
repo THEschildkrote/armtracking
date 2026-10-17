@@ -105,21 +105,27 @@ def find_target(frame: np.ndarray, min_contrast: int = 18, phone: bool = False) 
     return m["m10"] / m["m00"], m["m01"] / m["m00"]
 
 
-def target_disc(size: int) -> np.ndarray:
-    """A black disc with a small red fixation dot, on white."""
+def target_disc(size: int, big_dot: bool = False) -> np.ndarray:
+    """A black disc with a red fixation dot, on white.
+
+    The on-screen targets keep the original tiny dot: a bright ring inside the disc breaks it up in Board B's
+    blurry 240x240 view and the finder stops seeing it. The phone target (big_dot) gets a bigger, ringed dot."""
     img = np.full((size, size, 3), 255, np.uint8)
     c = size // 2
     cv2.circle(img, (c, c), int(size * 0.45), (0, 0, 0), -1)
-    dot = max(3, size // 12)  # big enough to fixate on comfortably from seated distance
-    cv2.circle(img, (c, c), dot + max(2, size // 90), (255, 255, 255), -1)  # thin white ring: stands out on black
-    cv2.circle(img, (c, c), dot, (0, 0, 255), -1)
+    if big_dot:
+        dot = max(3, size // 12)
+        cv2.circle(img, (c, c), dot + max(2, size // 90), (255, 255, 255), -1)
+        cv2.circle(img, (c, c), dot, (0, 0, 255), -1)
+    else:
+        cv2.circle(img, (c, c), max(3, size // 40), (0, 0, 255), -1)
     return img
 
 
 def phone_target(width: int = 1080, height: int = 2340) -> np.ndarray:
     """Full-screen phone image for table calibration: white screen, big black disc, red dot."""
     img = np.full((height, width, 3), 255, np.uint8)
-    disc = target_disc(int(width * 0.8))
+    disc = target_disc(int(width * 0.8), big_dot=True)
     y0, x0 = (height - disc.shape[0]) // 2, (width - disc.shape[1]) // 2
     img[y0 : y0 + disc.shape[0], x0 : x0 + disc.shape[1]] = disc
     return img
