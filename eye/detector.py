@@ -70,6 +70,7 @@ class PupilDetector:
     def process(self, frame: np.ndarray, t: float) -> PupilSample:
         c = self.config
         gray = frame if frame.ndim == 2 else cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        raw = gray  # darkness is judged on the real picture (a shut lid's crease is lighter than the pupil)
         if c.local_sigma > 0:
             g = gray.astype(np.float32)
             gray = np.clip(g - cv2.GaussianBlur(g, (0, 0), c.local_sigma) + 128, 0, 255).astype(np.uint8)
@@ -77,10 +78,12 @@ class PupilDetector:
         if c.roi:
             ox, oy, w, h = c.roi
             gray = gray[oy : oy + h, ox : ox + w]
+            raw = raw[oy : oy + h, ox : ox + w]
         if gray.size == 0:
             return self._invalid(t)
         if c.blur > 1:
             gray = cv2.GaussianBlur(gray, (c.blur | 1, c.blur | 1), 0)
+            raw = cv2.GaussianBlur(raw, (c.blur | 1, c.blur | 1), 0)
         h, w = gray.shape
 
         darkest = int(gray.min())
@@ -99,7 +102,11 @@ class PupilDetector:
         if best is None:
             return self._invalid(t)
 
-        x, y, major, minor, angle, area, inside, contrast = best
+        x, y, major, minor, angle, area, inside, contrast, hull = best
+        if raw is not gray:
+            blob = np.zeros(raw.shape, np.uint8)
+            cv2.drawContours(blob, [hull], -1, 255, -1)
+            inside = cv2.mean(raw, blob)[0]
         self._last_xy = (x, y)
         self._misses = 0
         self._areas.append(area)
@@ -137,7 +144,7 @@ class PupilDetector:
             if jump > c.max_jump:
                 return None
             score -= jump  # same pupil as last frame wins ties
-        return score, x, y, max(a1, a2), min(a1, a2), angle, area, inside, contrast
+        return score, x, y, max(a1, a2), min(a1, a2), angle, area, inside, contrast, hull
 
     def _invalid(self, t: float) -> PupilSample:
         self._misses += 1
