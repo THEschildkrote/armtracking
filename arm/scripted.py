@@ -6,9 +6,9 @@ with ikpy for inverse kinematics. Joint angles follow LeRobot's degree conventio
 
 Two steps:
   1. table calibration (once per board placement): the arm goes limp, you touch the
-     gripper tip to known points - the table markers and the object spots - skipping
-     any it can't reach (at least 3); forward kinematics gives where the tip is in
-     robot coordinates, and a 2D rigid fit maps table mm -> robot metres.
+     gripper tip to each table marker centre, skipping any it can't reach (at least 3); forward kinematics gives where the tip is in
+     robot coordinates, and a 2D rigid fit maps table mm -> robot metres. Last, you touch
+     the drop spot and its table position is saved to gaze/objects.json.
          scripted.cmd calibrate
   2. pick an object from gaze/objects.json. With a "drop" spot in that file it is
      carried there and released; without one it is HANDED OVER: lifted high above its
@@ -142,9 +142,6 @@ def calibrate(port: str) -> None:
 
     points = [(f"marker {mid}", x, y) for mid, (x, y) in sorted(TableConfig.load().markers.items())]
     objects = json.loads(OBJECTS.read_text())
-    points += [(f"object '{o['name']}'", o["x"], o["y"]) for o in objects.get("objects", [])]
-    if "drop" in objects:
-        points.append(("drop spot", objects["drop"]["x"], objects["drop"]["y"]))
     cal = load_robot_calibration()
     kin = Kinematics()
     bus = open_bus(port)
@@ -163,12 +160,27 @@ def calibrate(port: str) -> None:
             print(f"    robot frame: {np.round(tip * 1000).astype(int)} mm")
             table.append([x, y, 0.0])
             robot.append(tip)
+        # the drop spot isn't measured: touch it and its table position is worked out from the fit
+        have = " (Enter on its own keeps the current one)" if "drop" in objects else ""
+        answer = input("  DROP spot: rest the tip where items should be released, then type d + Enter"
+                       f"{have}; n + Enter = no drop spot, hand items over instead: ").strip().lower()
+        drop_tip = kin.fk(to_deg(read(bus), cal))[:3, 3] if answer.startswith("d") else None
     finally:
         bus.disconnect(disable_torque=True)
     if len(table) < 3:
         raise SystemExit(f"Only {len(table)} points touched - need at least 3. Run it again.")
     result = fit_table_to_robot(np.array(table), np.array(robot))
     TABLE_CALIB.write_text(json.dumps(result, indent=2))
+    if drop_tip is not None or answer.startswith("n"):
+        if drop_tip is not None:
+            r, t = np.asarray(result["R"]), np.asarray(result["t"])
+            x, y = (r.T @ (drop_tip[:2] - t)) * 1000
+            objects["drop"] = {"x": round(float(x)), "y": round(float(y))}
+            print(f"Drop spot saved at table ({x:.0f}, {y:.0f}) mm")
+        else:
+            objects.pop("drop", None)
+            print("No drop spot: picks hand the item over")
+        OBJECTS.write_text(json.dumps(objects, indent=2))
     print(f"Saved {TABLE_CALIB.name}: fit error {result['rms_mm']:.1f} mm over {result['points']} points "
           f"(over ~10 mm: re-touch more carefully, or the marker / object positions are off)")
 
