@@ -163,6 +163,8 @@ def main() -> None:
                 if H is not None and ev.kind == "selected":
                     obj = next(o for o in objects if o.name == ev.name)
                     cv2.circle(view, to_px(H, obj.x, obj.y, scale), 30, EVENT_COLOURS["selected"], 4)
+            if scene_cam.age() > 1.0:
+                lines.append(f"FRONT CAMERA STALLED - reconnecting ({scene_cam.reconnects} so far)")
             if runner:
                 lines.append(f"ARM: {runner.status}")
             for k, line in enumerate(lines):
