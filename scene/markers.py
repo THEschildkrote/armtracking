@@ -11,6 +11,7 @@ e.g. origin at the mat's bottom-left corner, x to the right, y away from you.
 from __future__ import annotations
 
 import json
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -72,6 +73,7 @@ class TableTracker:
         self.static = static
         self.hold_path = hold_path
         self._held: np.ndarray | None = None
+        self._saved_at = 0.0
         if static and hold_path and hold_path.exists():
             data = json.loads(hold_path.read_text())
             if data.get("markers") == {str(k): list(v) for k, v in self.config.markers.items()}:
@@ -100,12 +102,8 @@ class TableTracker:
                 seen = bigger
 
         if len(seen) < self.config.min_markers:
-            if self.static and self._held is not None and seen:  # one marker can still confirm it
-                px = np.concatenate([seen[i] for i in seen]).astype(np.float32)
-                mm = np.concatenate([self.config.corners_mm(i) for i in seen])
-                held_rms = float(np.sqrt((np.linalg.norm(pixels_to_table(self._held, px) - mm, axis=1) ** 2).mean()))
-                if held_rms <= self.config.max_reproj_mm:
-                    return SceneSample(t, seen, self._held, held_rms, True)
+            # One marker can't tell a held fit from a slightly bumped camera (it misses small turns),
+            # so it never confirms one: not locked until a second marker shows.
             return SceneSample(t, seen, None, float("nan"), False)
 
         px = np.concatenate([seen[i] for i in seen]).astype(np.float32)
@@ -119,9 +117,10 @@ class TableTracker:
         if not self.static:
             return SceneSample(t, seen, H, rms, ok)
         if ok and len(seen) == len(self.config.markers):
-            if self._held is None and self.hold_path:
+            if self.hold_path and (self._held is None or time.time() - self._saved_at > 10):
                 self.hold_path.write_text(json.dumps({"H": H.tolist(), "rms_mm": rms,
                                                       "markers": {str(k): list(v) for k, v in self.config.markers.items()}}))
+                self._saved_at = time.time()
             self._held = H  # the best kind of fit: hold it
             return SceneSample(t, seen, H, rms, True)
         if self._held is not None:
