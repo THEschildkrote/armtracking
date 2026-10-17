@@ -10,6 +10,8 @@ scene is written to gaze/objects.json, which the picks and the gaze selector rea
 Teach an object once (scripted.cmd teach granola) with this running, move the arm out of the
 way and leave the object on its spot: within 3 minutes it learns that object's colour, grip angle
 and position correction. L relearns from every taught object (put them back on their taught spots).
+The board is shaded by where the arm can pick (green: any angle, yellow: some, red: none; M toggles),
+and objects it can't pick where they lie are boxed red, "OUT OF REACH".
 """
 
 from __future__ import annotations
@@ -52,15 +54,58 @@ def open_side_camera():
     return cap, rot
 
 
+class ReachWatcher:
+    """In the background: can the arm pick each listed object where it is now, at its angle?"""
+
+    def __init__(self):
+        import threading
+
+        from arm.reach import Reach, ReachMap
+        from scene.detect import board_region
+
+        self.reach = Reach()
+        self.map = ReachMap(self.reach, board_region(TableConfig.load()))
+        self.objects: list[dict] = []
+        self.status: dict[str, tuple] = {}  # name -> (x, y, yaw, reachable)
+        threading.Thread(target=self._run, daemon=True).start()
+
+    def get(self, o: dict):
+        st = self.status.get(o["name"])
+        if st and abs(st[0] - o["x"]) <= 15 and abs(st[1] - o["y"]) <= 15 and abs(((st[2] - o["yaw"]) + 90) % 180 - 90) <= 10:
+            return st[3]
+        return None  # not checked at this spot yet
+
+    def _run(self) -> None:
+        while True:
+            pending = [o for o in list(self.objects) if self.get(o) is None]
+            if not pending:
+                time.sleep(0.3)
+                continue
+            for o in pending:
+                self.status[o["name"]] = (o["x"], o["y"], o["yaw"], self.reach.can_pick(o))
+
+
+def draw_reach_map(view, H, rmap) -> None:
+    overlay = view.copy()
+    h = rmap.step / 2
+    for (i, j), share in list(rmap.cells.items()):
+        x, y = rmap.centre(i, j)
+        cell = np.array([[x - h, y - h], [x + h, y - h], [x + h, y + h], [x - h, y + h]], np.float32)
+        colour = (0, 180, 0) if share >= 1 else (0, 200, 255) if share > 0 else (0, 0, 220)
+        cv2.fillPoly(overlay, [table_to_pixels(H, cell).astype(np.int32)], colour)
+    cv2.addWeighted(overlay, 0.22, view, 0.78, 0, view)
+
+
 def draw(view, H, tracks, objects, status_lines):
     listed = [t for t in sorted(tracks, key=lambda t: t.id) if t.hits >= MIN_HITS]
     for t, o in zip(listed, objects):
         box = table_to_pixels(H, t.rect_mm).astype(np.int32)
         named = o["cls"] != "unknown"
-        colour = (0, 220, 0) if named else (0, 200, 255)
+        reach = o.get("reachable")
+        colour = (0, 0, 255) if reach is False else (0, 220, 0) if named else (0, 200, 255)
         cv2.polylines(view, [box], True, colour, 2)
         cx, cy = (int(v) for v in t.px)
-        label = f"{o['name']} ({o['x']}, {o['y']}) {o['axis']:.0f}deg"
+        label = f"{o['name']} ({o['x']}, {o['y']}) {o['axis']:.0f}deg" +             ("  OUT OF REACH" if reach is False else "" if reach else "  (checking reach)")
         cv2.putText(view, label, (cx - 60, cy - 14), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 3)
         cv2.putText(view, label, (cx - 60, cy - 14), cv2.FONT_HERSHEY_SIMPLEX, 0.5, colour, 1)
     for i, text in enumerate(status_lines):
@@ -81,6 +126,12 @@ def main() -> None:
     config = TableConfig.load()
     table = TableTracker(config, static=True, hold_path=LOGS / "side_table_hold.json")
     tracker = ObjectTracker()
+    try:
+        reach = ReachWatcher()
+    except FileNotFoundError:
+        reach = None
+        print("No arm/table_to_robot.json - reach not shown (run scripted.cmd calibrate)", flush=True)
+    show_map = True
     cap, rot = open_side_camera()
     LOGS.mkdir(exist_ok=True)
     last_name = last_write = last_snap = 0.0
@@ -119,6 +170,10 @@ def main() -> None:
                     print(f"Learned {c}: grip offset {classes[c]['grip_offset']} deg, position correction "
                           f"{classes[c]['pos_offset']} mm, colour hue {classes[c]['hue'][0]}", flush=True)
             objects = scene_objects(tracker.tracks, classes)
+            if reach:
+                reach.objects = objects
+                for o in objects:
+                    o["reachable"] = reach.get(o)
             if now - last_write >= WRITE_EVERY_S:
                 data = json.loads(OBJECTS_PATH.read_text()) if OBJECTS_PATH.exists() else {}
                 data["objects"] = objects
@@ -132,6 +187,11 @@ def main() -> None:
         for corners in s.marker_px.values():
             cv2.polylines(view, [corners.astype(np.int32)], True, (0, 255, 0), 1)
         if s.valid:
+            if reach and show_map:
+                draw_reach_map(view, s.H, reach.map)
+                if not reach.map.done:
+                    status.append(f"mapping reach {len(reach.map.cells)}/{reach.map.nx * reach.map.ny}"
+                                  " (green: any angle, yellow: some, red: none)  M hides it")
             draw(view, s.H, tracker.tracks, objects, status)
         else:
             draw(view, None, [], [], status)
@@ -144,6 +204,8 @@ def main() -> None:
         key = cv2.waitKey(1) & 0xFF
         if key in (ord("q"), 27):
             break
+        if key in (ord("m"), ord("M")):
+            show_map = not show_map
         if key in (ord("l"), ord("L")):
             for info in classes.values():
                 if info.get("taught"):
