@@ -63,13 +63,19 @@ class SceneSample:
 
 
 class TableTracker:
-    def __init__(self, config: TableConfig | None = None, static: bool = False):
+    def __init__(self, config: TableConfig | None = None, static: bool = False, hold_path: Path | None = None):
         """static=True for a fixed camera (the side camera): once all markers have been read in one
         frame, that fit is held while whatever markers are visible still agree with it, so small far
-        markers flickering in and out don't matter. A moving (head) camera must refit every frame."""
+        markers flickering in and out don't matter. A moving (head) camera must refit every frame.
+        hold_path keeps the held fit across restarts (still re-checked against the visible markers)."""
         self.config = config or TableConfig()
         self.static = static
+        self.hold_path = hold_path
         self._held: np.ndarray | None = None
+        if static and hold_path and hold_path.exists():
+            data = json.loads(hold_path.read_text())
+            if data.get("markers") == {str(k): list(v) for k, v in self.config.markers.items()}:
+                self._held = np.array(data["H"])
         params = cv2.aruco.DetectorParameters()
         params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX  # steadier corners on small markers
         self._detector = cv2.aruco.ArucoDetector(cv2.aruco.getPredefinedDictionary(DICTIONARY), params)
@@ -113,6 +119,9 @@ class TableTracker:
         if not self.static:
             return SceneSample(t, seen, H, rms, ok)
         if ok and len(seen) == len(self.config.markers):
+            if self._held is None and self.hold_path:
+                self.hold_path.write_text(json.dumps({"H": H.tolist(), "rms_mm": rms,
+                                                      "markers": {str(k): list(v) for k, v in self.config.markers.items()}}))
             self._held = H  # the best kind of fit: hold it
             return SceneSample(t, seen, H, rms, True)
         if self._held is not None:

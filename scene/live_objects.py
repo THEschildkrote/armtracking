@@ -27,7 +27,7 @@ import cv2  # noqa: E402
 import numpy as np  # noqa: E402
 
 from arm import cameras as armcams  # noqa: E402
-from scene.detect import (CLASSES_PATH, ObjectTracker, _write_json, find_blobs, load_classes, prompt_of,  # noqa: E402
+from scene.detect import (CLASSES_PATH, MIN_HITS, ObjectTracker, _write_json, find_blobs, load_classes, prompt_of,  # noqa: E402
                           save_classes, scene_objects)
 from scene.markers import TableConfig, TableTracker, table_to_pixels  # noqa: E402
 
@@ -53,7 +53,8 @@ def open_side_camera():
 
 
 def draw(view, H, tracks, objects, status_lines):
-    for t, o in zip(sorted(tracks, key=lambda t: t.id), objects):
+    listed = [t for t in sorted(tracks, key=lambda t: t.id) if t.hits >= MIN_HITS]
+    for t, o in zip(listed, objects):
         box = table_to_pixels(H, t.rect_mm).astype(np.int32)
         named = o["cls"] != "unknown"
         colour = (0, 220, 0) if named else (0, 200, 255)
@@ -78,7 +79,7 @@ def main() -> None:
     classes_mtime = os.path.getmtime(CLASSES_PATH) if CLASSES_PATH.exists() else 0
 
     config = TableConfig.load()
-    table = TableTracker(config, static=True)
+    table = TableTracker(config, static=True, hold_path=LOGS / "side_table_hold.json")
     tracker = ObjectTracker()
     cap, rot = open_side_camera()
     LOGS.mkdir(exist_ok=True)

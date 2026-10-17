@@ -34,6 +34,8 @@ SAT_MIN = 80  # HSV saturation (0-255) that counts as "coloured"
 VAL_MIN = 40
 MIN_AREA_MM2 = 250  # ignore specks smaller than ~1.6 cm square
 MATCH_MM = 50  # a blob this close to a track is the same object
+MERGE_MM = 35  # two tracks this close are one object seen twice
+MIN_HITS = 8  # frames an object must be seen before it is listed (hands reaching in are brief)
 FORGET_S = 10.0  # keep an unseen object this long (the arm hides it while hovering)
 LEARN_RADIUS_MM = 60  # a taught object counts as still at its taught spot within this
 LEARN_WINDOW_S = 180  # learn only this soon after a teach (or when asked): later, something else may sit there
@@ -84,10 +86,10 @@ class Blob:
 
 
 def board_region(config: TableConfig) -> np.ndarray:
-    """Table-mm polygon to look for objects in: the marker rectangle plus a small margin."""
+    """Table-mm polygon to look for objects in: the marker rectangle out to about the board's edge."""
     xs = [p[0] for p in config.markers.values()]
     ys = [p[1] for p in config.markers.values()]
-    x0, x1, y0, y1 = min(xs) - 25, max(xs) + 25, min(ys) - 15, max(ys) + 25
+    x0, x1, y0, y1 = min(xs) - 40, max(xs) + 40, min(ys) - 15, max(ys) + 80
     return np.array([[x0, y0], [x1, y0], [x1, y1], [x0, y1]], np.float32)
 
 
@@ -111,16 +113,48 @@ def find_blobs(frame: np.ndarray, H: np.ndarray, config: TableConfig) -> list[Bl
     hue_gap = np.minimum(hue_gap, 180 - hue_gap)
     coloured = (sat >= max(SAT_MIN, board_sat + 45)) & (val >= VAL_MIN)
     board_like = (hue_gap <= 15) & (sat < board_sat + 90)  # a shadow or a tinted patch of board
-    mask = (coloured & ~board_like & (region > 0)).astype(np.uint8) * 255
+    # only what sits on the white board: its outline (holes and all) rules out the table around it
+    white = ((sat < board_sat + 30) & (val > 150) & (region > 0)).astype(np.uint8)
+    n, labels, stats, _ = cv2.connectedComponentsWithStats(white)
+    if n < 2:
+        return []
+    biggest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
+    outline = cv2.findNonZero((labels == biggest).astype(np.uint8))
+    on_board = np.zeros_like(white)
+    cv2.fillConvexPoly(on_board, cv2.convexHull(outline), 1)
+    mask = (coloured & ~board_like & (region > 0) & (on_board > 0)).astype(np.uint8) * 255
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
     # pieces of one object (wrapper colours, print) touch or nearly so: group them, measure the union
     groups = cv2.dilate(mask, np.ones((11, 11), np.uint8))
-    blobs = []
     contours, _ = cv2.findContours(groups, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    pieces = []
     for c in contours:
         one = np.zeros_like(mask)
         cv2.drawContours(one, [c], -1, 255, -1)
         one &= mask
+        if cv2.countNonZero(one) < 40:
+            continue
+        hs = hue[one > 0].astype(np.float32) * (2 * math.pi / 180)
+        pieces.append([one, cv2.boundingRect(c), (math.degrees(math.atan2(np.sin(hs).mean(), np.cos(hs).mean())) / 2) % 180])
+    merged = True
+    while merged:
+        merged = False
+        for i in range(len(pieces)):
+            for j in range(i + 1, len(pieces)):
+                (_, (xa, ya, wa, ha), hua), (_, (xb, yb, wb, hb), hub) = pieces[i], pieces[j]
+                overlap = min(xa + wa, xb + wb) - max(xa, xb)
+                gap = max(ya, yb) - min(ya + ha, yb + hb)
+                if overlap > 0.6 * min(wa, wb) and gap < 30 and _hue_dist(hua, hub) <= 8:
+                    one = pieces[i][0] | pieces[j][0]
+                    x0, y0 = min(xa, xb), min(ya, yb)
+                    pieces[i] = [one, (x0, y0, max(xa + wa, xb + wb) - x0, max(ya + ha, yb + hb) - y0), hua]
+                    del pieces[j]
+                    merged = True
+                    break
+            if merged:
+                break
+    blobs = []
+    for one, _, _ in pieces:
         pix = cv2.findNonZero(one)
         if pix is None or len(pix) < 40:
             continue
@@ -185,6 +219,11 @@ class ObjectTracker:
                 self.tracks.append(Track(self._next, b.x, b.y, b.axis, b.length, b.width, b.hue, b.px, b.rect_mm, now))
                 self._next += 1
         self.tracks = [t for t in self.tracks if now - t.last_seen <= FORGET_S]
+        keep: list[Track] = []
+        for t in sorted(self.tracks, key=lambda t: -t.hits):  # duplicates: the longest-followed one wins
+            if all(math.hypot(t.x - k.x, t.y - k.y) > MERGE_MM for k in keep):
+                keep.append(t)
+        self.tracks = keep
 
     def label(self, names: list[tuple[str, float, tuple]], prompt_to_cls: dict[str, str], now: float) -> None:
         """Give tracks the YOLO name whose box holds their centre (seen this frame only)."""
@@ -233,6 +272,8 @@ def scene_objects(tracks: list[Track], classes: dict) -> list[dict]:
     """objects.json entries for the arm and the gaze selector."""
     out, used = [], {}
     for t in sorted(tracks, key=lambda t: t.id):
+        if t.hits < MIN_HITS:
+            continue
         info = classes.get(t.cls, {}) if t.cls else {}
         base = info.get("name", t.cls) if t.cls else "object"
         used[base] = used.get(base, 0) + 1

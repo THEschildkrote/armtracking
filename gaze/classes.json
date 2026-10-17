@@ -8,16 +8,33 @@
       "y": 116,
       "yaw": 170.8,
       "t": 1792255265.0988197
-    }
+    },
+    "hue": [
+      70,
+      0
+    ]
   },
   "pipe_cleaner": {
     "name": "pipe_cleaner",
     "prompt": "pipe cleaner",
-    "grasp_mm": 10
+    "grasp_mm": 10,
+    "hue": [
+      6,
+      0
+    ]
   },
   "water_bottle": {
     "name": "water_bottle",
     "prompt": "water bottle",
     "grasp_mm": 30
+  },
+  "thai_inhaler": {
+    "name": "inhaler",
+    "prompt": "small green tin",
+    "grasp_mm": 20,
+    "hue": [
+      18,
+      0
+    ]
   }
 }
