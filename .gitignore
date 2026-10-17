@@ -38,3 +38,11 @@ arm/table_to_robot.json
 logs/
 models/
 markers_big_letter.pdf
+
+# Private sponsor config and generated Factory reports (may contain wearer data)
+sponsors/config.local.json
+reports/routine_summary.md
+reports/suggested_priors.json
+reports/factory_development_review.md
+reports/*.tmp
+intent/look_routine/data/suggested_priors.json

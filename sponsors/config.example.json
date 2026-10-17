@@ -1,0 +1,14 @@
+{
+  "voice_enabled": false,
+  "chalk_enabled": false,
+  "factory_enabled": false,
+  "user_id": "demo",
+  "timezone": "America/New_York",
+  "routine_weight": 0.7,
+  "agent_weight": 0.2,
+  "chalk_timeout_s": 0.5,
+  "chalk_refresh_s": 1.0,
+  "voice_timeout_s": 2.0,
+  "voice_listen_s": 10.0,
+  "arm_port": "COM4"
+}
