@@ -1,6 +1,22 @@
 {
   "objects": [
-    {"name": "granola", "cls": "granola_bar", "x": 157, "y": 108},
-    {"name": "pipe_cleaner", "cls": "pipe_cleaner", "x": 458, "y": 153}
-  ]
+    {
+      "name": "granola",
+      "cls": "granola_bar",
+      "x": 151,
+      "y": 116,
+      "yaw": 170.8,
+      "grasp_mm": 19
+    },
+    {
+      "name": "pipe_cleaner",
+      "cls": "pipe_cleaner",
+      "x": 458,
+      "y": 153
+    }
+  ],
+  "drop": {
+    "x": 312,
+    "y": 344
+  }
 }

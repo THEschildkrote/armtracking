@@ -414,6 +414,15 @@ def teach(name: str, port: str = "COM4") -> None:
             objects["objects"].append(obj)
         grasp_mm = max(5, round((tip[2] - table_point(table, x, y, 0)[2]) * 1000))  # never aim into the table
         obj.update(x=x, y=y, yaw=round(_wrap(kin.jaw_yaw(deg) - table_heading(table, x, y)), 1), grasp_mm=grasp_mm)
+        # the class remembers how to grip it, for live detection to apply wherever it turns up
+        from scene.detect import load_classes, save_classes
+
+        classes = load_classes()
+        cls = next((c for c, info in classes.items() if name in (c, info.get("name"))), obj.get("cls", name))
+        info = classes.setdefault(cls, {"name": name, "prompt": cls.replace("_", " ")})
+        info["grasp_mm"] = grasp_mm
+        info["taught"] = {"x": x, "y": y, "yaw": obj["yaw"], "t": time.time()}
+        save_classes(classes)
     OBJECTS.write_text(json.dumps(objects, indent=2))
     if name != "drop":
         try:  # the approach starts above the grip: check the arm can get there pointing down

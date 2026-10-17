@@ -121,7 +121,8 @@ class TableTracker:
             if held_rms <= self.config.max_reproj_mm:
                 return SceneSample(t, seen, self._held, held_rms, True)
             self._held = None  # the visible markers moved: the camera was bumped
-        return SceneSample(t, seen, H, rms, ok)
+        # a fixed camera's far markers are the small ones: two near markers alone extrapolate badly
+        return SceneSample(t, seen, H, rms, ok and len(seen) >= 3)
 
 
 def pixels_to_table(H: np.ndarray, pts: np.ndarray) -> np.ndarray:

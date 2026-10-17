@@ -31,7 +31,7 @@ from eye.validity import EyeValidity
 from gaze.capture import CameraThread
 from gaze.fixation import FixationDetector
 from gaze.mapper import CALIB_PATH, GazeCalibration
-from gaze.selection import Selector, load_objects
+from gaze.selection import OBJECTS_PATH, Selector, load_objects
 from scene.markers import TableConfig, TableTracker, pixels_to_table, table_to_pixels
 
 WINDOW = "gaze"
@@ -42,6 +42,42 @@ EVENT_COLOURS = {"selected": (0, 220, 0), "ambiguous": (0, 140, 255), "cancelled
 def to_px(H, x_mm: float, y_mm: float, scale: float) -> tuple[int, int]:
     p = table_to_pixels(H, [[x_mm, y_mm]])[0] * scale
     return int(p[0]), int(p[1])
+
+
+class FrontLabeler:
+    """YOLOE on the newest front-camera frame in a background thread, so the gaze loop never waits."""
+
+    def __init__(self, every_s: float = 0.25):
+        import threading
+
+        from scene.detect import load_classes, prompt_of
+        from scene.naming import Namer
+
+        prompts = [prompt_of(c, info) for c, info in load_classes().items()] or ["object"]
+        self.namer = Namer(prompts, conf=0.15)
+        self.results: list = []
+        self._frame = None
+        self._every = every_s
+        self._stop = threading.Event()
+        self._thread = threading.Thread(target=self._run, daemon=True)
+        self._thread.start()
+
+    def offer(self, frame) -> None:
+        self._frame = frame
+
+    def _run(self) -> None:
+        while not self._stop.is_set():
+            frame, self._frame = self._frame, None
+            if frame is None:
+                time.sleep(0.02)
+                continue
+            if frame.ndim == 2:
+                frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
+            self.results = self.namer(frame)
+            time.sleep(self._every)
+
+    def close(self) -> None:
+        self._stop.set()
 
 
 def main() -> None:
@@ -57,6 +93,7 @@ def main() -> None:
                         help="Team intent agent drives the arm: dwell pre-hovers, LONG BLINK confirms the descent; "
                              "logs logs/session-*.jsonl for intent/evals")
     parser.add_argument("--chalk", action="store_true", help="With --intent: query Chalk (needs chalk login)")
+    parser.add_argument("--yolo", action="store_true", help="Label objects in the front camera view with YOLOE")
     args = parser.parse_args()
     runner = None
     intent = None
@@ -84,6 +121,9 @@ def main() -> None:
     fixations = FixationDetector()
     objects = load_objects()
     selector = Selector(objects)
+    objects_mtime = OBJECTS_PATH.stat().st_mtime if OBJECTS_PATH.exists() else 0.0
+    last_reload = 0.0
+    labeler = FrontLabeler() if args.yolo else None
     eye_cam = CameraThread(args.eye, "eye")
     scene_cam = CameraThread(args.scene, "front")
 
@@ -162,6 +202,20 @@ def main() -> None:
                             started = runner.request(ev.name)
                             print(f"ARM: {'started ' + ev.name if started else 'busy (' + runner.status + ') - ignored'}", flush=True)
 
+            if now - last_reload > 0.5:  # objects.cmd keeps objects.json current: follow it
+                last_reload = now
+                try:
+                    mtime = OBJECTS_PATH.stat().st_mtime
+                    if mtime != objects_mtime:
+                        objects_mtime, objects = mtime, load_objects()
+                        selector.objects = objects
+                        if intent:
+                            from gaze.intent_bridge import load_scene
+
+                            intent.scene(load_scene(), now)
+                except (OSError, ValueError, KeyError):
+                    pass  # caught it mid-write; next time
+
             frame, _, count = scene_cam.latest()
             if frame is None:
                 if cv2.waitKey(10) & 0xFF in (ord("q"), 27):
@@ -170,6 +224,8 @@ def main() -> None:
             if count != scene_count:
                 scene_count = count
                 scene_sample = table.process(frame, now)
+                if labeler:
+                    labeler.offer(frame)
 
             scale = args.scale or max(1.0, 720 / max(frame.shape[:2]))
             view = frame if frame.ndim == 3 else cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
@@ -207,6 +263,11 @@ def main() -> None:
                 if H is not None and ev.kind == "selected":
                     obj = next(o for o in objects if o.name == ev.name)
                     cv2.circle(view, to_px(H, obj.x, obj.y, scale), 30, EVENT_COLOURS["selected"], 4)
+            if labeler:
+                for label, conf, (x1, y1, x2, y2) in labeler.results:
+                    cv2.rectangle(view, (int(x1 * scale), int(y1 * scale)), (int(x2 * scale), int(y2 * scale)), (255, 160, 0), 2)
+                    cv2.putText(view, f"{label} {conf:.2f}", (int(x1 * scale), int(y1 * scale) - 6),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 160, 0), 2)
             if scene_cam.age() > 1.0:
                 lines.append(f"FRONT CAMERA STALLED - reconnecting ({scene_cam.reconnects} so far)")
             if runner:
@@ -226,6 +287,8 @@ def main() -> None:
             intent_log.close()
         eye_cam.close()
         scene_cam.close()
+        if labeler:
+            labeler.close()
         cv2.destroyAllWindows()
 
 

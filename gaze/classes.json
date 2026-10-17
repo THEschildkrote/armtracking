@@ -1,0 +1,23 @@
+{
+  "granola_bar": {
+    "name": "granola",
+    "prompt": "granola bar",
+    "grasp_mm": 19,
+    "taught": {
+      "x": 151,
+      "y": 116,
+      "yaw": 170.8,
+      "t": 1792255265.0988197
+    }
+  },
+  "pipe_cleaner": {
+    "name": "pipe_cleaner",
+    "prompt": "pipe cleaner",
+    "grasp_mm": 10
+  },
+  "water_bottle": {
+    "name": "water_bottle",
+    "prompt": "water bottle",
+    "grasp_mm": 30
+  }
+}
