@@ -63,8 +63,13 @@ class SceneSample:
 
 
 class TableTracker:
-    def __init__(self, config: TableConfig | None = None):
+    def __init__(self, config: TableConfig | None = None, static: bool = False):
+        """static=True for a fixed camera (the side camera): once all markers have been read in one
+        frame, that fit is held while whatever markers are visible still agree with it, so small far
+        markers flickering in and out don't matter. A moving (head) camera must refit every frame."""
         self.config = config or TableConfig()
+        self.static = static
+        self._held: np.ndarray | None = None
         params = cv2.aruco.DetectorParameters()
         params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX  # steadier corners on small markers
         self._detector = cv2.aruco.ArucoDetector(cv2.aruco.getPredefinedDictionary(DICTIONARY), params)
@@ -89,6 +94,12 @@ class TableTracker:
                 seen = bigger
 
         if len(seen) < self.config.min_markers:
+            if self.static and self._held is not None and seen:  # one marker can still confirm it
+                px = np.concatenate([seen[i] for i in seen]).astype(np.float32)
+                mm = np.concatenate([self.config.corners_mm(i) for i in seen])
+                held_rms = float(np.sqrt((np.linalg.norm(pixels_to_table(self._held, px) - mm, axis=1) ** 2).mean()))
+                if held_rms <= self.config.max_reproj_mm:
+                    return SceneSample(t, seen, self._held, held_rms, True)
             return SceneSample(t, seen, None, float("nan"), False)
 
         px = np.concatenate([seen[i] for i in seen]).astype(np.float32)
@@ -98,7 +109,19 @@ class TableTracker:
             return SceneSample(t, seen, None, float("nan"), False)
         err = np.linalg.norm(pixels_to_table(H, px) - mm, axis=1)
         rms = float(np.sqrt((err**2).mean()))
-        return SceneSample(t, seen, H, rms, rms <= self.config.max_reproj_mm)
+        ok = rms <= self.config.max_reproj_mm
+        if not self.static:
+            return SceneSample(t, seen, H, rms, ok)
+        if ok and len(seen) == len(self.config.markers):
+            self._held = H  # the best kind of fit: hold it
+            return SceneSample(t, seen, H, rms, True)
+        if self._held is not None:
+            held_err = np.linalg.norm(pixels_to_table(self._held, px) - mm, axis=1)
+            held_rms = float(np.sqrt((held_err**2).mean()))
+            if held_rms <= self.config.max_reproj_mm:
+                return SceneSample(t, seen, self._held, held_rms, True)
+            self._held = None  # the visible markers moved: the camera was bumped
+        return SceneSample(t, seen, H, rms, ok)
 
 
 def pixels_to_table(H: np.ndarray, pts: np.ndarray) -> np.ndarray:

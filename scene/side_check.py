@@ -20,6 +20,8 @@ import numpy as np  # noqa: E402
 from arm import cameras as armcams  # noqa: E402
 from scene.markers import TableConfig, TableTracker  # noqa: E402
 
+SNAPSHOT = Path(__file__).resolve().parents[1] / "logs" / "side_check.jpg"  # raw frame, refreshed every second
+
 
 def main() -> None:
     devices = armcams.video_devices() or armcams.video_devices()
@@ -33,8 +35,9 @@ def main() -> None:
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     rot = {90: cv2.ROTATE_90_CLOCKWISE, 180: cv2.ROTATE_180, 270: cv2.ROTATE_90_COUNTERCLOCKWISE}.get(cfg.get("rotation", 0))
     config = TableConfig.load()
-    tracker = TableTracker(config)
-    best = 0.0
+    tracker = TableTracker(config, static=True)
+    best, saved = 0.0, 0.0
+    SNAPSHOT.parent.mkdir(exist_ok=True)
     while True:
         ok, frame = cap.read()
         if not ok:
@@ -52,7 +55,8 @@ def main() -> None:
             cv2.polylines(view, [pts], True, (0, 255, 0), 2)
             cv2.putText(view, str(mid), tuple(pts[0]), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
         missing = sorted(set(config.markers) - set(s.marker_px))
-        status = (f"LOCKED  fit {s.reproj_mm:.1f} mm" if s.valid
+        held = s.valid and len(s.marker_px) < len(config.markers)
+        status = (f"LOCKED{' (held)' if held else ''}  fit {s.reproj_mm:.1f} mm" if s.valid
                   else f"not locked (fit {s.reproj_mm:.0f} mm)" if s.H is not None else "not locked")
         lines = [status, f"markers seen {sorted(s.marker_px)}  missing {missing}",
                  f"sharpness {sharp:.0f}  (best so far {best:.0f})"]
@@ -60,6 +64,11 @@ def main() -> None:
             colour = (0, 200, 0) if (i == 0 and s.valid) else (0, 0, 255) if i == 0 else (255, 255, 255)
             cv2.putText(view, text, (10, 28 + 26 * i), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 4)
             cv2.putText(view, text, (10, 28 + 26 * i), cv2.FONT_HERSHEY_SIMPLEX, 0.7, colour, 2)
+        if time.time() - saved > 1.0:  # a copy others can look at while this holds the camera
+            cv2.imwrite(str(SNAPSHOT), frame)
+            cv2.imwrite(str(SNAPSHOT.with_name("side_check_view.jpg")), view)
+            SNAPSHOT.with_suffix(".txt").write_text("\n".join(lines))
+            saved = time.time()
         cv2.imshow("side camera check", view)
         if cv2.waitKey(1) & 0xFF in (ord("q"), 27):
             break
