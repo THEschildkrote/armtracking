@@ -37,3 +37,4 @@ arm/table_to_robot.json
 # Session logs and task memory written by gaze.cmd --intent; YOLO weights
 logs/
 models/
+markers_big_letter.pdf

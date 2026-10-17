@@ -142,8 +142,8 @@ def find_blobs(frame: np.ndarray, H: np.ndarray, config: TableConfig) -> list[Bl
     region = np.zeros(frame.shape[:2], np.uint8)
     poly = np.clip(table_to_pixels(H, board_region(config)), -4000, 4000)  # a corner past the horizon flies off
     cv2.fillPoly(region, [poly.astype(np.int32)], 255)
-    h = config.marker_size_mm / 2 + 12  # the markers' black/white edges pick up colour fringes: skip them
-    for cx, cy in config.markers.values():
+    for mid, (cx, cy) in config.markers.items():  # the markers' black/white edges pick up colour fringes: skip them
+        h = config.size_of(mid) / 2 + 12
         sq = np.array([[cx - h, cy - h], [cx + h, cy - h], [cx + h, cy + h], [cx - h, cy + h]], np.float32)
         cv2.fillPoly(region, [table_to_pixels(H, sq).astype(np.int32)], 0)
     # the board's own colour under this light (it reads pinkish/yellowish, and shadows keep that hue)

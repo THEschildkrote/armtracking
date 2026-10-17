@@ -29,6 +29,8 @@ class TableConfig:
     markers: dict[int, tuple[float, float]] = field(
         default_factory=lambda: {0: (0.0, 0.0), 1: (400.0, 0.0), 2: (400.0, 300.0), 3: (0.0, 300.0)}
     )
+    # marker id -> its own printed edge length (mm), for markers not marker_size_mm (the big head-camera ones)
+    sizes: dict[int, float] = field(default_factory=dict)
     min_markers: int = 2  # each marker gives 4 corners, so 2 markers already fix a homography
     max_reproj_mm: float = 10.0  # reject a fit whose corners land further than this from where they belong
 
@@ -38,11 +40,16 @@ class TableConfig:
             return cls()
         data = json.loads(CONFIG_PATH.read_text())
         data["markers"] = {int(k): tuple(v) for k, v in data.get("markers", {}).items()}
+        data["sizes"] = {int(k): float(v) for k, v in data.get("sizes", {}).items()}
         return cls(**data)
 
     def save(self) -> None:
-        data = {**self.__dict__, "markers": {str(k): list(v) for k, v in self.markers.items()}}
+        data = {**self.__dict__, "markers": {str(k): list(v) for k, v in self.markers.items()},
+                "sizes": {str(k): v for k, v in self.sizes.items()}}
         CONFIG_PATH.write_text(json.dumps(data, indent=2))
+
+    def size_of(self, marker_id: int) -> float:
+        return self.sizes.get(marker_id, self.marker_size_mm)
 
     def corners_mm(self, marker_id: int) -> np.ndarray:
         """The 4 corners of a marker in table mm, in ArUco order (TL, TR, BR, BL as printed).
@@ -50,7 +57,7 @@ class TableConfig:
         Printed markers lie flat with their top edge pointing toward +y (away from you).
         """
         cx, cy = self.markers[marker_id]
-        h = self.marker_size_mm / 2
+        h = self.size_of(marker_id) / 2
         return np.array([[cx - h, cy + h], [cx + h, cy + h], [cx + h, cy - h], [cx - h, cy - h]], np.float32)
 
 
