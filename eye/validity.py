@@ -97,7 +97,10 @@ class EyeValidity:
 
         if not self._closed and not present:
             self._closed, self._closed_at = True, s.t
-            self._sudden = self._looked_normal_before(s.t)
+            # The second blink of a quick double blink starts while the lid is still reopening, so the
+            # pupil never looks "normal" in between; a closure right after a genuine blink counts anyway.
+            follows_blink = self._pending_blink is not None and s.t - self._pending_reopen <= c.double_gap_s
+            self._sudden = follows_blink or self._looked_normal_before(s.t)
             self._gaze_at_close = self._gaze_before(s.t)
         elif self._closed and present:
             self._closed = False
