@@ -1,0 +1,21 @@
+{
+  "granola": {
+    "type": "scripted"
+  },
+  "pipe_cleaner": {
+    "type": "scripted"
+  },
+  "wave": {
+    "type": "wave",
+    "waves": 3
+  },
+  "inhaler": {
+    "type": "scripted"
+  },
+  "water_bottle": {
+    "type": "scripted"
+  },
+  "foam": {
+    "type": "scripted"
+  }
+}

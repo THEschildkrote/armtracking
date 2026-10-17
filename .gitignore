@@ -1,9 +1,39 @@
+# LeRobot is its own repo, cloned separately (see README)
+lerobot/
+
+# Python
 __pycache__/
 *.py[cod]
 .venv/
+
+# Secrets (API keys for Chalk / Grok voice)
 .env
 .env.*
 !.env.example
+
+# Intent agent run outputs
 intent/logs/
 intent/data/
 intent/evals/out/
+
+# Logs, recordings, run outputs
+*.log
+eye_*.csv
+snapshots/
+outputs/
+
+# Per-person / per-setup calibration (regenerate with calib.cmd / cameras.cmd)
+gaze/calib*.json
+arm/camera_reference/
+
+# Third-party download and generated preview
+FirmwareFlashingTool-main.zip
+markers_A4_preview.png
+
+# Per-arm / per-board setup (regenerate with home.cmd --save / scripted.cmd calibrate)
+arm/home_pose.json
+arm/table_to_robot.json
+
+# Session logs and task memory written by gaze.cmd --intent; YOLO weights
+logs/
+models/

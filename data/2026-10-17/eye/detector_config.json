@@ -1,0 +1,19 @@
+{
+  "roi": [
+    16,
+    59,
+    155,
+    169
+  ],
+  "blur": 5,
+  "threshold_step": 6,
+  "threshold_span": 120,
+  "min_area": 30,
+  "max_area": 6000,
+  "min_circularity": 0.45,
+  "min_contrast": 25,
+  "border": 4,
+  "max_jump": 40.0,
+  "area_window": 90,
+  "forget_after": 10
+}
