@@ -9,6 +9,7 @@ from scene/config.json. Selections print as "SELECTED <name>" lines.
 Usage (from the armproject folder):
     gaze.cmd                                   # eye camera 3, front camera Board B
     gaze.cmd --eye 3 --scene http://172.20.10.2/
+    gaze.cmd --arm                             # a long-blink selection makes the follower pick it
 
 Keys: q/Esc quit.
 """
@@ -46,7 +47,13 @@ def main() -> None:
     parser.add_argument("--eye", default="3")
     parser.add_argument("--scene", default="http://172.20.10.2/")
     parser.add_argument("--scale", type=float, default=0, help="Window zoom (default: fit about 720 px)")
+    parser.add_argument("--arm", action="store_true", help="Send selections to the follower arm (arm/policies.json)")
     args = parser.parse_args()
+    runner = None
+    if args.arm:
+        from arm.runner import ArmRunner
+
+        runner = ArmRunner()
 
     if not CALIB_PATH.exists():
         raise SystemExit("No gaze/calib.json yet - run calib.cmd first.")
@@ -107,6 +114,9 @@ def main() -> None:
                         banner = (ev, now + 2.5)
                         where = f"at ({bx:.0f}, {by:.0f}) mm" if not math.isnan(bx) else "(table not in view)"
                         print(f"{ev.kind.upper()} {ev.name or ', '.join(ev.near)} {where}", flush=True)
+                        if runner and ev.kind == "selected":
+                            started = runner.request(ev.name)
+                            print(f"ARM: {'started ' + ev.name if started else 'busy (' + runner.status + ') - ignored'}", flush=True)
 
             frame, _, count = scene_cam.latest()
             if frame is None:
@@ -153,6 +163,8 @@ def main() -> None:
                 if H is not None and ev.kind == "selected":
                     obj = next(o for o in objects if o.name == ev.name)
                     cv2.circle(view, to_px(H, obj.x, obj.y, scale), 30, EVENT_COLOURS["selected"], 4)
+            if runner:
+                lines.append(f"ARM: {runner.status}")
             for k, line in enumerate(lines):
                 cv2.putText(view, line, (8, 24 + 24 * k), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
             cv2.imshow(WINDOW, view)

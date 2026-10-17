@@ -7,6 +7,7 @@ Usage (from the armproject folder):
     train.cmd pick_red                    # 50k steps
     train.cmd pick_red --steps 20000      # quicker first try
     train.cmd pick_red --resume           # continue after a stop or crash
+    train.cmd pick_red --no-augment       # train without image augmentation
 """
 
 import argparse
@@ -24,6 +25,9 @@ def main() -> None:
     parser.add_argument("--steps", type=int, default=50_000)
     parser.add_argument("--batch-size", type=int, default=8, help="Lower to 4 if you run out of GPU memory")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--no-augment", action="store_true",
+                        help="Turn off image augmentation (on by default: brightness/contrast/colour/sharpness "
+                             "jitter and small shifts, so the policy copes with venue lighting and a bumped camera)")
     args = parser.parse_args()
 
     out = Path("outputs") / "train" / args.name
@@ -47,6 +51,7 @@ def main() -> None:
             "--save_freq=10000",
             "--num_workers=2",
             "--wandb.enable=false",
+            f"--dataset.image_transforms.enable={'false' if args.no_augment else 'true'}",
         ]
     print(" ".join(cmd), "\n")
     sys.exit(subprocess.call(cmd))

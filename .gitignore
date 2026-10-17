@@ -18,3 +18,7 @@ arm/camera_reference/
 # Third-party download and generated preview
 FirmwareFlashingTool-main.zip
 markers_A4_preview.png
+
+# Per-arm / per-board setup (regenerate with home.cmd --save / scripted.cmd calibrate)
+arm/home_pose.json
+arm/table_to_robot.json
