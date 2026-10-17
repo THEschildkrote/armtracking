@@ -191,6 +191,16 @@ class Track:
     hits: int = 1
 
 
+def _inside_fraction(small: Track, big: Track) -> float:
+    """How much of small's box lies inside big's box (0..1), in table mm."""
+    a = small.rect_mm.astype(np.float32)
+    area = cv2.contourArea(a)
+    if area <= 0:
+        return 0.0
+    inter, _ = cv2.intersectConvexConvex(a, big.rect_mm.astype(np.float32))
+    return float(inter) / area
+
+
 def _hue_dist(a: float, b: float) -> float:
     d = abs(a - b) % 180
     return min(d, 180 - d)
@@ -220,8 +230,9 @@ class ObjectTracker:
                 self._next += 1
         self.tracks = [t for t in self.tracks if now - t.last_seen <= FORGET_S]
         keep: list[Track] = []
-        for t in sorted(self.tracks, key=lambda t: -t.hits):  # duplicates: the longest-followed one wins
-            if all(math.hypot(t.x - k.x, t.y - k.y) > MERGE_MM for k in keep):
+        # duplicates (close together, or a piece lying mostly inside a bigger box): the bigger box wins
+        for t in sorted(self.tracks, key=lambda t: -(t.length * t.width)):
+            if all(math.hypot(t.x - k.x, t.y - k.y) > MERGE_MM and _inside_fraction(t, k) < 0.3 for k in keep):
                 keep.append(t)
         self.tracks = keep
 
