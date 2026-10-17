@@ -24,10 +24,43 @@ def is_raw_board_stream(url: str) -> bool:
     return urlparse(url).path in ("", "/")
 
 
+EYE_CAMERA_NAME = "openiristracker"  # Board A's USB camera name
+BOARD_B_MAC = "10-b4-1d-e9-fe-1c"  # Board B's Wi-Fi address: finds its IP on whichever hotspot it joined
+
+
+def resolve(source: str | int, which: str) -> str:
+    """'auto' -> Board A's camera number (eye) or Board B's stream URL (front); anything else as given.
+
+    Numbers change whenever USB devices come and go, and Board B's IP changes with the hotspot,
+    so the gaze tools default to auto."""
+    source = str(source)
+    if source != "auto":
+        return source
+    if which == "eye":
+        from arm import cameras as armcams
+
+        devices = armcams.video_devices() or armcams.video_devices()
+        index = next((i for i, (name, _) in enumerate(devices) if name == EYE_CAMERA_NAME), None)
+        if index is None:
+            raise RuntimeError("Eye camera (Board A, openiristracker) not plugged in")
+        return str(index)
+    import re
+    import subprocess
+
+    table = subprocess.run(["arp", "-a"], capture_output=True, text=True).stdout.lower()
+    m = re.search(r"(\d+\.\d+\.\d+\.\d+)\s+" + BOARD_B_MAC, table)  # asks no one: Board B serves one viewer at a time
+    if not m:
+        raise RuntimeError("Board B isn't on the hotspot (not in the laptop's ARP table) - power it and wait ~30 s")
+    return f"http://{m.group(1)}/"
+
+
 def open_camera(source: str | int) -> cv2.VideoCapture:
     source = str(source)
     if source.isdigit():
-        return cv2.VideoCapture(int(source), cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(int(source), cv2.CAP_DSHOW)
+        if not cap.isOpened():  # DirectShow sometimes refuses a board after a replug
+            cap = cv2.VideoCapture(int(source), cv2.CAP_MSMF)
+        return cap
     # Network stream: give up on a stalled read after 2 s (FFmpeg's default is 30 s), so we can reconnect.
     return cv2.VideoCapture(source, cv2.CAP_FFMPEG,
                             [cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 5000, cv2.CAP_PROP_READ_TIMEOUT_MSEC, 2000])
@@ -41,6 +74,8 @@ class CameraThread:
 
     def __init__(self, source: str | int, name: str = "camera", mirror: bool | None = None):
         self.name = name
+        source = resolve(source, "eye" if name == "eye" else "front")
+        print(f"{name} camera: {source}", flush=True)
         self._source = source
         self._network = not str(source).isdigit()
         # Only Board B's own stream (http://<ip>/) is mirrored; relay streams (http://<ip>:8080/front) are not.

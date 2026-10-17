@@ -82,8 +82,8 @@ class FrontLabeler:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--eye", default="3")
-    parser.add_argument("--scene", default="http://172.20.10.2/")
+    parser.add_argument("--eye", default="auto")
+    parser.add_argument("--scene", default="auto")
     parser.add_argument("--scale", type=float, default=0, help="Window zoom (default: fit about 720 px)")
     parser.add_argument("--arm", action="store_true", help="Send selections to the follower arm (arm/policies.json)")
     parser.add_argument("--blink-action", metavar="NAME",

@@ -144,8 +144,8 @@ def run_table(args, detector, validity, eye_cam, scene_cam) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--eye", default="3", help="Eye camera number")
-    parser.add_argument("--scene", default="http://172.20.10.2/", help="Front camera URL or number")
+    parser.add_argument("--eye", default="auto", help="Eye camera number, or auto (Board A by name)")
+    parser.add_argument("--scene", default="auto", help="Front camera URL or number, or auto (Board B on the hotspot)")
     parser.add_argument("--mode", choices=["screen", "table"], default="screen")
     parser.add_argument("--marker", type=float, default=0.22, help="Target disc size as a fraction of screen height")
     args = parser.parse_args()
