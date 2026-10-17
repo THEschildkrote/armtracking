@@ -46,8 +46,31 @@ def find_screen(gray: np.ndarray) -> np.ndarray | None:
     return screens[0] if screens else None
 
 
-def find_target(frame: np.ndarray, min_contrast: int = 18) -> tuple[float, float] | None:
-    """Centre (u, v) of the dark disc on a screen, in frame pixels, or None."""
+def _phone_like(screen: np.ndarray, disc: np.ndarray) -> bool:
+    """The phone target's layout: a tall bright rectangle (~2.2:1) with the disc centred in it, covering
+    roughly a quarter of it. A laptop screen with dark UI on it, or a ceiling light, doesn't look like that."""
+    contours, _ = cv2.findContours(screen, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if not contours:
+        return False
+    (sx, sy), (w, h), _ = cv2.minAreaRect(max(contours, key=cv2.contourArea))
+    long_side, short_side = max(w, h), min(w, h)
+    if short_side <= 0 or not 1.4 <= long_side / short_side <= 3.2:
+        return False
+    m = cv2.moments(disc)
+    if not m["m00"]:
+        return False
+    if np.hypot(m["m10"] / m["m00"] - sx, m["m01"] / m["m00"] - sy) > 0.2 * long_side:
+        return False
+    # the disc spans ~80% of the phone's width; dark things on a laptop screen are small next to its width
+    (_, _), (dw, dh), _ = cv2.minAreaRect(disc)
+    if not 0.5 <= max(dw, dh) / short_side <= 1.05:
+        return False
+    return 0.08 <= cv2.contourArea(disc) / float((screen > 0).sum()) <= 0.42
+
+
+def find_target(frame: np.ndarray, min_contrast: int = 18, phone: bool = False) -> tuple[float, float] | None:
+    """Centre (u, v) of the dark disc on a screen, in frame pixels, or None.
+    phone=True (table calibration) accepts only the phone target's layout - see _phone_like."""
     gray = frame if frame.ndim == 2 else cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (3, 3), 0)
     best, best_area = None, 12.0
@@ -72,6 +95,8 @@ def find_target(frame: np.ndarray, min_contrast: int = 18) -> tuple[float, float
             blob = np.zeros_like(gray)
             cv2.drawContours(blob, [c], -1, 255, -1)
             if cv2.mean(contrast, blob)[0] < 1.4 * min_contrast:  # a real disc is solidly darker than the screen
+                continue
+            if phone and not _phone_like(screen, c):
                 continue
             best, best_area = c, area
     if best is None:

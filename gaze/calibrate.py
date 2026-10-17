@@ -44,6 +44,33 @@ SETTLE_S = 1.0  # time to move the eyes to the new target
 COLLECT_S = 1.2
 MIN_EYE = 15  # usable pupil samples needed per point
 MIN_SCENE = 3  # front-camera detections needed per point
+EYE_STEADY_PX = 4.0  # pupil samples within this of their median count as "on the dot"
+SCENE_STEADY_PX = 8.0  # target detections within this of their median count as the same target
+STEADY_SHARE = 0.6  # at least this share of each must be steady, or the spot is redone
+DISAGREE_PX = 30.0  # a new spot this far from what the earlier spots predict is flagged
+last_reject = ""  # why the last collect_point returned None, for the on-screen message
+
+
+def _steady(points: list, radius: float) -> tuple[np.ndarray | None, float]:
+    """Median of the points that sit near their overall median, and the share that does."""
+    a = np.array(points, float)
+    med = np.median(a, axis=0)
+    near = np.linalg.norm(a - med, axis=1) <= radius
+    return (np.median(a[near], axis=0) if near.any() else None), float(near.mean())
+
+
+def predict_error(pupil_pts: list, scene_pts: list, pupil, scene) -> float:
+    """How far `scene` is from where an affine fit of the earlier spots puts `pupil` (front-camera px)."""
+    p, sc = np.array(pupil_pts, float), np.array(scene_pts, float)
+    m = np.linalg.lstsq(np.c_[p, np.ones(len(p))], sc, rcond=None)[0]
+    return float(np.linalg.norm(np.r_[pupil, 1.0] @ m - scene))
+
+
+def running_error(pupil_pts: list, scene_pts: list) -> float:
+    """Leave-one-out RMS of an affine fit over the spots so far (front-camera px)."""
+    errs = [predict_error(pupil_pts[:i] + pupil_pts[i + 1:], scene_pts[:i] + scene_pts[i + 1:], pupil_pts[i], scene_pts[i])
+            for i in range(len(pupil_pts))]
+    return float(np.sqrt(np.mean(np.square(errs))))
 GRID = [(0.5, 0.5), (0.2, 0.2), (0.5, 0.2), (0.8, 0.2), (0.8, 0.5), (0.8, 0.8), (0.5, 0.8), (0.2, 0.8), (0.2, 0.5)]  # clear of the bezel
 
 
@@ -58,7 +85,7 @@ def screen_size() -> tuple[int, int]:
 
 
 
-def collect_point(eye_cam, scene_cam, detector, validity, seconds: float):
+def collect_point(eye_cam, scene_cam, detector, validity, seconds: float, phone: bool = False):
     """Gather usable pupil positions and target detections for `seconds`; returns their medians or None."""
     eye_buf, scene_buf = [], []
     eye_count = scene_count = 0
@@ -73,13 +100,25 @@ def collect_point(eye_cam, scene_cam, detector, validity, seconds: float):
         frame, _, count = scene_cam.latest()
         if frame is not None and count != scene_count:
             scene_count = count
-            centre = find_target(frame)
+            centre = find_target(frame, phone=phone)
             if centre is not None:
                 scene_buf.append(centre)
         cv2.waitKey(1)
+    global last_reject
     if len(eye_buf) < MIN_EYE or len(scene_buf) < MIN_SCENE:
+        last_reject = f"not enough data ({len(eye_buf)} eye, {len(scene_buf)} target samples)"
         return None, len(eye_buf), len(scene_buf)
-    return (np.median(np.array(eye_buf), axis=0), np.median(np.array(scene_buf), axis=0)), len(eye_buf), len(scene_buf)
+    # The pupil and the target must each hold still: a median over a glance or a stray detection is a bad spot.
+    pupil, eye_share = _steady(eye_buf, EYE_STEADY_PX)
+    target, scene_share = _steady(scene_buf, SCENE_STEADY_PX)
+    if eye_share < STEADY_SHARE:
+        last_reject = f"your eye wasn't steady on the dot ({eye_share:.0%} steady)"
+        return None, len(eye_buf), len(scene_buf)
+    if scene_share < STEADY_SHARE:
+        last_reject = f"the target jumped around ({scene_share:.0%} steady) - keep the phone still and in view"
+        return None, len(eye_buf), len(scene_buf)
+    last_reject = ""
+    return (pupil, target), len(eye_buf), len(scene_buf)
 
 
 def run_table(args, detector, validity, eye_cam, scene_cam) -> None:
@@ -107,7 +146,7 @@ def run_table(args, detector, validity, eye_cam, scene_cam) -> None:
             view = cv2.resize(view, None, fx=s, fy=s)
             for u, v in scene_pts:  # spots recorded so far
                 cv2.circle(view, (int(u * s), int(v * s)), 6, (0, 200, 255), 2)
-            centre = find_target(front)
+            centre = find_target(front, phone=True)
             if centre:
                 cv2.circle(view, (int(centre[0] * s), int(centre[1] * s)), 14, (0, 255, 0), 2)
             canvas[20 : 20 + view.shape[0], 20 : 20 + view.shape[1]] = view
@@ -133,13 +172,19 @@ def run_table(args, detector, validity, eye_cam, scene_cam) -> None:
             return
         if key == ord(" "):
             time.sleep(0.4)  # let the eyes settle on the dot
-            result, n_eye, n_front = collect_point(eye_cam, scene_cam, detector, validity, COLLECT_S)
+            result, n_eye, n_front = collect_point(eye_cam, scene_cam, detector, validity, COLLECT_S, phone=True)
             if result is None:
-                message = f"Not enough data ({n_eye} eye, {n_front} phone samples) - hold still and try again."
+                message = f"Spot not recorded: {last_reject}. Hold still on the dot and press SPACE again."
             else:
+                off = predict_error(pupil_pts, scene_pts, result[0], result[1]) if len(pupil_pts) >= 4 else 0.0
                 pupil_pts.append(result[0])
                 scene_pts.append(result[1])
-                message = f"Spot {len(pupil_pts)} recorded. Move the phone somewhere new (cover the whole area)."
+                fit_note = f"  Fit so far: {running_error(pupil_pts, scene_pts):.0f}px." if len(pupil_pts) >= 5 else ""
+                if off > DISAGREE_PX:
+                    message = (f"Spot {len(pupil_pts)} disagrees with the others by {off:.0f}px - press r to drop it "
+                               f"(or keep it if the first spots were the bad ones).{fit_note}")
+                else:
+                    message = f"Spot {len(pupil_pts)} recorded. Move the phone somewhere new.{fit_note}"
                 print(f"spot {len(pupil_pts)}: pupil {result[0].round(1)}  front {result[1].round(1)}  ({n_eye} eye / {n_front} phone)")
         elif key == ord("r") and pupil_pts:
             pupil_pts.pop(), scene_pts.pop()
