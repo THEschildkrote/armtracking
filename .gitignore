@@ -1,0 +1,20 @@
+# LeRobot is its own repo, cloned separately (see README)
+lerobot/
+
+# Python
+__pycache__/
+*.pyc
+
+# Logs, recordings, run outputs
+*.log
+eye_*.csv
+snapshots/
+outputs/
+
+# Per-person / per-setup calibration (regenerate with calib.cmd / cameras.cmd)
+gaze/calib.json
+arm/camera_reference/
+
+# Third-party download and generated preview
+FirmwareFlashingTool-main.zip
+markers_A4_preview.png
