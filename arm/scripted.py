@@ -10,6 +10,8 @@ Two steps:
      robot coordinates, and a 2D rigid fit maps table mm -> robot metres. Last, you touch
      the drop spot and its table position is saved to gaze/objects.json.
          scripted.cmd calibrate
+     then, for each object (and "drop"), touch it once to record where it is:
+         scripted.cmd teach granola
   2. pick an object from gaze/objects.json. With a "drop" spot in that file it is
      carried there and released; without one it is HANDED OVER: lifted high above its
      spot, held for a few seconds so the user can take it, then released.
@@ -24,6 +26,7 @@ import math
 import time
 from pathlib import Path
 
+import cv2
 import numpy as np
 
 from arm.motion import glide, glide_time, hold, open_bus, read
@@ -122,8 +125,9 @@ def fit_table_to_robot(table_mm: np.ndarray, robot_m: np.ndarray) -> dict:
 
     rigid (rotation + translation) is the honest check: its error shows how far the arm's
     model and the measured marker positions disagree. With 4+ points an affine map (adds
-    scale and shear) plus a tilted table plane is used for moving, which soaks up smooth
-    errors from joint offsets in the arm model.
+    scale and shear) plus a tilted table plane is fitted; its error is the reported fit
+    error. Moves use a homography through the same points: it also follows the trapezoid
+    a reach-dependent arm-model error makes, and lands exactly on the touched markers.
     """
     a = table_mm[:, :2] / 1000.0
     b = robot_m[:, :2]
@@ -143,6 +147,9 @@ def fit_table_to_robot(table_mm: np.ndarray, robot_m: np.ndarray) -> dict:
         result["A"] = np.linalg.lstsq(h, b, rcond=None)[0].T.tolist()  # 2x3: xy = A @ [x, y, 1]
         result["z_plane"] = np.linalg.lstsq(h, robot_m[:, 2], rcond=None)[0].tolist()  # z = p . [x, y, 1]
         err = np.linalg.norm(h @ np.asarray(result["A"]).T - b, axis=1)
+        H, _ = cv2.findHomography(a.astype(np.float64), b.astype(np.float64), 0)
+        if H is not None:
+            result["H"] = H.tolist()  # table metres -> robot x, y metres
     result["per_point_mm"] = (err * 1000).round(1).tolist()
     result["rms_mm"] = float(np.sqrt((err**2).mean()) * 1000)
     return result
@@ -150,7 +157,11 @@ def fit_table_to_robot(table_mm: np.ndarray, robot_m: np.ndarray) -> dict:
 
 def table_point(calib: dict, x_mm: float, y_mm: float, height_m: float) -> np.ndarray:
     p = np.array([x_mm / 1000.0, y_mm / 1000.0, 1.0])
-    if "A" in calib:
+    if "H" in calib:
+        q = np.asarray(calib["H"]) @ p
+        xy = q[:2] / q[2]
+        z = float(np.asarray(calib["z_plane"]) @ p)
+    elif "A" in calib:
         xy = np.asarray(calib["A"]) @ p
         z = float(np.asarray(calib["z_plane"]) @ p)
     else:
@@ -161,6 +172,9 @@ def table_point(calib: dict, x_mm: float, y_mm: float, height_m: float) -> np.nd
 
 def table_from_robot(calib: dict, xy_m: np.ndarray) -> np.ndarray:
     """Robot-frame x, y (metres) -> table mm (inverse of table_point)."""
+    if "H" in calib:
+        q = np.linalg.inv(np.asarray(calib["H"])) @ np.r_[np.asarray(xy_m, float), 1.0]
+        return q[:2] / q[2] * 1000
     if "A" in calib:
         m = np.asarray(calib["A"])
         return np.linalg.solve(m[:, :2], np.asarray(xy_m) - m[:, 2]) * 1000
@@ -306,6 +320,33 @@ def pick_from_hover(name: str, port: str = "COM4", on_descend=None) -> bool:
     return held
 
 
+def teach(name: str, port: str = "COM4") -> None:
+    """Record where an object (or the drop spot, name "drop") sits by touching it with the limp arm."""
+    if not TABLE_CALIB.exists():
+        raise SystemExit("no arm/table_to_robot.json - run: scripted.cmd calibrate")
+    table = json.loads(TABLE_CALIB.read_text())
+    cal, kin = load_robot_calibration(), Kinematics()
+    bus = open_bus(port)
+    try:
+        bus.disable_torque()
+        input(f"The arm is limp. Rest the gripper tip on the centre of {name!r} on the table, then press Enter: ")
+        tip = kin.fk(to_deg(read(bus), cal))[:3, 3]
+    finally:
+        bus.disconnect(disable_torque=True)
+    x, y = (round(float(v)) for v in table_from_robot(table, tip[:2]))
+    objects = json.loads(OBJECTS.read_text())
+    if name == "drop":
+        objects["drop"] = {"x": x, "y": y}
+    else:
+        obj = next((o for o in objects["objects"] if o["name"] == name), None)
+        if obj is None:
+            obj = {"name": name, "cls": name}
+            objects["objects"].append(obj)
+        obj.update(x=x, y=y)
+    OBJECTS.write_text(json.dumps(objects, indent=2))
+    print(f"{name} saved at table ({x}, {y}) mm")
+
+
 def pick(name: str, port: str = "COM4") -> bool:
     """Full scripted pick: hover, descend, grasp, then drop or hand over. Returns True if something was held."""
     hover(name, port)
@@ -314,12 +355,16 @@ def pick(name: str, port: str = "COM4") -> bool:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=["calibrate", "pick"])
-    parser.add_argument("name", nargs="?", help="Object name for pick")
+    parser.add_argument("action", choices=["calibrate", "teach", "pick"])
+    parser.add_argument("name", nargs="?", help="Object name for teach / pick (teach drop = the drop spot)")
     parser.add_argument("--port", default="COM4")
     args = parser.parse_args()
     if args.action == "calibrate":
         calibrate(args.port)
+    elif args.action == "teach":
+        if not args.name:
+            raise SystemExit("usage: scripted.cmd teach <object name | drop>")
+        teach(args.name, args.port)
     else:
         if not args.name:
             raise SystemExit("usage: scripted.cmd pick <object name>")
