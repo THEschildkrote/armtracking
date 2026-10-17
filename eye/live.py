@@ -107,6 +107,7 @@ def main() -> None:
     show_mask = False
     spread_until, spread_points, spread_total = None, [], 0
     message, message_until = "", 0.0
+    sharp, best_sharp = 0.0, 0.0  # focus aid: Laplacian variance inside the eye box (higher = sharper)
     print(__doc__.split("Keys:")[1])
 
     while True:
@@ -168,8 +169,15 @@ def main() -> None:
             label, colour = "TRACKING", (0, 255, 0)
         else:
             label, colour = f"UNTRUSTED ({state.reason})", (0, 200, 255)  # small/flat = lid or extreme angle
+        g = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if frame.ndim == 3 else frame
+        if config.roi:
+            rx, ry, rw, rh = config.roi
+            g = g[ry : ry + rh, rx : rx + rw]
+        sharp = 0.8 * sharp + 0.2 * float(cv2.Laplacian(g, cv2.CV_64F).var())  # smoothed so it doesn't flicker
+        best_sharp = max(best_sharp, sharp)
         lines = [
             f"{label}  {fps:4.1f} fps  contrast {config.min_contrast}",
+            f"focus {sharp:5.0f}   best {best_sharp:5.0f}   (turn the lens for the highest number)",
             f"x {sample.x:6.1f}  y {sample.y:6.1f}  open {sample.openness:4.2f}" if sample.valid else "x  --    y  --",
         ]
         if spread_until is not None:

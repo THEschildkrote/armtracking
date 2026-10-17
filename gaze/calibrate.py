@@ -237,6 +237,11 @@ def main() -> None:
     i, phase, phase_t = 0, "intro", time.monotonic()
     eye_buf, scene_buf, retries = [], [], 0
     result_lines: list[str] = []
+    from collections import Counter
+
+    eye_why: Counter = Counter()  # why eye frames weren't usable during this point (printed on failure)
+    logs = Path(__file__).resolve().parents[1] / "logs"
+    logs.mkdir(exist_ok=True)
 
     try:
         while True:
@@ -248,6 +253,10 @@ def main() -> None:
                 eye_ok = state.usable
                 if phase == "collect" and state.usable:
                     eye_buf.append((state.sample.x, state.sample.y))
+                elif phase == "collect":
+                    eye_why[state.reason or "?"] += 1
+                if phase == "collect" and len(eye_buf) + sum(eye_why.values()) == 20:
+                    cv2.imwrite(str(logs / f"calib_point{i + 1}_eye.jpg"), frame)
             frame, _, count = scene_cam.latest()
             if frame is not None and count != scene_count:
                 scene_count = count
@@ -260,6 +269,7 @@ def main() -> None:
             # Phase changes
             if phase == "settle" and now - phase_t >= SETTLE_S:
                 phase, phase_t, eye_buf, scene_buf = "collect", now, [], []
+                eye_why = Counter()
             elif phase == "collect" and now - phase_t >= COLLECT_S:
                 if len(eye_buf) >= MIN_EYE and len(scene_buf) >= MIN_SCENE:
                     pupil_pts.append(np.median(np.array(eye_buf), axis=0))
@@ -268,7 +278,8 @@ def main() -> None:
                           f"({len(eye_buf)} eye / {len(scene_buf)} front samples)")
                     i, retries = i + 1, 0
                 else:
-                    print(f"point {i + 1}: not enough data ({len(eye_buf)} eye, {len(scene_buf)} front) - retrying")
+                    print(f"point {i + 1}: not enough data ({len(eye_buf)} eye, {len(scene_buf)} front) - retrying"
+                          f"   eye rejected because: {dict(eye_why.most_common(3))}")
                     retries += 1
                     if retries > 2:
                         print(f"point {i + 1}: skipped")
