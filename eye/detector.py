@@ -54,6 +54,9 @@ class DetectorConfig:
     max_jump: float = 40.0  # px; when tracking, ignore candidates further than this
     area_window: int = 90  # samples in the open-eye area median (~3 s at 30 Hz)
     forget_after: int = 10  # missed frames before the last pupil position stops steering the choice
+    # > 0: look for spots dark *relative to their surroundings* (subtract a blur this wide, px). A big soft
+    # shadow (lashes, upper lid) right next to the pupil then fades out instead of merging with it.
+    local_sigma: float = 0.0
 
 
 class PupilDetector:
@@ -67,6 +70,9 @@ class PupilDetector:
     def process(self, frame: np.ndarray, t: float) -> PupilSample:
         c = self.config
         gray = frame if frame.ndim == 2 else cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        if c.local_sigma > 0:
+            g = gray.astype(np.float32)
+            gray = np.clip(g - cv2.GaussianBlur(g, (0, 0), c.local_sigma) + 128, 0, 255).astype(np.uint8)
         ox, oy = 0, 0
         if c.roi:
             ox, oy, w, h = c.roi

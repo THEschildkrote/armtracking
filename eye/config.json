@@ -15,5 +15,6 @@
   "border": 4,
   "max_jump": 40.0,
   "area_window": 90,
-  "forget_after": 10
+  "forget_after": 10,
+  "local_sigma": 12.0
 }
