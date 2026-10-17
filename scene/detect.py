@@ -93,33 +93,49 @@ def board_region(config: TableConfig) -> np.ndarray:
 
 def find_blobs(frame: np.ndarray, H: np.ndarray, config: TableConfig) -> list[Blob]:
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    mask = ((hsv[..., 1] >= SAT_MIN) & (hsv[..., 2] >= VAL_MIN)).astype(np.uint8) * 255
-    region = np.zeros_like(mask)
+    hue, sat, val = hsv[..., 0], hsv[..., 1], hsv[..., 2]
+    region = np.zeros(frame.shape[:2], np.uint8)
     poly = np.clip(table_to_pixels(H, board_region(config)), -4000, 4000)  # a corner past the horizon flies off
     cv2.fillPoly(region, [poly.astype(np.int32)], 255)
-    mask &= region
+    h = config.marker_size_mm / 2 + 12  # the markers' black/white edges pick up colour fringes: skip them
+    for cx, cy in config.markers.values():
+        sq = np.array([[cx - h, cy - h], [cx + h, cy - h], [cx + h, cy + h], [cx - h, cy + h]], np.float32)
+        cv2.fillPoly(region, [table_to_pixels(H, sq).astype(np.int32)], 0)
+    # the board's own colour under this light (it reads pinkish/yellowish, and shadows keep that hue)
+    bright = (region > 0) & (val > 120)
+    if bright.sum() < 500:
+        return []
+    board_hue = float(np.median(hue[bright]))
+    board_sat = float(np.median(sat[bright]))
+    hue_gap = np.abs(hue.astype(np.int16) - int(board_hue)) % 180
+    hue_gap = np.minimum(hue_gap, 180 - hue_gap)
+    coloured = (sat >= max(SAT_MIN, board_sat + 45)) & (val >= VAL_MIN)
+    board_like = (hue_gap <= 15) & (sat < board_sat + 90)  # a shadow or a tinted patch of board
+    mask = (coloured & ~board_like & (region > 0)).astype(np.uint8) * 255
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
-    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))
+    # pieces of one object (wrapper colours, print) touch or nearly so: group them, measure the union
+    groups = cv2.dilate(mask, np.ones((11, 11), np.uint8))
     blobs = []
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    contours, _ = cv2.findContours(groups, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     for c in contours:
-        if cv2.contourArea(c) < 40:
-            continue
-        pts = pixels_to_table(H, c.reshape(-1, 2).astype(np.float32))
-        area = cv2.contourArea(pts)
-        if area < MIN_AREA_MM2:
-            continue
-        (cx, cy), (w, h), ang = cv2.minAreaRect(pts)
-        if w < h:
-            w, h, ang = h, w, ang + 90
         one = np.zeros_like(mask)
         cv2.drawContours(one, [c], -1, 255, -1)
-        hues = hsv[..., 0][one > 0].astype(np.float32) * (2 * math.pi / 180)
-        hue = (math.degrees(math.atan2(np.sin(hues).mean(), np.cos(hues).mean())) / 2) % 180
-        m = cv2.moments(c)
-        blobs.append(Blob((m["m10"] / m["m00"], m["m01"] / m["m00"]), float(cx), float(cy), wrap180(ang),
-                          float(w), float(h), hue, float(hsv[..., 1][one > 0].mean()),
-                          cv2.boxPoints(((cx, cy), (w, h), ang))))
+        one &= mask
+        pix = cv2.findNonZero(one)
+        if pix is None or len(pix) < 40:
+            continue
+        pix = pix.reshape(-1, 2).astype(np.float32)
+        pts = pixels_to_table(H, pix[:: max(1, len(pix) // 2000)])
+        (cx, cy), (w, hh), ang = cv2.minAreaRect(pts)
+        if w * hh < MIN_AREA_MM2:
+            continue
+        if w < hh:
+            w, hh, ang = hh, w, ang + 90
+        hues = hue[one > 0].astype(np.float32) * (2 * math.pi / 180)
+        mean_hue = (math.degrees(math.atan2(np.sin(hues).mean(), np.cos(hues).mean())) / 2) % 180
+        u, v = pix.mean(axis=0)
+        blobs.append(Blob((float(u), float(v)), float(cx), float(cy), wrap180(ang), float(w), float(hh), mean_hue,
+                          float(sat[one > 0].mean()), cv2.boxPoints(((cx, cy), (w, hh), ang))))
     return blobs
 
 
