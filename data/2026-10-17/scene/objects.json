@@ -1,0 +1,27 @@
+{
+  "objects": [
+    {
+      "name": "granola",
+      "cls": "granola_bar",
+      "x": 89,
+      "y": 91,
+      "yaw": -0.6,
+      "grasp_mm": 15,
+      "axis": -84.1,
+      "size_mm": [
+        149,
+        71
+      ],
+      "seen_s_ago": 0.1,
+      "reachable": true
+    }
+  ],
+  "drop": {
+    "x": 312,
+    "y": 344
+  },
+  "live": {
+    "t": 1792259052.7,
+    "camera": "side"
+  }
+}

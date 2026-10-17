@@ -1,0 +1,12 @@
+{
+  "front": {
+    "usb_id": "VID_32E6&PID_9005",
+    "index": 2,
+    "rotation": 0
+  },
+  "wrist": {
+    "usb_id": "VID_32E6&PID_9221",
+    "index": 1,
+    "rotation": 0
+  }
+}

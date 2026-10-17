@@ -3,20 +3,25 @@
     {
       "name": "granola",
       "cls": "granola_bar",
-      "x": 151,
-      "y": 116,
-      "yaw": 170.8,
-      "grasp_mm": 19
-    },
-    {
-      "name": "pipe_cleaner",
-      "cls": "pipe_cleaner",
-      "x": 458,
-      "y": 153
+      "x": 91,
+      "y": 91,
+      "yaw": -2.3,
+      "grasp_mm": 15,
+      "axis": -85.8,
+      "size_mm": [
+        148,
+        73
+      ],
+      "seen_s_ago": 0.2,
+      "reachable": true
     }
   ],
   "drop": {
     "x": 312,
     "y": 344
+  },
+  "live": {
+    "t": 1792259205.1,
+    "camera": "side"
   }
 }
