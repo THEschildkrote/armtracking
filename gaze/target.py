@@ -68,7 +68,7 @@ def _phone_like(screen: np.ndarray, disc: np.ndarray) -> bool:
     return 0.08 <= cv2.contourArea(disc) / float((screen > 0).sum()) <= 0.42
 
 
-def find_target(frame: np.ndarray, min_contrast: int = 18, phone: bool = False) -> tuple[float, float] | None:
+def find_target(frame: np.ndarray, min_contrast: int = 18, phone: bool = False, min_share: float = 0.008) -> tuple[float, float] | None:
     """Centre (u, v) of the dark disc on a screen, in frame pixels, or None.
     phone=True (table calibration) accepts only the phone target's layout - see _phone_like."""
     gray = frame if frame.ndim == 2 else cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -90,7 +90,7 @@ def find_target(frame: np.ndarray, min_contrast: int = 18, phone: bool = False) 
             area = cv2.contourArea(c)
             perimeter = cv2.arcLength(c, True)
             roundness = 4 * np.pi * area / (perimeter * perimeter) if perimeter else 0
-            if area <= best_area or roundness <= 0.4 or not 0.03 <= area / screen_area <= 0.45:
+            if area <= best_area or roundness <= 0.4 or not min_share <= area / screen_area <= 0.45:
                 continue
             blob = np.zeros_like(gray)
             cv2.drawContours(blob, [c], -1, 255, -1)
