@@ -1,0 +1,2 @@
+chalkpy
+matplotlib  # optional: charts in evals/replay.py
