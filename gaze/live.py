@@ -10,6 +10,7 @@ Usage (from the armproject folder):
     gaze.cmd                                   # eye camera 3, front camera Board B
     gaze.cmd --eye 3 --scene http://172.20.10.2/
     gaze.cmd --arm                             # a long-blink selection makes the follower pick it
+    gaze.cmd --blink-action wave               # test: any long blink makes the arm wave
 
 Keys: q/Esc quit.
 """
@@ -48,9 +49,12 @@ def main() -> None:
     parser.add_argument("--scene", default="http://172.20.10.2/")
     parser.add_argument("--scale", type=float, default=0, help="Window zoom (default: fit about 720 px)")
     parser.add_argument("--arm", action="store_true", help="Send selections to the follower arm (arm/policies.json)")
+    parser.add_argument("--blink-action", metavar="NAME",
+                        help="Test mode: any long blink runs this arm/policies.json entry (e.g. wave) - "
+                             "no table markers or object selection needed")
     args = parser.parse_args()
     runner = None
-    if args.arm:
+    if args.arm or args.blink_action:
         from arm.runner import ArmRunner
 
         runner = ArmRunner()
@@ -103,6 +107,11 @@ def main() -> None:
                         banner = (ev, now + 1.5)
                 for blink in blinks:
                     if blink.kind not in ("long", "double"):
+                        continue
+                    if args.blink_action:  # test mode: the blink itself is the command
+                        if blink.kind == "long":
+                            started = runner.request(args.blink_action)
+                            print(f"LONG BLINK -> {args.blink_action}: {'started' if started else 'arm busy, ignored'}", flush=True)
                         continue
                     bx, by = math.nan, math.nan
                     if blink.gaze_before:

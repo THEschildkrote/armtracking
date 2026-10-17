@@ -4,7 +4,8 @@ For each object name, arm/policies.json says what to run:
     {
       "red":  {"type": "policy", "path": "outputs/train/pick_red/checkpoints/last/pretrained_model",
                "task": "Pick up the red block and put it in the bowl", "duration": 20},
-      "blue": {"type": "scripted"}
+      "blue": {"type": "scripted"},
+      "wave": {"type": "wave", "waves": 3}       # test action: no table or training needed
     }
 Sequence for one selection, in a background thread so the gaze view keeps running:
     home (hold)  ->  policy rollout or scripted pick  ->  home (relax)  ->  idle
@@ -24,7 +25,7 @@ import threading
 from pathlib import Path
 
 from arm import cameras
-from arm.motion import go_home
+from arm.motion import glide, glide_time, go_home, hold, open_bus
 
 POLICIES_PATH = Path(__file__).with_name("policies.json")
 ENV = Path(os.environ["USERPROFILE"]) / "miniconda3" / "envs" / "lerobot"
@@ -65,6 +66,8 @@ class ArmRunner:
                 from arm.scripted import pick  # needs ikpy + the SO-101 model; only loaded when used
 
                 pick(name, self.port)
+            elif spec["type"] == "wave":
+                self._wave(spec.get("waves", 3))
             else:
                 raise RuntimeError(f"unknown type {spec['type']!r} for {name}")
             self.status = "returning"
@@ -73,6 +76,20 @@ class ArmRunner:
         except Exception as e:  # keep the gaze view alive; show what went wrong
             self.status = f"error: {e}"
             print(f"ARM ERROR ({name}): {e}", file=sys.stderr, flush=True)
+
+    def _wave(self, waves: int) -> None:
+        """Test action needing no table or training: lift to the calibration middle pose and wave."""
+        from wave_arm import MIDDLE, READY_JOINTS, clamp, load_limits, wave
+
+        limits, _ = load_limits("my_follower")
+        bus = open_bus(self.port)
+        try:
+            here = hold(bus)
+            ready = clamp({**here, **{j: MIDDLE for j in READY_JOINTS}}, limits)
+            glide(bus, here, ready, glide_time(here, ready))
+            wave(bus, ready, waves, 350, limits)
+        finally:
+            bus.disconnect(disable_torque=False)  # keep holding; _run glides home next
 
     def _rollout(self, spec: dict) -> None:
         policy = (ROOT / spec["path"]).resolve()

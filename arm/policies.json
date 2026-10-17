@@ -10,5 +10,9 @@
     "path": "outputs/train/pick_blue/checkpoints/last/pretrained_model",
     "task": "Pick up the blue block and put it in the bowl",
     "duration": 20
+  },
+  "wave": {
+    "type": "wave",
+    "waves": 3
   }
 }

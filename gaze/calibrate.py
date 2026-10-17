@@ -6,12 +6,19 @@ front camera on the glasses finds the disc (gaze/target.py - ArUco markers are
 too small to decode at its 240x240), the eye camera finds the pupil, and the
 pairs are fitted (gaze/mapper.py). No printed targets needed.
 
+Table mode (--mode table) calibrates where the demo happens: a phone showing
+gaze/phone_target.png (black disc, red dot) lies on the board; you look at its
+red dot and press SPACE, then move the phone to the next spot. Spread ~9 spots
+over the whole work area. The laptop window stays dark so it isn't mistaken for
+the phone.
+
 Usage (from the armproject folder, glasses on, laptop on the hotspot):
-    calib.cmd                                   # eye camera 3, front camera Board B
-    calib.cmd --eye 3 --scene http://172.20.10.2/
+    calib.cmd                                   # screen mode: eye camera 3, front camera Board B
+    calib.cmd --mode table                      # phone on the table
     calib.cmd --scene 1                         # a USB camera as the front camera
 
-Keys: SPACE start / continue, r redo the last point, Esc quit.
+Keys (screen): SPACE start / continue, r redo the last point, Esc quit.
+Keys (table):  SPACE record this spot, r remove the last spot, f finish and fit (>= 6 spots), Esc quit.
 Result: gaze/calib.json, plus the leave-one-out error in front-camera pixels.
 """
 
@@ -50,12 +57,109 @@ def screen_size() -> tuple[int, int]:
 
 
 
+def collect_point(eye_cam, scene_cam, detector, validity, seconds: float):
+    """Gather usable pupil positions and target detections for `seconds`; returns their medians or None."""
+    eye_buf, scene_buf = [], []
+    eye_count = scene_count = 0
+    end = time.monotonic() + seconds
+    while time.monotonic() < end:
+        frame, _, count = eye_cam.latest()
+        if frame is not None and count != eye_count:
+            eye_count = count
+            state, _ = validity.update(detector.process(frame, time.monotonic()))
+            if state.usable:
+                eye_buf.append((state.sample.x, state.sample.y))
+        frame, _, count = scene_cam.latest()
+        if frame is not None and count != scene_count:
+            scene_count = count
+            centre = find_target(frame)
+            if centre is not None:
+                scene_buf.append(centre)
+        cv2.waitKey(1)
+    if len(eye_buf) < MIN_EYE or len(scene_buf) < MIN_SCENE:
+        return None, len(eye_buf), len(scene_buf)
+    return (np.median(np.array(eye_buf), axis=0), np.median(np.array(scene_buf), axis=0)), len(eye_buf), len(scene_buf)
+
+
+def run_table(args, detector, validity, eye_cam, scene_cam) -> None:
+    """Phone-on-the-table calibration: user places the phone, looks at its dot, presses SPACE."""
+    window = "table calibration"
+    cv2.namedWindow(window, cv2.WINDOW_NORMAL)
+    cv2.resizeWindow(window, 760, 860)
+    pupil_pts, scene_pts = [], []
+    message, eye_count = "Put the phone on the first spot, look at its red dot, press SPACE.", 0
+    eye_ok = False
+    while True:
+        frame, _, count = eye_cam.latest()
+        if frame is not None and count != eye_count:
+            eye_count = count
+            state, _ = validity.update(detector.process(frame, time.monotonic()))
+            eye_ok = state.usable
+        front, _, _ = scene_cam.latest()
+        canvas = np.zeros((860, 760, 3), np.uint8)  # dark, so the laptop screen never looks like the phone
+        if front is not None:
+            view = front if front.ndim == 3 else cv2.cvtColor(front, cv2.COLOR_GRAY2BGR)
+            s = 720 / max(view.shape[:2])
+            view = cv2.resize(view, None, fx=s, fy=s)
+            for u, v in scene_pts:  # spots recorded so far
+                cv2.circle(view, (int(u * s), int(v * s)), 6, (0, 200, 255), 2)
+            centre = find_target(front)
+            if centre:
+                cv2.circle(view, (int(centre[0] * s), int(centre[1] * s)), 14, (0, 255, 0), 2)
+            canvas[20 : 20 + view.shape[0], 20 : 20 + view.shape[1]] = view
+        else:
+            centre = None
+        status = f"eye: {'OK' if eye_ok else 'NO PUPIL'}   phone target: {'seen' if centre else 'not seen'}   spots: {len(pupil_pts)}"
+        cv2.putText(canvas, status, (20, 770), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0) if eye_ok and centre else (0, 0, 255), 2)
+        cv2.putText(canvas, message, (20, 805), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (230, 230, 230), 1)
+        cv2.putText(canvas, "SPACE record   r remove last   f finish & fit   Esc quit", (20, 840),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (160, 160, 160), 1)
+        cv2.imshow(window, canvas)
+        key = cv2.waitKey(1) & 0xFF
+        if key == 27:
+            return
+        if key == ord(" "):
+            time.sleep(0.4)  # let the eyes settle on the dot
+            result, n_eye, n_front = collect_point(eye_cam, scene_cam, detector, validity, COLLECT_S)
+            if result is None:
+                message = f"Not enough data ({n_eye} eye, {n_front} phone samples) - hold still and try again."
+            else:
+                pupil_pts.append(result[0])
+                scene_pts.append(result[1])
+                message = f"Spot {len(pupil_pts)} recorded. Move the phone somewhere new (cover the whole area)."
+                print(f"spot {len(pupil_pts)}: pupil {result[0].round(1)}  front {result[1].round(1)}  ({n_eye} eye / {n_front} phone)")
+        elif key == ord("r") and pupil_pts:
+            pupil_pts.pop(), scene_pts.pop()
+            message = f"Removed the last spot ({len(pupil_pts)} left)."
+        elif key == ord("f"):
+            if len(pupil_pts) < 6:
+                message = f"Need at least 6 spots ({len(pupil_pts)} so far)."
+                continue
+            calib = fit(np.array(pupil_pts), np.array(scene_pts), (front.shape[1], front.shape[0]))
+            calib.save()
+            message = (f"Saved: {len(pupil_pts)} spots, {'quadratic' if calib.quadratic else 'affine'} fit, "
+                       f"error RMS {calib.loo_rms_px:.1f}px worst {calib.loo_worst_px:.1f}px. Esc to close.")
+            print(message)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--eye", default="3", help="Eye camera number")
     parser.add_argument("--scene", default="http://172.20.10.2/", help="Front camera URL or number")
+    parser.add_argument("--mode", choices=["screen", "table"], default="screen")
     parser.add_argument("--marker", type=float, default=0.22, help="Target disc size as a fraction of screen height")
     args = parser.parse_args()
+
+    if args.mode == "table":
+        detector, validity = PupilDetector(load_config()), EyeValidity()
+        eye_cam, scene_cam = CameraThread(args.eye, "eye"), CameraThread(args.scene, "front")
+        try:
+            run_table(args, detector, validity, eye_cam, scene_cam)
+        finally:
+            eye_cam.close()
+            scene_cam.close()
+            cv2.destroyAllWindows()
+        return
 
     sw, sh = screen_size()
     msize = int(sh * args.marker)
