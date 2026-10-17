@@ -64,7 +64,8 @@ class SceneSample:
 
 
 class TableTracker:
-    def __init__(self, config: TableConfig | None = None, static: bool = False, hold_path: Path | None = None):
+    def __init__(self, config: TableConfig | None = None, static: bool = False, hold_path: Path | None = None,
+                 memory_s: float = 0.0):
         """static=True for a fixed camera (the side camera): once all markers have been read in one
         frame, that fit is held while whatever markers are visible still agree with it, so small far
         markers flickering in and out don't matter. A moving (head) camera must refit every frame.
@@ -72,6 +73,11 @@ class TableTracker:
         self.config = config or TableConfig()
         self.static = static
         self.hold_path = hold_path
+        # memory_s > 0 (head camera): a marker stays usable this long after it was last decoded. Board B decodes
+        # the small markers only now and then, one at a time; while the head is near-still, markers seen a few
+        # frames apart combine into a fit.
+        self.memory_s = memory_s
+        self._recent: dict[int, tuple[float, np.ndarray]] = {}
         self._held: np.ndarray | None = None
         self._saved_at = 0.0
         if static and hold_path and hold_path.exists():
@@ -100,6 +106,12 @@ class TableTracker:
             bigger = self._detect(gray, 2)
             if len(bigger) > len(seen):
                 seen = bigger
+
+        if self.memory_s > 0:
+            for mid, corners in seen.items():
+                self._recent[mid] = (t, corners)
+            self._recent = {m: v for m, v in self._recent.items() if t - v[0] <= self.memory_s}
+            seen = {m: v[1] for m, v in self._recent.items()}
 
         if len(seen) < self.config.min_markers:
             # One marker can't tell a held fit from a slightly bumped camera (it misses small turns),

@@ -117,7 +117,7 @@ def main() -> None:
     calib = GazeCalibration.load()
     detector = PupilDetector(load_config())
     validity = EyeValidity()
-    table = TableTracker(TableConfig.load())
+    table = TableTracker(TableConfig.load(), memory_s=0.6)  # head camera: markers decode only now and then
     fixations = FixationDetector()
     objects = load_objects()
     selector = Selector(objects)
