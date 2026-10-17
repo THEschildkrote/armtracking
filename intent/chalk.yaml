@@ -1,0 +1,4 @@
+project: look-intent
+environments:
+  default:
+    requirements: requirements-chalk.txt
