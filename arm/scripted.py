@@ -325,6 +325,22 @@ def _setup(name: str, locked: bool = False):
     return obj, objects.get("drop"), table, load_robot_calibration(), Kinematics()  # drop None = hand over
 
 
+SAG_MAX_TICKS = 100  # most the goal is pushed past the target to cancel sag (~9 deg)
+
+
+def settle(bus, target: dict[str, int], rounds: int = 3) -> None:
+    """Under the arm's weight (worse when the servos are warm) a joint stops short of its goal - the
+    elbow by ~5 deg, 1-2 cm at the gripper. Push each arm joint's goal by what it is still off, a few
+    times, so it actually arrives. The gripper is left alone (squeezing an object is meant to stop short)."""
+    cmd = {j: target[j] for j in ARM_JOINTS}
+    for _ in range(rounds):
+        time.sleep(0.15)
+        here = read(bus)
+        for j in ARM_JOINTS:
+            cmd[j] = int(min(max(cmd[j] + (target[j] - here[j]), target[j] - SAG_MAX_TICKS), target[j] + SAG_MAX_TICKS))
+        bus.sync_write("Goal_Position", cmd, normalize=False)
+
+
 def _run(bus, kin, cal, waypoints, on_waypoint=None) -> dict[str, float]:
     """Solve every waypoint first (nothing moves if any is unreachable), then glide through them.
 
@@ -344,6 +360,7 @@ def _run(bus, kin, cal, waypoints, on_waypoint=None) -> dict[str, float]:
         target = {**to_raw(deg, cal), "gripper": gripper_raw(grip, cal)}
         start = read(bus)
         glide(bus, start, target, glide_time(start, target))
+        settle(bus, target)
         time.sleep(0.25 if grip == GRIPPER_CLOSED else 0.1)
     return seed
 
@@ -506,9 +523,15 @@ def teach(name: str, port: str = "COM4") -> None:
 
 
 def pick(name: str, port: str = "COM4") -> bool:
-    """Full scripted pick: hover, descend, grasp, then drop or hand over. Returns True if something was held."""
-    hover(name, port)
-    return pick_from_hover(name, port)
+    """Full scripted pick: hover, descend, grasp, drop or hand over, then park at home and let the servos
+    rest (holding the arm up between picks heats them, and hot servos sag). Returns True if something was held."""
+    from arm.motion import go_home
+
+    try:
+        hover(name, port)
+        return pick_from_hover(name, port)
+    finally:
+        go_home(port, relax=True)
 
 
 def main() -> None:
