@@ -49,9 +49,24 @@ def load_config() -> DetectorConfig:
     return DetectorConfig()
 
 
+EYE_CAMERA_NAME = "openiristracker"  # Board A's USB camera name; its number changes whenever USB devices come and go
+
+
 def open_camera(source: str) -> cv2.VideoCapture:
+    if source == "auto":
+        from arm import cameras as armcams
+
+        devices = armcams.video_devices() or armcams.video_devices()
+        index = next((i for i, (name, _) in enumerate(devices) if name == EYE_CAMERA_NAME), None)
+        if index is None:
+            raise SystemExit("Eye camera (openiristracker) not plugged in - replug Board A and try again.")
+        print(f"Eye camera is camera {index}", flush=True)
+        source = str(index)
     if source.isdigit():
-        return cv2.VideoCapture(int(source), cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(int(source), cv2.CAP_DSHOW)
+        if not cap.isOpened():  # DirectShow sometimes refuses a board after a replug; Media Foundation may not
+            cap = cv2.VideoCapture(int(source), cv2.CAP_MSMF)
+        return cap
     return cv2.VideoCapture(source)
 
 
@@ -69,7 +84,7 @@ def spread_report(points: list[tuple[float, float]], total: int) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--camera", default="1", help="Camera number, or a stream URL")
+    parser.add_argument("--camera", default="auto", help="auto (find Board A by name), a camera number, or a stream URL")
     parser.add_argument("--scale", type=int, default=3, help="Window zoom")
     parser.add_argument("--csv", help="Log every sample to this CSV file")
     args = parser.parse_args()
