@@ -2,17 +2,46 @@
   "granola_bar": {
     "name": "granola",
     "prompt": "granola bar",
-    "grasp_mm": 22,
+    "grasp_mm": 15,
     "taught": {
-      "x": 316,
-      "y": 152,
-      "yaw": 102.1,
-      "t": 1792256513.5839002
+      "x": 80,
+      "y": 120,
+      "yaw": -176.3,
+      "t": 1792257597.9992216
     },
     "hue": [
-      76,
+      83.5,
       0
-    ]
+    ],
+    "pos_offset": [
+      -7.1,
+      -1.8
+    ],
+    "grip_offset": 83.5,
+    "learned_t": 1792257602.8967366,
+    "sig": {
+      "hist": [
+        0.2837,
+        0.077,
+        0.0348,
+        0.0134,
+        0.0074,
+        0.0015,
+        0.0215,
+        0.2006,
+        0.2431,
+        0.0809,
+        0.0057,
+        0.0001,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0303
+      ],
+      "area_mm2": 9727
+    }
   },
   "pipe_cleaner": {
     "name": "pipe_cleaner",
@@ -21,12 +50,14 @@
     "hue": [
       6,
       0
-    ]
+    ],
+    "area_mm2": 4000
   },
   "water_bottle": {
     "name": "water_bottle",
     "prompt": "water bottle",
-    "grasp_mm": 30
+    "grasp_mm": 30,
+    "area_mm2": 13000
   },
   "thai_inhaler": {
     "name": "inhaler",
@@ -35,6 +66,7 @@
     "hue": [
       18,
       0
-    ]
+    ],
+    "area_mm2": 5000
   }
 }

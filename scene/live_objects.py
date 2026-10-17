@@ -161,7 +161,7 @@ def main() -> None:
                 names = namer(frame)
                 tracker.label(names, prompt_to_cls, now)
                 last_name = now
-            tracker.colour_fallback(classes)
+            tracker.identify(classes, now)
             learned = tracker.learn(classes, now)
             if learned:
                 save_classes(classes)

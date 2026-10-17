@@ -83,6 +83,41 @@ class Blob:
     hue: float  # OpenCV hue 0-180 (circular mean)
     sat: float
     rect_mm: np.ndarray  # 4x2 box corners, table mm
+    hist: np.ndarray | None = None  # colour mix: HUE_BINS-bin hue histogram, weighted by saturation, sums to 1
+
+
+HUE_BINS = 18  # 10 OpenCV hue units each
+
+
+def hue_hist(hues: np.ndarray, sats: np.ndarray) -> np.ndarray:
+    h = np.bincount((hues.astype(np.int64) % 180) * HUE_BINS // 180, weights=sats.astype(np.float64), minlength=HUE_BINS)
+    return h / max(h.sum(), 1e-9)
+
+
+def hist_of(peaks: list[tuple[float, float]]) -> np.ndarray:
+    """A colour mix from (hue, share) pairs - for classes not taught yet."""
+    h = np.zeros(HUE_BINS)
+    centres = (np.arange(HUE_BINS) + 0.5) * 180 / HUE_BINS
+    for hue, share in peaks:
+        d = np.minimum(np.abs(centres - hue), 180 - np.abs(centres - hue))
+        g = np.exp(-0.5 * (d / 8.0) ** 2)
+        h += share * g / g.sum()
+    return h / h.sum()
+
+
+def similarity(hist: np.ndarray, area: float, sig: dict) -> float:
+    """How well a blob matches a class signature: shared colour mix, minus a size mismatch penalty."""
+    colour = float(np.minimum(hist, np.asarray(sig["hist"])).sum())
+    size = abs(math.log(max(area, 1.0) / sig["area_mm2"]))
+    return colour - 0.6 * size
+
+
+def class_signature(info: dict) -> dict | None:
+    if info.get("sig"):
+        return info["sig"]
+    if info.get("hue") and info.get("area_mm2"):
+        return {"hist": hist_of([(info["hue"][0], 1.0)]).tolist(), "area_mm2": info["area_mm2"]}
+    return None
 
 
 def main_hue(hues: np.ndarray) -> float:
@@ -176,7 +211,8 @@ def find_blobs(frame: np.ndarray, H: np.ndarray, config: TableConfig) -> list[Bl
         mean_hue = main_hue(hue[one > 0])
         u, v = pix.mean(axis=0)
         blobs.append(Blob((float(u), float(v)), float(cx), float(cy), wrap180(ang), float(w), float(hh), mean_hue,
-                          float(sat[one > 0].mean()), cv2.boxPoints(((cx, cy), (w, hh), ang))))
+                          float(sat[one > 0].mean()), cv2.boxPoints(((cx, cy), (w, hh), ang)),
+                          hue_hist(hue[one > 0], sat[one > 0])))
     return blobs
 
 
@@ -196,6 +232,9 @@ class Track:
     label_conf: float = 0.0  # best name confidence so far (decays, so a better label can take over)
     taught: bool = False  # named by a teach: never renamed by YOLO or colour
     hits: int = 1
+    hist: np.ndarray | None = None  # smoothed colour mix
+    votes: dict = field(default_factory=dict)  # class -> smoothed match score
+    yolo: dict = field(default_factory=dict)  # class -> recent YOLO confidence
 
 
 def _inside_fraction(small: Track, big: Track) -> float:
@@ -233,9 +272,12 @@ class ObjectTracker:
                 d = ((b.hue - best.hue + 90) % 180) - 90  # circular
                 best.hue = (best.hue + a * d) % 180
                 best.px, best.rect_mm, best.last_seen = b.px, b.rect_mm, now
+                if b.hist is not None:
+                    best.hist = b.hist if best.hist is None else (1 - a) * best.hist + a * b.hist
                 best.hits += 1
             else:
-                self.tracks.append(Track(self._next, b.x, b.y, b.axis, b.length, b.width, b.hue, b.px, b.rect_mm, now))
+                self.tracks.append(Track(self._next, b.x, b.y, b.axis, b.length, b.width, b.hue, b.px, b.rect_mm, now,
+                                         hist=b.hist))
                 self._next += 1
         self.tracks = [t for t in self.tracks if now - t.last_seen <= FORGET_S]
         keep: list[Track] = []
@@ -248,24 +290,26 @@ class ObjectTracker:
     def label(self, names: list[tuple[str, float, tuple]], prompt_to_cls: dict[str, str], now: float) -> None:
         """Give tracks the YOLO name whose box holds their centre (seen this frame only)."""
         for t in self.tracks:
-            t.label_conf *= 0.98
+            t.yolo = {c: v * 0.9 for c, v in t.yolo.items()}
         for prompt, conf, (x1, y1, x2, y2) in names:
-            inside = [t for t in self.tracks if t.last_seen == now and x1 <= t.px[0] <= x2 and y1 <= t.px[1] <= y2]
-            for t in inside:
-                if not t.taught and conf > t.label_conf:
-                    t.cls, t.label_conf = prompt_to_cls[prompt], conf
+            for t in self.tracks:
+                if t.last_seen == now and x1 <= t.px[0] <= x2 and y1 <= t.px[1] <= y2:
+                    c = prompt_to_cls[prompt]
+                    t.yolo[c] = max(t.yolo.get(c, 0.0), conf)
 
-    def colour_fallback(self, classes: dict, max_hue: float = 12.0) -> None:
-        """Tracks YOLO hasn't named well: the class whose learned colour is closest, if close enough."""
+    def identify(self, classes: dict, now: float) -> None:
+        """Name each track by colour mix and size (plus YOLO's hints), voted over frames so one odd frame -
+        a hand passing, a reflection - doesn't rename it. Taught tracks keep their name."""
+        sigs = {c: sig for c, info in classes.items() if (sig := class_signature(info))}
         for t in self.tracks:
-            if t.taught or t.label_conf >= 0.3:
+            if t.taught or t.hist is None or t.last_seen != now:
                 continue
-            near = [(c, _hue_dist(t.hue, info["hue"][0])) for c, info in classes.items() if info.get("hue")]
-            near = [cn for cn in near if cn[1] <= max_hue]
-            if near:
-                t.cls = min(near, key=lambda cn: cn[1])[0]
-            elif t.label_conf < 0.15:
-                t.cls = None  # its colour no longer matches anything and YOLO isn't sure either
+            area = t.length * t.width
+            for c in set(sigs) | set(t.yolo):
+                score = (similarity(t.hist, area, sigs[c]) if c in sigs else 0.0) + 0.5 * t.yolo.get(c, 0.0)
+                t.votes[c] = 0.85 * t.votes.get(c, score) + 0.15 * score
+            best = max(t.votes, key=t.votes.get, default=None)
+            t.cls = best if best is not None and t.votes[best] >= 0.2 else None
 
     def learn(self, classes: dict, now: float) -> list[str]:
         """Taught objects still at their taught spot: learn grip offset, position offset and colour."""
@@ -284,6 +328,8 @@ class ObjectTracker:
             info["pos_offset"] = [round(taught["x"] - t.x, 1), round(taught["y"] - t.y, 1)]
             info["grip_offset"] = round(wrap180(taught["yaw"] - t.axis), 1)
             info["hue"] = [round(t.hue, 1), 0]
+            if t.hist is not None:
+                info["sig"] = {"hist": [round(float(v), 4) for v in t.hist], "area_mm2": round(t.length * t.width)}
             info["learned_t"] = now
             info.pop("learn_now", None)
             t.cls, t.taught = cls, True
