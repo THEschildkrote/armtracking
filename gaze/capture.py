@@ -73,9 +73,64 @@ def open_camera(source: str | int) -> cv2.VideoCapture:
         if not cap.isOpened():  # DirectShow sometimes refuses a board after a replug
             cap = cv2.VideoCapture(int(source), cv2.CAP_MSMF)
         return cap
-    # Network stream: give up on a stalled read after 2 s (FFmpeg's default is 30 s), so we can reconnect.
-    return cv2.VideoCapture(source, cv2.CAP_FFMPEG,
-                            [cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 5000, cv2.CAP_PROP_READ_TIMEOUT_MSEC, 2000])
+    # Network stream (Board B's MJPEG over HTTP): our own reader. On a weak Wi-Fi link corrupt packets made
+    # FFmpeg abort the whole process (an assertion in libavformat); this one just skips a frame it can't decode.
+    return MjpegCapture(source)
+
+
+SOI, EOI = bytes([0xFF, 0xD8]), bytes([0xFF, 0xD9])  # JPEG start / end markers
+
+
+class MjpegCapture:
+    """Minimal cv2.VideoCapture stand-in for an HTTP multipart MJPEG stream: read() -> (ok, frame).
+
+    JPEGs are cut out of the byte stream between their start (FFD8) and end (FFD9) markers and decoded one by
+    one; a frame that won't decode is dropped. read() fails after `read_timeout` s without a good frame, so
+    CameraThread reconnects as before."""
+
+    def __init__(self, url: str, open_timeout: float = 5.0, read_timeout: float = 2.0):
+        import urllib.request
+
+        self.read_timeout = read_timeout
+        self._buf = b""
+        try:
+            self._resp = urllib.request.urlopen(url, timeout=open_timeout)
+        except Exception:
+            self._resp = None
+
+    def isOpened(self) -> bool:  # noqa: N802 - mirrors cv2.VideoCapture
+        return self._resp is not None
+
+    def read(self):
+        if self._resp is None:
+            return False, None
+        deadline = time.monotonic() + self.read_timeout
+        while time.monotonic() < deadline:
+            start = self._buf.find(SOI)
+            end = self._buf.find(EOI, start + 2) if start >= 0 else -1
+            if start >= 0 and end >= 0:
+                jpg, self._buf = self._buf[start:end + 2], self._buf[end + 2:]
+                frame = cv2.imdecode(np.frombuffer(jpg, np.uint8), cv2.IMREAD_COLOR)
+                if frame is not None:
+                    return True, frame
+                continue  # corrupt frame: skip it
+            if len(self._buf) > 2_000_000:  # never found an end marker: start over
+                self._buf = self._buf[-1000:]
+            try:
+                chunk = self._resp.read1(65536) if hasattr(self._resp, "read1") else self._resp.read(4096)
+            except Exception:
+                return False, None
+            if not chunk:
+                return False, None
+            self._buf += chunk
+        return False, None
+
+    def release(self) -> None:
+        try:
+            if self._resp is not None:
+                self._resp.close()
+        finally:
+            self._resp = None
 
 
 class CameraThread:
