@@ -1,9 +1,10 @@
 """Gaze calibration: pupil (eye camera) -> front-camera pixels, using on-screen targets.
 
-A full-screen window shows an ArUco marker (id 10) at 9 spots on the laptop
-screen. You keep your head still and look at the red dot in the middle of each
-one; the front camera on the glasses finds the marker, the eye camera finds the
-pupil, and the pairs are fitted (gaze/mapper.py). No printed targets needed.
+A full-screen window shows a black disc at 9 spots on the laptop screen. You
+keep your head still and look at the red dot in the middle of each one; the
+front camera on the glasses finds the disc (gaze/target.py - ArUco markers are
+too small to decode at its 240x240), the eye camera finds the pupil, and the
+pairs are fitted (gaze/mapper.py). No printed targets needed.
 
 Usage (from the armproject folder, glasses on, laptop on the hotspot):
     calib.cmd                                   # eye camera 3, front camera Board B
@@ -28,14 +29,14 @@ from eye.live import load_config
 from eye.validity import EyeValidity
 from gaze.capture import CameraThread
 from gaze.mapper import CALIB_PATH, fit
+from gaze.target import find_target, target_disc
 
-TARGET_ID = 10  # not one of the table markers (0-3)
 WINDOW = "gaze calibration"
 SETTLE_S = 1.0  # time to move the eyes to the new target
 COLLECT_S = 1.2
 MIN_EYE = 15  # usable pupil samples needed per point
 MIN_SCENE = 3  # front-camera detections needed per point
-GRID = [(0.5, 0.5), (0.15, 0.15), (0.5, 0.15), (0.85, 0.15), (0.85, 0.5), (0.85, 0.85), (0.5, 0.85), (0.15, 0.85), (0.15, 0.5)]
+GRID = [(0.5, 0.5), (0.2, 0.2), (0.5, 0.2), (0.8, 0.2), (0.8, 0.5), (0.8, 0.8), (0.5, 0.8), (0.2, 0.8), (0.2, 0.5)]  # clear of the bezel
 
 
 def screen_size() -> tuple[int, int]:
@@ -47,28 +48,20 @@ def screen_size() -> tuple[int, int]:
         return 1920, 1080
 
 
-def target_image(size: int) -> np.ndarray:
-    dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
-    marker = cv2.aruco.generateImageMarker(dictionary, TARGET_ID, size)
-    marker = cv2.cvtColor(marker, cv2.COLOR_GRAY2BGR)
-    c = size // 2
-    cv2.circle(marker, (c, c), max(3, size // 60), (0, 0, 255), -1)  # small enough not to break decoding
-    return marker
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--eye", default="3", help="Eye camera number")
     parser.add_argument("--scene", default="http://172.20.10.2/", help="Front camera URL or number")
-    parser.add_argument("--marker", type=float, default=0.28, help="Marker size as a fraction of screen height")
+    parser.add_argument("--marker", type=float, default=0.22, help="Target disc size as a fraction of screen height")
     args = parser.parse_args()
 
     sw, sh = screen_size()
     msize = int(sh * args.marker)
-    marker = target_image(msize)
+    marker = target_disc(msize)
     detector = PupilDetector(load_config())
     validity = EyeValidity()
-    aruco = cv2.aruco.ArucoDetector(cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50), cv2.aruco.DetectorParameters())
 
     eye_cam = CameraThread(args.eye, "eye")
     scene_cam = CameraThread(args.scene, "front")
@@ -97,14 +90,10 @@ def main() -> None:
             if frame is not None and count != scene_count:
                 scene_count = count
                 scene_size = (frame.shape[1], frame.shape[0])
-                corners, ids, _ = aruco.detectMarkers(frame)
-                scene_seen = False
-                if ids is not None:
-                    for c, mid in zip(corners, ids.flatten()):
-                        if mid == TARGET_ID:
-                            scene_seen = True
-                            if phase == "collect":
-                                scene_buf.append(c.reshape(4, 2).mean(axis=0))
+                centre = find_target(frame)
+                scene_seen = centre is not None
+                if scene_seen and phase == "collect":
+                    scene_buf.append(np.array(centre))
 
             # Phase changes
             if phase == "settle" and now - phase_t >= SETTLE_S:
@@ -142,7 +131,7 @@ def main() -> None:
             # Draw
             canvas = np.full((sh, sw, 3), 255, np.uint8)
             if phase in ("settle", "collect"):
-                cx = min(max(int(GRID[i][0] * sw), msize // 2), sw - msize // 2)  # keep the marker on screen
+                cx = min(max(int(GRID[i][0] * sw), msize // 2), sw - msize // 2)  # keep the disc on screen
                 cy = min(max(int(GRID[i][1] * sh), msize // 2), sh - msize // 2)
                 x0, y0 = cx - msize // 2, cy - msize // 2
                 canvas[y0 : y0 + msize, x0 : x0 + msize] = marker

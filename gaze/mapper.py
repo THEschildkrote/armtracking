@@ -4,8 +4,8 @@ The front camera is on the glasses, so this mapping does not change when the
 head moves. Table millimetres then come from the front camera's per-frame
 marker homography (scene.markers), which is what makes the result head-free.
 
-Model: second-order polynomial per axis, u = c . [1, x, y, xy, x^2, y^2]
-(affine [1, x, y] when there are fewer than 6 points). Pupil coords are
+Model: affine u = c . [1, x, y] or second-order polynomial [1, x, y, xy, x^2, y^2]
+per axis - whichever has the lower leave-one-out error. Pupil coords are
 normalised first so the least-squares fit is well conditioned.
 """
 
@@ -65,22 +65,30 @@ def fit(pupil: np.ndarray, scene: np.ndarray, scene_size: tuple[int, int] = (0, 
     n = len(pupil)
     if n < 3:
         raise ValueError("need at least 3 calibration points")
-    quadratic = n >= 7  # 6 unknowns per axis; keep one spare so it is not an exact fit
     centre = pupil.mean(axis=0)
     scale = float(max(pupil.std(axis=0).max(), 1e-6))
     pn = (pupil - centre) / scale
-    coef = _solve(pn, scene, quadratic)
 
-    # Leave-one-out: predict each point from a fit to the others.
-    errors = []
-    for i in range(n):
-        keep = np.arange(n) != i
-        if keep.sum() < (6 if quadratic else 3):
-            continue
-        c = _solve(pn[keep], scene[keep], quadratic)
-        pred = _features(pn[i : i + 1], quadratic) @ c
-        errors.append(float(np.linalg.norm(pred[0] - scene[i])))
-    errors = np.array(errors) if errors else np.array([np.nan])
+    def loo(quadratic: bool) -> np.ndarray:
+        """Leave-one-out: predict each point from a fit to the others."""
+        out = []
+        for i in range(n):
+            keep = np.arange(n) != i
+            if keep.sum() < (7 if quadratic else 4):  # need a spare point beyond the unknowns
+                continue
+            c = _solve(pn[keep], scene[keep], quadratic)
+            out.append(float(np.linalg.norm((_features(pn[i : i + 1], quadratic) @ c)[0] - scene[i])))
+        return np.array(out) if out else np.array([np.nan])
+
+    # Keep whichever model predicts unseen points better. With a small pupil spread (screen-sized
+    # targets) the quadratic over-fits noise and the affine wins; wider coverage favours the quadratic.
+    errors = loo(False)
+    quadratic = False
+    if n >= 8:
+        quad_errors = loo(True)
+        if np.sqrt(np.nanmean(quad_errors**2)) < np.sqrt(np.nanmean(errors**2)):
+            errors, quadratic = quad_errors, True
+    coef = _solve(pn, scene, quadratic)
 
     return GazeCalibration(
         coef=coef.tolist(),
