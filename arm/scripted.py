@@ -6,11 +6,14 @@ with ikpy for inverse kinematics. Joint angles follow LeRobot's degree conventio
 
 Two steps:
   1. table calibration (once per board placement): the arm goes limp, you touch the
-     gripper tip to each table marker centre; forward kinematics gives where the tip is
-     in robot coordinates, and a 2D rigid fit maps table mm -> robot metres.
+     gripper tip to known points - the table markers and the object spots - skipping
+     any it can't reach (at least 3); forward kinematics gives where the tip is in
+     robot coordinates, and a 2D rigid fit maps table mm -> robot metres.
          scripted.cmd calibrate
-  2. pick an object from gaze/objects.json and drop it at "drop" in the same file:
-         scripted.cmd pick red          (or via the arm runner with {"type": "scripted"})
+  2. pick an object from gaze/objects.json. With a "drop" spot in that file it is
+     carried there and released; without one it is HANDED OVER: lifted high above its
+     spot, held for a few seconds so the user can take it, then released.
+         scripted.cmd pick granola      (or via the arm runner with {"type": "scripted"})
 """
 
 from __future__ import annotations
@@ -37,6 +40,8 @@ HOVER_M = 0.08  # approach height above the table
 GRASP_M = 0.015  # gripper tip height above the table when closing
 GRIPPER_OPEN = 70.0  # % of the calibrated gripper range
 GRIPPER_CLOSED = 5.0
+HANDOVER_M = 0.18  # hand-over height above the table (no drop spot)
+HANDOVER_S = 3.0  # how long to hold it up before letting go
 
 
 # ---------- raw <-> degrees (same convention as LeRobot's MotorNormMode.DEGREES) ----------
@@ -135,26 +140,37 @@ def table_point(calib: dict, x_mm: float, y_mm: float, height_m: float) -> np.nd
 def calibrate(port: str) -> None:
     from scene.markers import TableConfig
 
-    markers = TableConfig.load().markers  # measured marker centres (scene/config.json) or the defaults
+    points = [(f"marker {mid}", x, y) for mid, (x, y) in sorted(TableConfig.load().markers.items())]
+    objects = json.loads(OBJECTS.read_text())
+    points += [(f"object '{o['name']}'", o["x"], o["y"]) for o in objects.get("objects", [])]
+    if "drop" in objects:
+        points.append(("drop spot", objects["drop"]["x"], objects["drop"]["y"]))
     cal = load_robot_calibration()
     kin = Kinematics()
     bus = open_bus(port)
     table, robot = [], []
     try:
         bus.disable_torque()
-        print("The arm is limp. For each marker, rest the gripper TIP on the marker's centre, then press Enter.")
-        for mid, (x, y) in sorted(markers.items()):
-            input(f"  marker {mid} at ({x:.0f}, {y:.0f}) mm - tip on its centre, Enter...")
+        print("The arm is limp. For each point, rest the gripper TIP on its centre and press Enter.")
+        print("Type s + Enter to skip a point the arm can't reach, q + Enter to finish early (need 3+ points).")
+        for label, x, y in points:
+            answer = input(f"  {label} at ({x:.0f}, {y:.0f}) mm: ").strip().lower()
+            if answer.startswith("q"):
+                break
+            if answer.startswith("s"):
+                continue
             tip = kin.fk(to_deg(read(bus), cal))[:3, 3]
             print(f"    robot frame: {np.round(tip * 1000).astype(int)} mm")
             table.append([x, y, 0.0])
             robot.append(tip)
     finally:
         bus.disconnect(disable_torque=True)
+    if len(table) < 3:
+        raise SystemExit(f"Only {len(table)} points touched - need at least 3. Run it again.")
     result = fit_table_to_robot(np.array(table), np.array(robot))
     TABLE_CALIB.write_text(json.dumps(result, indent=2))
-    print(f"Saved {TABLE_CALIB.name}: fit error {result['rms_mm']:.1f} mm over {result['points']} markers "
-          f"(over ~10 mm: re-touch more carefully or check the marker positions)")
+    print(f"Saved {TABLE_CALIB.name}: fit error {result['rms_mm']:.1f} mm over {result['points']} points "
+          f"(over ~10 mm: re-touch more carefully, or the marker / object positions are off)")
 
 
 # ---------- pick ----------
@@ -165,12 +181,10 @@ def _setup(name: str):
     obj = next((o for o in objects["objects"] if o["name"] == name), None)
     if obj is None:
         raise RuntimeError(f"{name!r} is not in gaze/objects.json")
-    if "drop" not in objects:
-        raise RuntimeError('gaze/objects.json needs a "drop": {"x": ..., "y": ...} entry (the bowl)')
     if not TABLE_CALIB.exists():
         raise RuntimeError("no arm/table_to_robot.json - run: scripted.cmd calibrate")
     table = json.loads(TABLE_CALIB.read_text())
-    return obj, objects["drop"], table, load_robot_calibration(), Kinematics()
+    return obj, objects.get("drop"), table, load_robot_calibration(), Kinematics()  # drop None = hand over
 
 
 def _run(bus, kin, cal, waypoints, on_waypoint=None) -> dict[str, float]:
@@ -205,14 +219,18 @@ def hover(name: str, port: str = "COM4") -> None:
 
 
 def pick_from_hover(name: str, port: str = "COM4", on_descend=None) -> bool:
-    """Descend, grasp, lift, carry to the drop spot and release. Returns True if the gripper held something.
+    """Descend, grasp, lift, then drop it at the drop spot - or hand it over if there is none.
+    Returns True if the gripper held something.
 
     on_descend() is called right before the arm starts moving down (log the real descent there).
     """
     obj, drop_spot, table, cal, kin = _setup(name)
     above = table_point(table, obj["x"], obj["y"], HOVER_M)
     at = table_point(table, obj["x"], obj["y"], GRASP_M)
-    drop = table_point(table, drop_spot["x"], drop_spot["y"], HOVER_M)
+    if drop_spot:
+        finish = [(above, GRIPPER_CLOSED), (table_point(table, drop_spot["x"], drop_spot["y"], HOVER_M), GRIPPER_CLOSED)]
+    else:  # hand-over: straight up, hold it there for the user
+        finish = [(table_point(table, obj["x"], obj["y"], HANDOVER_M), GRIPPER_CLOSED)]
     bus = open_bus(port)
     held = False
     try:
@@ -222,14 +240,19 @@ def pick_from_hover(name: str, port: str = "COM4", on_descend=None) -> bool:
         # An empty gripper closes all the way; one holding an object stops short of the target.
         grip_now = read(bus)["gripper"]
         held = grip_now > gripper_raw(GRIPPER_CLOSED, cal) + 0.08 * (cal["gripper"]["range_max"] - cal["gripper"]["range_min"])
-        _run(bus, kin, cal, [(above, GRIPPER_CLOSED), (drop, GRIPPER_CLOSED), (drop, GRIPPER_OPEN)])
+        last = _run(bus, kin, cal, finish)
+        if not drop_spot:
+            time.sleep(HANDOVER_S)  # the user takes it
+        release = {**to_raw(last, cal), "gripper": gripper_raw(GRIPPER_OPEN, cal)}
+        start = read(bus)
+        glide(bus, start, release, 0.6)
     finally:
         bus.disconnect(disable_torque=False)  # keep holding; the caller glides home
     return held
 
 
 def pick(name: str, port: str = "COM4") -> bool:
-    """Full scripted pick: hover, descend, grasp, drop. Returns True if something was held."""
+    """Full scripted pick: hover, descend, grasp, then drop or hand over. Returns True if something was held."""
     hover(name, port)
     return pick_from_hover(name, port)
 

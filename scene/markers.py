@@ -69,14 +69,24 @@ class TableTracker:
         params.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX  # steadier corners on small markers
         self._detector = cv2.aruco.ArucoDetector(cv2.aruco.getPredefinedDictionary(DICTIONARY), params)
 
-    def process(self, frame: np.ndarray, t: float) -> SceneSample:
-        gray = frame if frame.ndim == 2 else cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        corners, ids, _ = self._detector.detectMarkers(gray)
+    def _detect(self, gray: np.ndarray, scale: float) -> dict[int, np.ndarray]:
+        img = gray if scale == 1 else cv2.resize(gray, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        corners, ids, _ = self._detector.detectMarkers(img)
         seen: dict[int, np.ndarray] = {}
         if ids is not None:
             for marker_corners, marker_id in zip(corners, ids.flatten()):
                 if int(marker_id) in self.config.markers:
-                    seen[int(marker_id)] = marker_corners.reshape(4, 2)
+                    seen[int(marker_id)] = marker_corners.reshape(4, 2) / scale
+        return seen
+
+    def process(self, frame: np.ndarray, t: float) -> SceneSample:
+        gray = frame if frame.ndim == 2 else cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        seen = self._detect(gray, 1)
+        if len(seen) < len(self.config.markers):
+            # small/far markers (a few px per cell): try again on an enlarged copy, keep whichever finds more
+            bigger = self._detect(gray, 2)
+            if len(bigger) > len(seen):
+                seen = bigger
 
         if len(seen) < self.config.min_markers:
             return SceneSample(t, seen, None, float("nan"), False)

@@ -1,7 +1,6 @@
 {
   "objects": [
-    {"name": "red", "x": 120, "y": 150},
-    {"name": "blue", "x": 280, "y": 150}
-  ],
-  "drop": {"x": 200, "y": 260}
+    {"name": "granola", "cls": "granola_bar", "x": 157, "y": 108},
+    {"name": "pipe_cleaner", "cls": "pipe_cleaner", "x": 458, "y": 153}
+  ]
 }
