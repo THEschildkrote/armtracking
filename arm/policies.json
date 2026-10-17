@@ -14,5 +14,8 @@
   },
   "water_bottle": {
     "type": "scripted"
+  },
+  "foam": {
+    "type": "scripted"
   }
 }
