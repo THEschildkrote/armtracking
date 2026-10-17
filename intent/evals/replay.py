@@ -58,6 +58,8 @@ def ticks(ev: list[dict], window_s: float) -> list[Tick]:
                 objects = [Obj(str(o["id"]), o["cls"], o["x"], o["y"]) for o in e["objects"]]
             elif e["type"] == "gaze" and e.get("valid", True):
                 gaze.append((e["t"], e["x"], e["y"]))
+            elif e["type"] == "gaze":
+                gaze = []  # invalid tracking breaks continuous evidence
             elif e["type"] == "grasp_ok":
                 history.append(e["cls"])
             i += 1
@@ -246,7 +248,8 @@ def main():
     train = [load(p) for p in a.train]
     test = [load(p) for p in a.test]
     tuned = tune(train)
-    configs = {"gaze only": replace(tuned, beta=0.0), "gaze + history": tuned}
+    configs = ({"deployed Chalk configuration": Params()} if a.backend == "chalk" else
+               {"gaze only": replace(tuned, beta=0.0), "gaze + history": tuned})
     results = {n: evaluate(test, p, a.backend) for n, p in configs.items()}
     report = {
         "backend": a.backend,

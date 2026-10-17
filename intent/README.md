@@ -72,3 +72,33 @@ Never put synthetic numbers in the pitch; report only rehearsal logs.
 - `offline_query` result column names (`predict_chalk` matches by suffix).
 - Upgrade path: move pick history into Chalk's online store (`User` has-many `Pick`)
   so habits persist across devices instead of being sent with each request.
+
+## Hardware-free shell
+
+From `intent/`, without Chalk credentials or hardware:
+
+```sh
+python -m unittest discover -s tests
+python -m look_intent.shell --out /tmp/look-shell.jsonl
+```
+
+This generates explicitly **synthetic** events and one mock grasp. It is a
+functional integration test, not a measurement of physical performance.
+`look_intent.shell.Shell` accepts `scene(objects, t)` and
+`sample(t, x_mm, y_mm, valid)`; use a single monotonic clock. Run
+`run(stop_event, clock)` on a worker thread. Predictions computed during changed
+input are discarded. `confirm(id, t, voice=True)` is the voice-confirmation hook;
+`grasp_ok(id, t)` records actual successful grasps in task memory.
+
+The real adapter implements `request_prehover(id)`, `cancel_prehover()` and
+`grasp(id)`. It must independently enforce calibration, current-scene validity,
+reach, collision, speed limits and authorization. Mock `arm_descend` events are
+emitted at mock dispatch; real hardware must emit them at actual descent.
+The shell's scene must contain only currently selectable objects; remove held
+objects after grasping. There is no physical motion, dashboard, or Grok API
+integration in this shell. Existing service logs expose source and latency.
+
+Chalk offline replay now labels the single deployed configuration honestly.
+It cannot compare gaze-only against habits until configuration inputs or two
+separate deployments are supported. Non-default online Params are rejected
+when Chalk is enabled to avoid silently changing behavior on fallback.

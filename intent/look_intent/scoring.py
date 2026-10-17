@@ -41,6 +41,7 @@ class Params:
     threshold: float = 0.7     # pre-hover confidence (PRD P1)
     min_share: float = 0.25    # minimum gaze evidence for pre-hover
     min_dwell_s: float = 0.3   # continuous on-object time before pre-hover
+    max_gap_s: float = 0.12    # tracking gaps break continuous dwell
     floor_dwell_s: float = 0.15  # never pre-hover on less than this, whatever the habit
 
 
@@ -81,9 +82,13 @@ def current_dwell(gaze: Sequence[Sequence[float]], obj: Obj, t_now: float,
     """Seconds the gaze has stayed continuously within radius of obj, ending now."""
     r2 = p.radius_mm ** 2
     start = None
+    previous = t_now
     for t, x, y in reversed(list(gaze)):
         if t > t_now:
             continue
+        if previous - t > p.max_gap_s or not all(math.isfinite(v) for v in (t, x, y)):
+            break
+        previous = t
         if (obj.x - x) ** 2 + (obj.y - y) ** 2 > r2:
             break
         start = t

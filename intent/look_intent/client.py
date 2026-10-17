@@ -31,7 +31,10 @@ class IntentService:
         self.log = log or (lambda e: None)
         self._pool = cf.ThreadPoolExecutor(max_workers=2)
         self._client = None
+        self._pending = None
         self._chalk_down_until = 0.0  # circuit breaker after failures
+        if use_chalk and params != Params():
+            raise ValueError("Deploy matching Chalk parameters before using non-default Params")
         if use_chalk:
             try:
                 from chalk.client import ChalkClient  # noqa: WPS433
@@ -66,12 +69,16 @@ class IntentService:
                 t_now: float) -> Decision:
         t0 = time.perf_counter()
         source, d = "local", None
-        if self._client is not None and time.monotonic() >= self._chalk_down_until:
+        gaze = list(gaze)
+        if (self._client is not None and time.monotonic() >= self._chalk_down_until
+                and (self._pending is None or self._pending.done())):
             fut = self._pool.submit(self._query_chalk, objects, list(gaze), history, t_now)
+            self._pending = fut
             try:
                 d = fut.result(timeout=self.timeout_s)
                 source = "chalk"
             except Exception as e:
+                fut.cancel()
                 self._chalk_down_until = time.monotonic() + 5.0  # back off 5 s
                 self.log({"type": "intent_chalk_error", "error": repr(e)[:200]})
         if d is None:
@@ -81,3 +88,7 @@ class IntentService:
                   "object_id": d.object_id, "confidence": round(d.confidence, 3),
                   "prehover": d.prehover})
         return d
+
+    def close(self):
+        """Cancel queued queries; SDK transport must bound any running request."""
+        self._pool.shutdown(wait=False, cancel_futures=True)
