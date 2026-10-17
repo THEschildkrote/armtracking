@@ -85,6 +85,14 @@ class Blob:
     rect_mm: np.ndarray  # 4x2 box corners, table mm
 
 
+def main_hue(hues: np.ndarray) -> float:
+    """The dominant hue (0-180) of a set of pixels: the peak of a smoothed, wrap-around histogram."""
+    hist = np.bincount(hues.astype(np.int64) % 180, minlength=180).astype(np.float32)
+    k = np.array([1, 2, 3, 2, 1], np.float32)
+    smooth = np.convolve(np.r_[hist[-2:], hist, hist[:2]], k, mode="valid")
+    return float(np.argmax(smooth))
+
+
 def board_region(config: TableConfig) -> np.ndarray:
     """Table-mm polygon to look for objects in: the marker rectangle out to about the board's edge."""
     xs = [p[0] for p in config.markers.values()]
@@ -165,8 +173,7 @@ def find_blobs(frame: np.ndarray, H: np.ndarray, config: TableConfig) -> list[Bl
             continue
         if w < hh:
             w, hh, ang = hh, w, ang + 90
-        hues = hue[one > 0].astype(np.float32) * (2 * math.pi / 180)
-        mean_hue = (math.degrees(math.atan2(np.sin(hues).mean(), np.cos(hues).mean())) / 2) % 180
+        mean_hue = main_hue(hue[one > 0])
         u, v = pix.mean(axis=0)
         blobs.append(Blob((float(u), float(v)), float(cx), float(cy), wrap180(ang), float(w), float(hh), mean_hue,
                           float(sat[one > 0].mean()), cv2.boxPoints(((cx, cy), (w, hh), ang))))
@@ -223,7 +230,9 @@ class ObjectTracker:
                 best.axis = wrap180(best.axis + a * wrap180(b.axis - best.axis))
                 best.length += a * (b.length - best.length)
                 best.width += a * (b.width - best.width)
-                best.hue, best.px, best.rect_mm, best.last_seen = b.hue, b.px, b.rect_mm, now
+                d = ((b.hue - best.hue + 90) % 180) - 90  # circular
+                best.hue = (best.hue + a * d) % 180
+                best.px, best.rect_mm, best.last_seen = b.px, b.rect_mm, now
                 best.hits += 1
             else:
                 self.tracks.append(Track(self._next, b.x, b.y, b.axis, b.length, b.width, b.hue, b.px, b.rect_mm, now))
@@ -231,7 +240,7 @@ class ObjectTracker:
         self.tracks = [t for t in self.tracks if now - t.last_seen <= FORGET_S]
         keep: list[Track] = []
         # duplicates (close together, or a piece lying mostly inside a bigger box): the bigger box wins
-        for t in sorted(self.tracks, key=lambda t: -(t.length * t.width)):
+        for t in sorted(self.tracks, key=lambda t: (-min(t.hits, MIN_HITS), -(t.length * t.width))):
             if all(math.hypot(t.x - k.x, t.y - k.y) > MERGE_MM and _inside_fraction(t, k) < 0.3 for k in keep):
                 keep.append(t)
         self.tracks = keep
@@ -255,6 +264,8 @@ class ObjectTracker:
             near = [cn for cn in near if cn[1] <= max_hue]
             if near:
                 t.cls = min(near, key=lambda cn: cn[1])[0]
+            elif t.label_conf < 0.15:
+                t.cls = None  # its colour no longer matches anything and YOLO isn't sure either
 
     def learn(self, classes: dict, now: float) -> list[str]:
         """Taught objects still at their taught spot: learn grip offset, position offset and colour."""
@@ -265,9 +276,10 @@ class ObjectTracker:
                 continue
             if now - taught["t"] > LEARN_WINDOW_S and not info.get("learn_now"):
                 continue
-            near = [t for t in self.tracks if t.last_seen == now and t.hits >= 3]
-            t = min(near, key=lambda t: math.hypot(t.x - taught["x"], t.y - taught["y"]), default=None)
-            if t is None or math.hypot(t.x - taught["x"], t.y - taught["y"]) > LEARN_RADIUS_MM:
+            near = [t for t in self.tracks if t.last_seen == now and t.hits >= MIN_HITS
+                    and math.hypot(t.x - taught["x"], t.y - taught["y"]) <= LEARN_RADIUS_MM]
+            t = max(near, key=lambda t: t.length * t.width, default=None)
+            if t is None:
                 continue
             info["pos_offset"] = [round(taught["x"] - t.x, 1), round(taught["y"] - t.y, 1)]
             info["grip_offset"] = round(wrap180(taught["yaw"] - t.axis), 1)

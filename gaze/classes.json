@@ -2,15 +2,15 @@
   "granola_bar": {
     "name": "granola",
     "prompt": "granola bar",
-    "grasp_mm": 19,
+    "grasp_mm": 22,
     "taught": {
-      "x": 151,
-      "y": 116,
-      "yaw": 170.8,
-      "t": 1792255265.0988197
+      "x": 316,
+      "y": 152,
+      "yaw": 102.1,
+      "t": 1792256513.5839002
     },
     "hue": [
-      70,
+      76,
       0
     ]
   },
