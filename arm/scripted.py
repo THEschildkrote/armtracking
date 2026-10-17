@@ -303,10 +303,20 @@ def calibrate(port: str) -> None:
 
 # ---------- pick ----------
 
-def _setup(name: str):
-    """Everything a move needs: the object, drop spot, table fit, robot calibration and kinematics."""
+# Where each object was when the arm went to hover over it. Once the arm is above an object it
+# hides part of it from the side camera, and live detection would report a shifted spot and angle
+# (or lose it): the descent uses the spot locked at hover time instead.
+_LOCKED: dict[str, tuple[dict, float]] = {}
+LOCK_S = 120.0
+
+
+def _setup(name: str, locked: bool = False):
+    """Everything a move needs: the object, drop spot, table fit, robot calibration and kinematics.
+    locked=True takes the object's spot from the last hover over it (if recent)."""
     objects = json.loads(OBJECTS.read_text())
     obj = next((o for o in objects["objects"] if o["name"] == name), None)
+    if locked and name in _LOCKED and time.time() - _LOCKED[name][1] <= LOCK_S:
+        obj = _LOCKED[name][0]
     if obj is None:
         raise RuntimeError(f"{name!r} is not in gaze/objects.json")
     if not TABLE_CALIB.exists():
@@ -395,6 +405,9 @@ def plan(kin, table: dict, obj: dict) -> dict:
 def hover(name: str, port: str = "COM4") -> None:
     """Move above the object with the gripper open, and keep holding there (no descent)."""
     obj, _, table, cal, kin = _setup(name)
+    _LOCKED[name] = (dict(obj), time.time())
+    print(f"{name}: at ({obj['x']}, {obj['y']}) mm, grip angle {obj.get('yaw')} deg, grip height {obj.get('grasp_mm')} mm",
+          flush=True)
     route = plan(kin, table, obj)
     target = (route["high"], GRIPPER_OPEN, None) if route["high"] is not None else (route["above"], GRIPPER_OPEN, route["yaw"])
     bus = open_bus(port)
@@ -411,7 +424,7 @@ def pick_from_hover(name: str, port: str = "COM4", on_descend=None) -> bool:
 
     on_descend() is called right before the arm starts moving down (log the real descent there).
     """
-    obj, drop_spot, table, cal, kin = _setup(name)
+    obj, drop_spot, table, cal, kin = _setup(name, locked=True)
     route = plan(kin, table, obj)
     yaw, above, at, high = route["yaw"], route["above"], route["at"], route["high"]
     up = [(above, GRIPPER_CLOSED, yaw)] + ([(high, GRIPPER_CLOSED)] if high is not None else [])
