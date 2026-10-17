@@ -74,7 +74,10 @@ def find_target(frame: np.ndarray, min_contrast: int = 18, phone: bool = False, 
     gray = frame if frame.ndim == 2 else cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (3, 3), 0)
     best, best_area = None, 12.0
-    for screen in find_screens(gray):
+    # Screen calibration: the target is on the laptop screen, the biggest bright area in view - other bright
+    # things at the edge of the picture produced false targets there. The phone can be smaller than other
+    # bright areas, so phone mode keeps looking at several.
+    for screen in find_screens(gray, 3 if phone else 1):
         screen_area = float((screen > 0).sum())
         # Screen glow washes the black target out to mid-grey and screens are unevenly bright, so compare
         # each pixel with its local surroundings: closing fills the dark target in with nearby screen
