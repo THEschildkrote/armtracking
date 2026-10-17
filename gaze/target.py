@@ -85,7 +85,9 @@ def target_disc(size: int) -> np.ndarray:
     img = np.full((size, size, 3), 255, np.uint8)
     c = size // 2
     cv2.circle(img, (c, c), int(size * 0.45), (0, 0, 0), -1)
-    cv2.circle(img, (c, c), max(3, size // 40), (0, 0, 255), -1)
+    dot = max(3, size // 12)  # big enough to fixate on comfortably from seated distance
+    cv2.circle(img, (c, c), dot + max(2, size // 90), (255, 255, 255), -1)  # thin white ring: stands out on black
+    cv2.circle(img, (c, c), dot, (0, 0, 255), -1)
     return img
 
 
