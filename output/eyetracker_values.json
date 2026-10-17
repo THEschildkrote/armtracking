@@ -1,0 +1,9571 @@
+{
+ "params": {
+  "pd": 75.0,
+  "head_width": 150.0,
+  "lens_w": 54.0,
+  "lens_h": 40.0,
+  "lens_corner_r": 8.0,
+  "bridge": 19.0,
+  "temple_len": 145.0,
+  "ear_drop": 25.0,
+  "vertex_distance": 13.0,
+  "panto_deg": 8.0,
+  "eye_r": 12.0,
+  "eye_y": 0.0,
+  "nose_bridge": "saddle",
+  "saddle_crest_y": 4.0,
+  "saddle_arch_h": 12.0,
+  "saddle_back": 3.0,
+  "use_tpu_pad": false,
+  "tpu_pad_t": 2.0,
+  "cheek_drop": 14.0,
+  "cheek_slope_deg": 20.0,
+  "cheek_half_width": 66.0,
+  "cheek_nose_half": 12.0,
+  "brow_above_rim": 2.0,
+  "brow_skin_z": -9.0,
+  "head_side_front_z": -13.0,
+  "head_side_y_min": -15.0,
+  "eye_region": 32.0,
+  "rim_w": 3.2,
+  "front_t": 4.0,
+  "hinge_y": 14.0,
+  "temple_t": 3.0,
+  "temple_h": 4.8,
+  "temple_splay_deg": 5.0,
+  "temple_droop_deg": 4.0,
+  "ear_arc_deg": 80.0,
+  "tenon_t": 2.2,
+  "tenon_h": 4.2,
+  "tenon_len": 8.0,
+  "tenon_clear": 0.2,
+  "socket_wall": 1.3,
+  "socket_wall_top": 1.2,
+  "socket_wall_bot": 1.6,
+  "zip_slot": [
+   3.0,
+   1.5
+  ],
+  "zip_slot_from_tip": [
+   10.0,
+   22.0
+  ],
+  "dip_x": [
+   -55.0,
+   -38.0
+  ],
+  "dip_depth": 8.5,
+  "dip_r": 3.0,
+  "pivot": [
+   -72.5,
+   -38.0,
+   -1.0
+  ],
+  "lock_dy": -6.0,
+  "pad_x_inner": -67.5,
+  "pad_y": [
+   -47.5,
+   -14.0
+  ],
+  "pad_z": [
+   -5.0,
+   4.0
+  ],
+  "boss_od": 5.5,
+  "pilot_d": 1.7,
+  "pilot_depth": 4.6,
+  "clear_d": 2.25,
+  "screw_len": 6.0,
+  "screw_head_d": 3.8,
+  "screw_head_h": 1.3,
+  "pivot_range_deg": 15.0,
+  "slot_travel": 6.0,
+  "root_t": 4.0,
+  "root_cbore": [
+   4.4,
+   1.5
+  ],
+  "root_pad": [
+   2.0,
+   2.0
+  ],
+  "arm_w": 3.0,
+  "arm_h": 4.0,
+  "arm_y_F": -35.0,
+  "arm_z_F": 13.0,
+  "holder_wall": 1.2,
+  "holder_clear": 0.2,
+  "holder_floor": 1.0,
+  "holder_lip": 1.5,
+  "glue_relief": 2.0,
+  "led_offset": 14.0,
+  "led_on_frame": true,
+  "led_tip_z": -2.0,
+  "led_hole": 5.2,
+  "led_lip": 1.0,
+  "led_sleeve": 4.0,
+  "led_wall": 1.2,
+  "led_dome_d": 5.0,
+  "led_body_len": 8.6,
+  "led_flange_d": 5.8,
+  "led_pitch": 2.54,
+  "wire_groove": [
+   1.2,
+   1.2
+  ],
+  "head_w": 8.5,
+  "fpc_w": 9.0,
+  "fpc_end_w": 14.0,
+  "fpc_t": 0.3,
+  "fpc_len": 75.0,
+  "fpc_min_r": 3.0,
+  "fpc_exit_edge": "temporal",
+  "ribbon_budget": 60.0,
+  "variants": {
+   "A": {
+    "label": "Variant A - 160 deg fisheye (primary)",
+    "fov_deg": 160.0,
+    "fov_model": "equidistant",
+    "head_h": 7.5,
+    "base_h": 3.0,
+    "barrel_d": 7.6,
+    "nodal_from_front": 1.5,
+    "dist": 24.0,
+    "dist_range": [
+     22.0,
+     26.0
+    ],
+    "below": 18.0,
+    "forward": 16.0,
+    "temporal": 7.5,
+    "temporal_range": [
+     5.0,
+     10.0
+    ],
+    "pitch_range": [
+     35.0,
+     55.0
+    ],
+    "yaw_nominal": 10.0
+   },
+   "B": {
+    "label": "Variant B - 66-68 deg standard (fallback)",
+    "fov_deg": 67.0,
+    "fov_model": "rectilinear",
+    "head_h": 5.5,
+    "base_h": 2.1,
+    "barrel_d": 6.5,
+    "nodal_from_front": 1.2,
+    "dist": 34.0,
+    "dist_range": [
+     32.0,
+     36.0
+    ],
+    "below": 24.0,
+    "forward": 24.0,
+    "temporal": 7.5,
+    "temporal_range": [
+     5.0,
+     10.0
+    ],
+    "pitch_range": [
+     35.0,
+     55.0
+    ],
+    "yaw_nominal": 10.0,
+    "cheek_clear_min": 6.0
+   }
+  },
+  "stream_res": [
+   640,
+   480
+  ],
+  "pod_clear": 0.3,
+  "pod_wall": 1.2,
+  "heatsink_gap": 3.0,
+  "comp_headroom": 0.5,
+  "usb_window": [
+   10.0,
+   7.0
+  ],
+  "plug_channel": 14.0,
+  "vent": [
+   1.5,
+   9.0
+  ],
+  "n_vents": 4,
+  "crush_rib": 0.15,
+  "pod_inner_x": -78.5,
+  "band_y": -22.0,
+  "band_z": 11.0,
+  "shelf_t": 2.4,
+  "shelf_z": [
+   -9.0,
+   4.0
+  ],
+  "shelf_x_inner": -67.0,
+  "lid_arm": 6.0,
+  "bed": [
+   220.0,
+   220.0,
+   200.0
+  ],
+  "layer": 0.2,
+  "walls": "3-4",
+  "infill": 30,
+  "overhang_deg": 45.0,
+  "rho_petg": 1.27,
+  "rho_tpu": 1.21,
+  "mass_xiao": 5.0,
+  "mass_camera": 1.0,
+  "mass_led": 0.35,
+  "mass_resistor": 0.03,
+  "mass_screw_m2x6": 0.2,
+  "mass_wire": 0.3,
+  "stl_tol": 0.02,
+  "stl_ang": 0.15,
+  "mirror_for_left_eye": false
+ },
+ "derived": {
+  "panto": 0.1396,
+  "box_cx": 39.7,
+  "frame_pd": 79.4,
+  "eye_x": 37.5,
+  "decentration": 2.2,
+  "rim_outer_x": 69.9,
+  "temple_inner_x": 75.0,
+  "top_rim_y": 23.2,
+  "bot_rim_y": -23.2,
+  "pivot_range": 0.2618,
+  "slot_half": 3.0,
+  "ear_R": 30.2535,
+  "saddle_y": 4.0,
+  "lock_slot_len": 11.3558,
+  "lock_slot_w": 2.4544,
+  "pivot_slot_len": 8.25
+ },
+ "measured_from_step": {
+  "source": "Seeed Studio XIAO-ESP32-S3-Sense.step",
+  "frame": "STEP board frame B (X_b long/USB+, Y_b up, Z_b width)",
+  "base_outline": {
+   "x": [
+    -8.6733,
+    12.2817
+   ],
+   "z": [
+    -15.0014,
+    2.7786
+   ],
+   "length": 20.955,
+   "width": 17.78,
+   "corner_r": 1.905,
+   "top_y": 1.0,
+   "bottom_y": -0.25,
+   "thickness": 1.25
+  },
+  "thermal_pad": {
+   "x": [
+    -1.5518,
+    0.9402
+   ],
+   "z": [
+    -6.3808,
+    -3.6417
+   ],
+   "y": -0.24,
+   "area": 6.826,
+   "note": "largest exposed underside pad, directly under the ESP32-S3 shield"
+  },
+  "underside_small_pads": 24,
+  "exp_outline": {
+   "x": [
+    -8.9733,
+    5.7032
+   ],
+   "z": [
+    -14.5014,
+    2.2786
+   ],
+   "y": [
+    3.93,
+    5.18
+   ],
+   "length": 14.6765,
+   "width": 16.78,
+   "corner_r": 2.0
+  },
+  "usb_c": {
+   "mouth_x": 13.8086,
+   "y": [
+    1.0,
+    4.21
+   ],
+   "z": [
+    -10.5887,
+    -1.6487
+   ],
+   "centre": [
+    13.8086,
+    2.605,
+    -6.1187
+   ],
+   "width": 8.94,
+   "height": 3.21,
+   "overhang_past_board": 1.527,
+   "body_x": [
+    6.5086,
+    13.8086
+   ],
+   "facing": "+X_b"
+  },
+  "b2b": {
+   "plug_bbox": [
+    -8.4125,
+    0.9942,
+    -7.7285,
+    -5.4309,
+    2.1458,
+    -0.1968
+   ],
+   "receptacle_bbox": [
+    -8.4175,
+    1.0242,
+    -8.2685,
+    -5.0259,
+    3.9358,
+    0.3432
+   ],
+   "mating_axis": "Y_b",
+   "stacking_height": 2.93,
+   "location_x": -6.9217,
+   "location_z": -3.9627,
+   "end": "-X_b (opposite the USB-C)"
+  },
+  "fpc_connector": {
+   "part": "JUSHUO AFC01-S24FCA-00",
+   "bbox": [
+    -8.8511,
+    5.162,
+    -14.1877,
+    -2.8351,
+    7.6289,
+    2.0283
+   ],
+   "housing_bbox": [
+    -8.1811,
+    5.17,
+    -14.1877,
+    -3.5351,
+    7.188,
+    2.0283
+   ],
+   "contacts": 24,
+   "pitch": 0.5,
+   "top_y": 7.6289,
+   "fpc_enters_from": "+X_b (board-centre side, toward USB-C)",
+   "insertion_dir": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "exit_x": -2.8351,
+   "fpc_y": 5.74,
+   "fpc_z_centre": -6.75,
+   "stock_fpc_end_width": 12.5,
+   "insertion_depth": 3.6649,
+   "on_face": "expansion-board top"
+  },
+  "u_fl": {
+   "bbox": [
+    -8.4525,
+    0.9992,
+    -12.3889,
+    -5.451,
+    2.2508,
+    -9.2873
+   ],
+   "top_y": 2.2508,
+   "clearance_to_expansion_board": 1.6792,
+   "covered_by_expansion": true
+  },
+  "shield": [
+   -5.0283,
+   0.3,
+   -12.4114,
+   5.5716,
+   3.0,
+   0.1886
+  ],
+  "sd_socket": [
+   0.0985,
+   5.1208,
+   -12.1099,
+   5.6169,
+   7.7892,
+   -0.6754
+  ],
+  "sd_card_if_inserted": [
+   0.33,
+   6.6,
+   -12.9719,
+   15.39,
+   8.25,
+   -0.8815
+  ],
+  "buttons": [
+   [
+    9.1642,
+    1.0,
+    -12.8449,
+    12.2542,
+    1.73,
+    -11.2449
+   ],
+   [
+    9.1461,
+    1.0,
+    -0.9868,
+    12.2361,
+    1.73,
+    0.6132
+   ]
+  ],
+  "stock_camera_head": {
+   "bbox": [
+    4.75,
+    7.95,
+    -10.75,
+    12.75,
+    13.71,
+    -2.75
+   ],
+   "w": 8.0,
+   "d": 8.0,
+   "h": 5.76
+  },
+  "stack": {
+   "bottom_y": -0.25,
+   "top_y_no_camera": 7.7892,
+   "height_no_camera": 8.0392,
+   "height_with_stock_camera": 13.9784,
+   "x": [
+    -8.9733,
+    13.8086
+   ],
+   "z": [
+    -15.0014,
+    2.7786
+   ]
+  }
+ },
+ "pod_layout": {
+  "cav_x": [
+   -9.2733,
+   12.5817
+  ],
+  "cav_y": [
+   -3.25,
+   8.2892
+  ],
+  "cav_z": [
+   -15.3014,
+   3.0786
+  ],
+  "out_x": [
+   -9.2733,
+   13.7817
+  ],
+  "out_y": [
+   -4.45,
+   9.4892
+  ],
+  "out_z": [
+   -16.5014,
+   4.2786
+  ],
+  "rib_exit_x": -2.8351,
+  "rib_bend_c": [
+   -2.8351,
+   8.74
+  ],
+  "rib_x": 0.1649,
+  "rib_z": -6.75,
+  "xf": {
+   "R": [
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     -1.0
+    ],
+    [
+     -1.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "t": [
+    -87.9892,
+    -28.75,
+    11.1649
+   ]
+  },
+  "boss_xb": [
+   10.6649,
+   10.7817
+  ],
+  "boss_yb": 2.5196,
+  "boss_h": 3.0,
+  "boss_top_zb": -19.5014,
+  "shelf_bottom_yF": -9.2486,
+  "boss_F": [
+   [
+    -85.4696,
+    -9.2486,
+    0.5
+   ],
+   [
+    -85.4696,
+    -9.2486,
+    0.3832
+   ]
+  ],
+  "usb_c": [
+   13.8086,
+   2.605,
+   -6.1187
+  ]
+ },
+ "solver": {
+  "A": {
+   "key": "A",
+   "label": "Variant A - 160 deg fisheye (primary)",
+   "residual_norm": 0.0,
+   "stalk_length_rho": 21.587,
+   "lever_angle_deg": -72.5429,
+   "arm_reach": 27.5,
+   "pitch_deg": 31.8389,
+   "yaw_nasal_deg": 14.9951,
+   "C_W": [
+    -45.0,
+    -18.0,
+    3.0
+   ],
+   "a_W": [
+    0.2198,
+    0.5275,
+    -0.8206
+   ],
+   "C_S": [
+    27.5,
+    20.5927,
+    6.4759
+   ],
+   "a_S": [
+    0.2198,
+    0.4082,
+    -0.886
+   ],
+   "C_F": [
+    -45.0,
+    -17.4073,
+    5.4759
+   ],
+   "dist_apex": 25.224,
+   "dist_eye_centre": 34.1211,
+   "E_W": [
+    -37.5,
+    0.0,
+    -25.0
+   ],
+   "apex_W": [
+    -37.5,
+    0.0,
+    -13.0
+   ],
+   "offsets": {
+    "below": 18.0,
+    "forward": 16.0,
+    "temporal": 7.5
+   },
+   "flags": [
+    "pitch 31.8 deg outside 35.0-55.0 (forced by the requested offsets + axis through eye centre)"
+   ],
+   "field_half_angles_deg": [
+    64.0,
+    48.0
+   ],
+   "field_w": 103.4337,
+   "field_h": 56.0282,
+   "eye_region_half_angle_deg": 32.3876,
+   "eye_region_fraction_w": 0.5061,
+   "eye_region_fraction_h": 0.6747,
+   "px_per_mm_at_apex": 11.3574,
+   "eye_region_margin_w": 71.4337,
+   "eye_region_margin_h": 24.0282,
+   "eye_fits": true,
+   "pupil_4mm_px": 45.4296
+  },
+  "B": {
+   "key": "B",
+   "label": "Variant B - 66-68 deg standard (fallback)",
+   "residual_norm": 0.0,
+   "stalk_length_rho": 21.9218,
+   "lever_angle_deg": -45.9821,
+   "arm_reach": 27.5,
+   "pitch_deg": 33.1306,
+   "yaw_nasal_deg": 11.7683,
+   "C_W": [
+    -45.0,
+    -24.0,
+    11.0
+   ],
+   "a_W": [
+    0.1708,
+    0.5465,
+    -0.8198
+   ],
+   "C_S": [
+    27.5,
+    15.7645,
+    15.2331
+   ],
+   "a_S": [
+    0.1708,
+    0.4271,
+    -0.8879
+   ],
+   "C_F": [
+    -45.0,
+    -22.2355,
+    14.2331
+   ],
+   "dist_apex": 34.7599,
+   "dist_eye_centre": 43.9118,
+   "E_W": [
+    -37.5,
+    0.0,
+    -25.0
+   ],
+   "apex_W": [
+    -37.5,
+    0.0,
+    -13.0
+   ],
+   "offsets": {
+    "below": 24.0,
+    "forward": 24.0,
+    "temporal": 7.5
+   },
+   "flags": [
+    "pitch 33.1 deg outside 35.0-55.0 (forced by the requested offsets + axis through eye centre)"
+   ],
+   "field_w": 46.0141,
+   "field_h": 34.5106,
+   "field_w_if_diag_fov": 36.8113,
+   "field_h_if_diag_fov": 27.6085,
+   "px_per_mm_at_apex": 13.9088,
+   "eye_region_margin_w": 14.0141,
+   "eye_region_margin_h": 2.5106,
+   "eye_fits": true,
+   "pupil_4mm_px": 55.6351
+  }
+ },
+ "stalk_geometry": {
+  "A": {
+   "leg": [
+    [
+     -2.0,
+     1.625,
+     5.6779
+    ],
+    [
+     -2.0,
+     3.0,
+     14.0
+    ]
+   ],
+   "arm": [
+    [
+     -2.0,
+     3.0,
+     14.0
+    ],
+    [
+     13.5983,
+     3.0,
+     14.0
+    ]
+   ],
+   "riser": [
+    [
+     13.5983,
+     3.0,
+     14.0
+    ],
+    [
+     25.5353,
+     13.0804,
+     7.6065
+    ]
+   ],
+   "arm_len": 15.5983,
+   "leg_len": 8.4349,
+   "riser_len": 16.8815,
+   "lock_slot_cy": -5.8978
+  },
+  "B": {
+   "leg": [
+    [
+     -2.0,
+     1.625,
+     5.6779
+    ],
+    [
+     -2.0,
+     3.0,
+     14.0
+    ]
+   ],
+   "arm": [
+    [
+     -2.0,
+     3.0,
+     14.0
+    ],
+    [
+     20.1047,
+     3.0,
+     14.0
+    ]
+   ],
+   "riser": [
+    [
+     20.1047,
+     3.0,
+     14.0
+    ],
+    [
+     25.9596,
+     8.728,
+     15.2122
+    ]
+   ],
+   "arm_len": 22.1047,
+   "leg_len": 8.4349,
+   "riser_len": 8.28,
+   "lock_slot_cy": -5.8978
+  }
+ },
+ "face_proxy": {
+  "cheek_plane": {
+   "point": [
+    0.0,
+    -36.9742,
+    -3.2288
+   ],
+   "normal": [
+    0.0,
+    0.342,
+    0.9397
+   ]
+  },
+  "brow_plane_y": 24.9742
+ },
+ "checks": {
+  "interference": {
+   "static": [
+    {
+     "a": "front",
+     "b": "temple_R",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "front",
+     "b": "temple_L",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "front",
+     "b": "pod_body",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "front",
+     "b": "pod_lid",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "front",
+     "b": "xiao_esp32s3_sense",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "front",
+     "b": "ir_led_temporal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "front",
+     "b": "ir_led_nasal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "temple_R",
+     "b": "temple_L",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "temple_R",
+     "b": "pod_body",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "temple_R",
+     "b": "pod_lid",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "temple_R",
+     "b": "xiao_esp32s3_sense",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "temple_R",
+     "b": "ir_led_temporal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "temple_R",
+     "b": "ir_led_nasal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "temple_L",
+     "b": "pod_body",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "temple_L",
+     "b": "pod_lid",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "temple_L",
+     "b": "xiao_esp32s3_sense",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "temple_L",
+     "b": "ir_led_temporal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "temple_L",
+     "b": "ir_led_nasal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "pod_body",
+     "b": "pod_lid",
+     "mm3": 0.077,
+     "note": "snap bumps seated in dimples"
+    },
+    {
+     "a": "pod_body",
+     "b": "xiao_esp32s3_sense",
+     "mm3": 0.258,
+     "note": "crush ribs: 0.15 mm friction interference by design"
+    },
+    {
+     "a": "pod_body",
+     "b": "ir_led_temporal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "pod_body",
+     "b": "ir_led_nasal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "pod_lid",
+     "b": "xiao_esp32s3_sense",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "pod_lid",
+     "b": "ir_led_temporal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "pod_lid",
+     "b": "ir_led_nasal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "xiao_esp32s3_sense",
+     "b": "ir_led_temporal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "xiao_esp32s3_sense",
+     "b": "ir_led_nasal",
+     "mm3": 0.0,
+     "note": ""
+    },
+    {
+     "a": "ir_led_temporal",
+     "b": "ir_led_nasal",
+     "mm3": 0.0,
+     "note": ""
+    }
+   ],
+   "moving": {
+    "A": {
+     "rest": {
+      "phi": 0.0,
+      "slot": 0.0,
+      "rows": [
+       {
+        "a": "stalk_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "camera_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_A",
+        "b": "ribbon_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_A",
+        "b": "ribbon_A",
+        "mm3": 0.004,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "pitch_minus15": {
+      "phi": -15.0,
+      "slot": 0.0,
+      "rows": [
+       {
+        "a": "stalk_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "camera_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_A",
+        "b": "ribbon_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_A",
+        "b": "ribbon_A",
+        "mm3": 0.009,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "pitch_plus15": {
+      "phi": 15.0,
+      "slot": 0.0,
+      "rows": [
+       {
+        "a": "stalk_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "camera_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_A",
+        "b": "ribbon_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_A",
+        "b": "ribbon_A",
+        "mm3": 0.003,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "slot_aft": {
+      "phi": 0.0,
+      "slot": -3.0,
+      "rows": [
+       {
+        "a": "stalk_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "camera_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_A",
+        "b": "ribbon_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_A",
+        "b": "ribbon_A",
+        "mm3": 0.004,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "slot_fore": {
+      "phi": 0.0,
+      "slot": 3.0,
+      "rows": [
+       {
+        "a": "stalk_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "camera_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_A",
+        "b": "ribbon_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_A",
+        "b": "ribbon_A",
+        "mm3": 0.004,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "m15_aft": {
+      "phi": -15.0,
+      "slot": -3.0,
+      "rows": [
+       {
+        "a": "stalk_A",
+        "b": "front",
+        "mm3": 7.39
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "front",
+        "mm3": 1.473
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "camera_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_A",
+        "b": "ribbon_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_A",
+        "b": "ribbon_A",
+        "mm3": 0.009,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "m15_fore": {
+      "phi": -15.0,
+      "slot": 3.0,
+      "rows": [
+       {
+        "a": "stalk_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "camera_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_A",
+        "b": "ribbon_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_A",
+        "b": "ribbon_A",
+        "mm3": 0.009,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "p15_aft": {
+      "phi": 15.0,
+      "slot": -3.0,
+      "rows": [
+       {
+        "a": "stalk_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "camera_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_A",
+        "b": "ribbon_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_A",
+        "b": "ribbon_A",
+        "mm3": 0.003,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "p15_fore": {
+      "phi": 15.0,
+      "slot": 3.0,
+      "rows": [
+       {
+        "a": "stalk_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_A",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_A",
+        "b": "camera_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_A",
+        "b": "ribbon_A",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_A",
+        "b": "ribbon_A",
+        "mm3": 0.003,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     }
+    },
+    "B": {
+     "rest": {
+      "phi": 0.0,
+      "slot": 0.0,
+      "rows": [
+       {
+        "a": "stalk_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "camera_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_B",
+        "b": "ribbon_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_B",
+        "b": "ribbon_B",
+        "mm3": 0.004,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "pitch_minus15": {
+      "phi": -15.0,
+      "slot": 0.0,
+      "rows": [
+       {
+        "a": "stalk_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "camera_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_B",
+        "b": "ribbon_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_B",
+        "b": "ribbon_B",
+        "mm3": 0.009,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "pitch_plus15": {
+      "phi": 15.0,
+      "slot": 0.0,
+      "rows": [
+       {
+        "a": "stalk_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "camera_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_B",
+        "b": "ribbon_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_B",
+        "b": "ribbon_B",
+        "mm3": 0.002,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "slot_aft": {
+      "phi": 0.0,
+      "slot": -3.0,
+      "rows": [
+       {
+        "a": "stalk_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "camera_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_B",
+        "b": "ribbon_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_B",
+        "b": "ribbon_B",
+        "mm3": 0.004,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "slot_fore": {
+      "phi": 0.0,
+      "slot": 3.0,
+      "rows": [
+       {
+        "a": "stalk_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "camera_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_B",
+        "b": "ribbon_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_B",
+        "b": "ribbon_B",
+        "mm3": 0.004,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "m15_aft": {
+      "phi": -15.0,
+      "slot": -3.0,
+      "rows": [
+       {
+        "a": "stalk_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "camera_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_B",
+        "b": "ribbon_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_B",
+        "b": "ribbon_B",
+        "mm3": 0.009,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "m15_fore": {
+      "phi": -15.0,
+      "slot": 3.0,
+      "rows": [
+       {
+        "a": "stalk_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "camera_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_B",
+        "b": "ribbon_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_B",
+        "b": "ribbon_B",
+        "mm3": 0.009,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "p15_aft": {
+      "phi": 15.0,
+      "slot": -3.0,
+      "rows": [
+       {
+        "a": "stalk_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "camera_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_B",
+        "b": "ribbon_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_B",
+        "b": "ribbon_B",
+        "mm3": 0.002,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     },
+     "p15_fore": {
+      "phi": 15.0,
+      "slot": 3.0,
+      "rows": [
+       {
+        "a": "stalk_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "camera_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "front",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_R",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "temple_L",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_body",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "pod_lid",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "xiao_esp32s3_sense",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_temporal",
+        "mm3": 0.0
+       },
+       {
+        "a": "ribbon_B",
+        "b": "ir_led_nasal",
+        "mm3": 0.0
+       },
+       {
+        "a": "stalk_B",
+        "b": "camera_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "stalk_B",
+        "b": "ribbon_B",
+        "mm3": 0.0,
+        "note": ""
+       },
+       {
+        "a": "camera_B",
+        "b": "ribbon_B",
+        "mm3": 0.002,
+        "note": "FPC attached to head (designed contact)"
+       }
+      ]
+     }
+    }
+   }
+  },
+  "face": {
+   "A": {
+    "rest": [
+     {
+      "a": "stalk_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.34
+     },
+     {
+      "a": "stalk_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 73.67
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.5
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 52.95
+     },
+     {
+      "a": "stalk_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 41.95
+     },
+     {
+      "a": "stalk_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 15.77
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 20.62
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 72.99
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 8.39
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 54.24
+     },
+     {
+      "a": "camera_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 40.96
+     },
+     {
+      "a": "camera_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 13.47
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 26.12
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 83.41
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.8
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 65.01
+     },
+     {
+      "a": "ribbon_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 43.81
+     },
+     {
+      "a": "ribbon_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 19.91
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "pitch_minus15": [
+     {
+      "a": "stalk_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.67
+     },
+     {
+      "a": "stalk_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 71.07
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 4.07
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 52.5
+     },
+     {
+      "a": "stalk_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 37.42
+     },
+     {
+      "a": "stalk_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.68
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 14.48
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 71.05
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 4.32
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.46
+     },
+     {
+      "a": "camera_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 37.7
+     },
+     {
+      "a": "camera_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 8.3
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 21.1
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 81.7
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 9.07
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 64.14
+     },
+     {
+      "a": "ribbon_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 39.65
+     },
+     {
+      "a": "ribbon_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 14.76
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "pitch_plus15": [
+     {
+      "a": "stalk_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.47
+     },
+     {
+      "a": "stalk_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 75.71
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.5
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.35
+     },
+     {
+      "a": "stalk_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 48.12
+     },
+     {
+      "a": "stalk_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 17.33
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 25.36
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 75.29
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 11.65
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 55.05
+     },
+     {
+      "a": "camera_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 46.05
+     },
+     {
+      "a": "camera_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 18.36
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 31.07
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 85.35
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.82
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 65.65
+     },
+     {
+      "a": "ribbon_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 47.11
+     },
+     {
+      "a": "ribbon_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.65
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "slot_aft": [
+     {
+      "a": "stalk_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 21.56
+     },
+     {
+      "a": "stalk_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 72.55
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 4.42
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 52.52
+     },
+     {
+      "a": "stalk_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 40.52
+     },
+     {
+      "a": "stalk_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 13.05
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.96
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 71.99
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 5.74
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.74
+     },
+     {
+      "a": "camera_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 39.74
+     },
+     {
+      "a": "camera_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.53
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 23.49
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 82.39
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 10.15
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 64.5
+     },
+     {
+      "a": "ribbon_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 42.42
+     },
+     {
+      "a": "ribbon_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 16.91
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "slot_fore": [
+     {
+      "a": "stalk_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 26.88
+     },
+     {
+      "a": "stalk_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 74.86
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.5
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.5
+     },
+     {
+      "a": "stalk_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 43.53
+     },
+     {
+      "a": "stalk_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 18.49
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 23.28
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 74.08
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 11.04
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 54.85
+     },
+     {
+      "a": "camera_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 42.35
+     },
+     {
+      "a": "camera_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 16.43
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.81
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 84.52
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.82
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 65.59
+     },
+     {
+      "a": "ribbon_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.35
+     },
+     {
+      "a": "ribbon_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 20.84
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "m15_aft": [
+     {
+      "a": "stalk_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 15.2
+     },
+     {
+      "a": "stalk_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 70.19
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 1.14
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 52.19
+     },
+     {
+      "a": "stalk_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 37.16
+     },
+     {
+      "a": "stalk_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 9.36
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 12.19
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 70.37
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 1.4
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.15
+     },
+     {
+      "a": "camera_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 37.68
+     },
+     {
+      "a": "camera_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 5.51
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.87
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 80.93
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.15
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 63.78
+     },
+     {
+      "a": "ribbon_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 39.28
+     },
+     {
+      "a": "ribbon_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.85
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "m15_fore": [
+     {
+      "a": "stalk_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 20.22
+     },
+     {
+      "a": "stalk_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 72.05
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.5
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 52.97
+     },
+     {
+      "a": "stalk_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 37.92
+     },
+     {
+      "a": "stalk_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 14.09
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 16.9
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 71.82
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 7.25
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.93
+     },
+     {
+      "a": "camera_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 37.95
+     },
+     {
+      "a": "camera_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.14
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 23.45
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 82.55
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 11.81
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 64.63
+     },
+     {
+      "a": "ribbon_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 40.24
+     },
+     {
+      "a": "ribbon_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 17.67
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "p15_aft": [
+     {
+      "a": "stalk_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 25.77
+     },
+     {
+      "a": "stalk_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 74.42
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 4.59
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 52.91
+     },
+     {
+      "a": "stalk_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.88
+     },
+     {
+      "a": "stalk_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 16.06
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 22.54
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 74.04
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 9.46
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 54.51
+     },
+     {
+      "a": "camera_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 43.95
+     },
+     {
+      "a": "camera_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 15.36
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.24
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 84.13
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.82
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 65.03
+     },
+     {
+      "a": "ribbon_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 46.8
+     },
+     {
+      "a": "ribbon_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.42
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "p15_fore": [
+     {
+      "a": "stalk_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 31.2
+     },
+     {
+      "a": "stalk_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 77.08
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.5
+     },
+     {
+      "a": "stalk_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.88
+     },
+     {
+      "a": "stalk_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 50.44
+     },
+     {
+      "a": "stalk_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 18.94
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.22
+     },
+     {
+      "a": "camera_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 76.62
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 13.85
+     },
+     {
+      "a": "camera_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 55.67
+     },
+     {
+      "a": "camera_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 48.25
+     },
+     {
+      "a": "camera_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.36
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 32.35
+     },
+     {
+      "a": "ribbon_A",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 86.64
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.82
+     },
+     {
+      "a": "ribbon_A",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 66.28
+     },
+     {
+      "a": "ribbon_A",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 47.11
+     },
+     {
+      "a": "ribbon_A",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.65
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ]
+   },
+   "B": {
+    "rest": [
+     {
+      "a": "stalk_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 33.24
+     },
+     {
+      "a": "stalk_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 77.59
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.5
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.76
+     },
+     {
+      "a": "stalk_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 50.39
+     },
+     {
+      "a": "stalk_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 18.62
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 30.71
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 77.85
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 14.47
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 55.57
+     },
+     {
+      "a": "camera_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 50.08
+     },
+     {
+      "a": "camera_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 23.65
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 32.3
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 86.53
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.82
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 65.5
+     },
+     {
+      "a": "ribbon_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 47.11
+     },
+     {
+      "a": "ribbon_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.65
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "pitch_minus15": [
+     {
+      "a": "stalk_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 26.71
+     },
+     {
+      "a": "stalk_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 74.48
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.5
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.48
+     },
+     {
+      "a": "stalk_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 43.77
+     },
+     {
+      "a": "stalk_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 20.02
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.6
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 75.32
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.35
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 55.25
+     },
+     {
+      "a": "camera_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 44.4
+     },
+     {
+      "a": "camera_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 18.77
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.96
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 84.39
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.82
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 64.83
+     },
+     {
+      "a": "ribbon_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.6
+     },
+     {
+      "a": "ribbon_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.06
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "pitch_plus15": [
+     {
+      "a": "stalk_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 37.32
+     },
+     {
+      "a": "stalk_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 79.87
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.5
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.72
+     },
+     {
+      "a": "stalk_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 57.21
+     },
+     {
+      "a": "stalk_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 17.33
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 35.3
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 80.43
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 15.39
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 55.53
+     },
+     {
+      "a": "camera_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 56.34
+     },
+     {
+      "a": "camera_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 27.99
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 32.41
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.67
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.3
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 65.75
+     },
+     {
+      "a": "ribbon_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 47.11
+     },
+     {
+      "a": "ribbon_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.65
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "slot_aft": [
+     {
+      "a": "stalk_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 30.5
+     },
+     {
+      "a": "stalk_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 76.25
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 5.81
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.1
+     },
+     {
+      "a": "stalk_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 48.7
+     },
+     {
+      "a": "stalk_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 18.17
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.05
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 76.61
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 11.82
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 54.86
+     },
+     {
+      "a": "camera_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 48.54
+     },
+     {
+      "a": "camera_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 20.79
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 31.39
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 85.31
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.8
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 64.84
+     },
+     {
+      "a": "ribbon_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 47.11
+     },
+     {
+      "a": "ribbon_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.65
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "slot_fore": [
+     {
+      "a": "stalk_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 35.82
+     },
+     {
+      "a": "stalk_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 78.99
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.5
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 54.54
+     },
+     {
+      "a": "stalk_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 52.2
+     },
+     {
+      "a": "stalk_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 19.43
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 33.38
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 79.18
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 17.12
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 56.39
+     },
+     {
+      "a": "camera_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 51.74
+     },
+     {
+      "a": "camera_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 26.53
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 32.44
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 87.83
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.82
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 66.26
+     },
+     {
+      "a": "ribbon_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 47.11
+     },
+     {
+      "a": "ribbon_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.65
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "m15_aft": [
+     {
+      "a": "stalk_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.2
+     },
+     {
+      "a": "stalk_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 73.36
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.32
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 52.81
+     },
+     {
+      "a": "stalk_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 42.97
+     },
+     {
+      "a": "stalk_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 18.46
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 22.22
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 74.38
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 9.42
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 54.53
+     },
+     {
+      "a": "camera_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 43.78
+     },
+     {
+      "a": "camera_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 16.03
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 26.6
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 83.41
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.49
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 64.19
+     },
+     {
+      "a": "ribbon_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 44.78
+     },
+     {
+      "a": "ribbon_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 20.19
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "m15_fore": [
+     {
+      "a": "stalk_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 29.29
+     },
+     {
+      "a": "stalk_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 75.69
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.5
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 54.29
+     },
+     {
+      "a": "stalk_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 44.76
+     },
+     {
+      "a": "stalk_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 20.05
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 27.07
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 76.36
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 15.27
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 56.11
+     },
+     {
+      "a": "camera_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.21
+     },
+     {
+      "a": "camera_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.54
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 31.41
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 85.45
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.82
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 65.6
+     },
+     {
+      "a": "ribbon_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 46.61
+     },
+     {
+      "a": "ribbon_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.15
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "p15_aft": [
+     {
+      "a": "stalk_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 34.62
+     },
+     {
+      "a": "stalk_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 78.39
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 4.59
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 53.17
+     },
+     {
+      "a": "stalk_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 55.19
+     },
+     {
+      "a": "stalk_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 16.06
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 32.48
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 78.96
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 13.19
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 54.94
+     },
+     {
+      "a": "camera_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 54.14
+     },
+     {
+      "a": "camera_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 25.03
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 32.28
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 87.27
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.1
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 65.18
+     },
+     {
+      "a": "ribbon_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 47.11
+     },
+     {
+      "a": "ribbon_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.65
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ],
+    "p15_fore": [
+     {
+      "a": "stalk_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 39.04
+     },
+     {
+      "a": "stalk_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 81.43
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 6.5
+     },
+     {
+      "a": "stalk_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 54.35
+     },
+     {
+      "a": "stalk_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 58.39
+     },
+     {
+      "a": "stalk_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 18.94
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 38.14
+     },
+     {
+      "a": "camera_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 81.97
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 17.58
+     },
+     {
+      "a": "camera_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 56.2
+     },
+     {
+      "a": "camera_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 58.61
+     },
+     {
+      "a": "camera_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 30.96
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 32.49
+     },
+     {
+      "a": "ribbon_B",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 90.14
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 12.44
+     },
+     {
+      "a": "ribbon_B",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 66.39
+     },
+     {
+      "a": "ribbon_B",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 47.11
+     },
+     {
+      "a": "ribbon_B",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 21.65
+     },
+     {
+      "a": "front",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 17.76
+     },
+     {
+      "a": "front",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 0.8
+     },
+     {
+      "a": "front",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 4.79
+     },
+     {
+      "a": "front",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 8.47
+     },
+     {
+      "a": "front",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 2.8
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_R",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_R",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_R",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_R",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 102.85
+     },
+     {
+      "a": "temple_L",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 28.87
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 90.01
+     },
+     {
+      "a": "temple_L",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 20.81
+     },
+     {
+      "a": "temple_L",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 9.47
+     },
+     {
+      "a": "temple_L",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 1.27
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 24.76
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 88.38
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.21
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 70.13
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.43
+     },
+     {
+      "a": "ir_led_temporal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 10.56
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_right",
+      "mm3": 0.0,
+      "min_gap": 18.75
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "eye_left",
+      "mm3": 0.0,
+      "min_gap": 60.47
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_right",
+      "mm3": 0.0,
+      "min_gap": 2.44
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "cheek_left",
+      "mm3": 0.0,
+      "min_gap": 38.87
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "brow",
+      "mm3": 0.0,
+      "min_gap": 45.78
+     },
+     {
+      "a": "ir_led_nasal",
+      "b": "head",
+      "mm3": 0.0,
+      "min_gap": 11.4
+     }
+    ]
+   }
+  },
+  "pod_skin": {
+   "rows": [
+    {
+     "a": "pod_body",
+     "b": "eye_right",
+     "min_gap": 33.81,
+     "mm3": 0.0
+    },
+    {
+     "a": "pod_body",
+     "b": "eye_left",
+     "min_gap": 106.42,
+     "mm3": 0.0
+    },
+    {
+     "a": "pod_body",
+     "b": "cheek_right",
+     "min_gap": 12.5,
+     "mm3": 0.0
+    },
+    {
+     "a": "pod_body",
+     "b": "cheek_left",
+     "min_gap": 90.5,
+     "mm3": 0.0
+    },
+    {
+     "a": "pod_body",
+     "b": "brow",
+     "min_gap": 35.5,
+     "mm3": 0.0
+    },
+    {
+     "a": "pod_body",
+     "b": "head",
+     "min_gap": 5.68,
+     "mm3": 0.0
+    },
+    {
+     "a": "pod_lid",
+     "b": "eye_right",
+     "min_gap": 45.22,
+     "mm3": 0.0
+    },
+    {
+     "a": "pod_lid",
+     "b": "eye_left",
+     "min_gap": 110.68,
+     "mm3": 0.0
+    },
+    {
+     "a": "pod_lid",
+     "b": "cheek_right",
+     "min_gap": 17.58,
+     "mm3": 0.0
+    },
+    {
+     "a": "pod_lid",
+     "b": "cheek_left",
+     "min_gap": 91.34,
+     "mm3": 0.0
+    },
+    {
+     "a": "pod_lid",
+     "b": "brow",
+     "min_gap": 43.86,
+     "mm3": 0.0
+    },
+    {
+     "a": "pod_lid",
+     "b": "head",
+     "min_gap": 25.83,
+     "mm3": 0.0
+    }
+   ],
+   "min_gap": 5.68,
+   "ok": true
+  },
+  "ribbon": {
+   "A": {
+    "rest": {
+     "length": 33.8,
+     "min_bend_r": 2.87,
+     "twist_deg": 24.7,
+     "twist_over_mm": 21.5,
+     "inplane_slant_deg": 8.5,
+     "slack": 37.5,
+     "ok": true
+    },
+    "pitch_minus15": {
+     "length": 36.9,
+     "min_bend_r": 2.87,
+     "twist_deg": 9.7,
+     "twist_over_mm": 22.6,
+     "inplane_slant_deg": 12.8,
+     "slack": 34.4,
+     "ok": true
+    },
+    "pitch_plus15": {
+     "length": 34.2,
+     "min_bend_r": 2.87,
+     "twist_deg": 39.7,
+     "twist_over_mm": 21.7,
+     "inplane_slant_deg": 0.1,
+     "slack": 37.2,
+     "ok": true
+    },
+    "slot_aft": {
+     "length": 34.8,
+     "min_bend_r": 2.87,
+     "twist_deg": 24.7,
+     "twist_over_mm": 21.8,
+     "inplane_slant_deg": 8.4,
+     "slack": 36.5,
+     "ok": true
+    },
+    "slot_fore": {
+     "length": 34.1,
+     "min_bend_r": 2.87,
+     "twist_deg": 24.7,
+     "twist_over_mm": 21.6,
+     "inplane_slant_deg": 8.4,
+     "slack": 37.2,
+     "ok": true
+    },
+    "m15_aft": {
+     "length": 38.6,
+     "min_bend_r": 2.87,
+     "twist_deg": 9.7,
+     "twist_over_mm": 23.3,
+     "inplane_slant_deg": 10.4,
+     "slack": 32.7,
+     "ok": true
+    },
+    "m15_fore": {
+     "length": 35.9,
+     "min_bend_r": 2.87,
+     "twist_deg": 9.7,
+     "twist_over_mm": 22.2,
+     "inplane_slant_deg": 15.1,
+     "slack": 35.4,
+     "ok": true
+    },
+    "p15_aft": {
+     "length": 33.1,
+     "min_bend_r": 2.87,
+     "twist_deg": 39.7,
+     "twist_over_mm": 21.3,
+     "inplane_slant_deg": 2.2,
+     "slack": 38.2,
+     "ok": true
+    },
+    "p15_fore": {
+     "length": 36.0,
+     "min_bend_r": 2.87,
+     "twist_deg": 39.7,
+     "twist_over_mm": 22.4,
+     "inplane_slant_deg": 1.8,
+     "slack": 35.3,
+     "ok": true
+    }
+   },
+   "B": {
+    "rest": {
+     "length": 36.5,
+     "min_bend_r": 2.87,
+     "twist_deg": 25.7,
+     "twist_over_mm": 22.9,
+     "inplane_slant_deg": 3.0,
+     "slack": 34.8,
+     "ok": true
+    },
+    "pitch_minus15": {
+     "length": 34.5,
+     "min_bend_r": 2.87,
+     "twist_deg": 10.7,
+     "twist_over_mm": 22.1,
+     "inplane_slant_deg": 7.2,
+     "slack": 36.8,
+     "ok": true
+    },
+    "pitch_plus15": {
+     "length": 40.4,
+     "min_bend_r": 2.87,
+     "twist_deg": 40.7,
+     "twist_over_mm": 24.9,
+     "inplane_slant_deg": 14.3,
+     "slack": 30.9,
+     "ok": true
+    },
+    "slot_aft": {
+     "length": 34.7,
+     "min_bend_r": 2.87,
+     "twist_deg": 25.7,
+     "twist_over_mm": 22.2,
+     "inplane_slant_deg": 3.1,
+     "slack": 36.6,
+     "ok": true
+    },
+    "slot_fore": {
+     "length": 38.7,
+     "min_bend_r": 2.87,
+     "twist_deg": 25.7,
+     "twist_over_mm": 24.0,
+     "inplane_slant_deg": 2.8,
+     "slack": 32.6,
+     "ok": true
+    },
+    "m15_aft": {
+     "length": 33.8,
+     "min_bend_r": 2.87,
+     "twist_deg": 10.7,
+     "twist_over_mm": 21.8,
+     "inplane_slant_deg": 5.2,
+     "slack": 37.6,
+     "ok": true
+    },
+    "m15_fore": {
+     "length": 36.1,
+     "min_bend_r": 2.87,
+     "twist_deg": 10.7,
+     "twist_over_mm": 22.7,
+     "inplane_slant_deg": 8.9,
+     "slack": 35.2,
+     "ok": true
+    },
+    "p15_aft": {
+     "length": 38.2,
+     "min_bend_r": 2.87,
+     "twist_deg": 40.7,
+     "twist_over_mm": 23.6,
+     "inplane_slant_deg": 13.2,
+     "slack": 33.2,
+     "ok": true
+    },
+    "p15_fore": {
+     "length": 42.9,
+     "min_bend_r": 2.87,
+     "twist_deg": 40.7,
+     "twist_over_mm": 26.4,
+     "inplane_slant_deg": 15.2,
+     "slack": 28.4,
+     "ok": true
+    }
+   },
+   "insertion_depth": 3.66
+  },
+  "ribbon_alternatives": {
+   "A": {
+    "above_outer_corner": 87.4,
+    "brow_bar_centre": 111.2
+   },
+   "B": {
+    "above_outer_corner": 94.6,
+    "brow_bar_centre": 116.3
+   }
+  },
+  "tool_access": [
+   {
+    "screw": "M2x6 pivot (friction pivot)",
+    "blocked_by": [],
+    "ok": true
+   },
+   {
+    "screw": "M2x6 lock",
+    "blocked_by": [],
+    "ok": true
+   },
+   {
+    "screw": "M2x6 temple R",
+    "blocked_by": [],
+    "ok": true
+   },
+   {
+    "screw": "M2x6 temple L",
+    "blocked_by": [],
+    "ok": true
+   },
+   {
+    "screw": "M2x6 pod hanger 1",
+    "blocked_by": [],
+    "ok": true
+   },
+   {
+    "screw": "M2x6 pod hanger 2",
+    "blocked_by": [],
+    "ok": true
+   }
+  ],
+  "fov_vignetting": {
+   "A": {
+    "cone_half_angle_deg": 40.4,
+    "intrusions": []
+   },
+   "B": {
+    "cone_half_angle_deg": 33.5,
+    "intrusions": [
+     {
+      "part": "front",
+      "mm3": 10.53
+     }
+    ]
+   }
+  },
+  "eye_occlusion": {
+   "A": {
+    "samples": 313,
+    "occluded_pct": 0.0,
+    "occluded_in_lower_half_pct": 0.0,
+    "pupil_zone_occluded_pct": 0.0
+   },
+   "B": {
+    "samples": 313,
+    "occluded_pct": 0.0,
+    "occluded_in_lower_half_pct": 0.0,
+    "pupil_zone_occluded_pct": 0.0
+   }
+  },
+  "visual_field": {
+   "A": {
+    "rim_sightline_depression_deg": 37.8773,
+    "camera_top_depression_deg": 24.9012,
+    "camera_bottom_depression_deg": 40.5693,
+    "hidden_below_rim": false,
+    "overlap_into_aperture_deg": 12.9761
+   },
+   "B": {
+    "rim_sightline_depression_deg": 37.8773,
+    "camera_top_depression_deg": 27.8229,
+    "camera_bottom_depression_deg": 39.5572,
+    "hidden_below_rim": false,
+    "overlap_into_aperture_deg": 10.0544
+   }
+  },
+  "temple": {
+   "spread_per_side_mm": 15.0,
+   "force_N": 0.319,
+   "shaft_stress_MPa": 6.4,
+   "tenon_root_stress_MPa": 13.6,
+   "strain_pct": 0.68,
+   "petg_yield_MPa": 45.0,
+   "temple_to_head_plane_min_gap": 1.27
+  },
+  "print": {
+   "front": {
+    "size": [
+     172.67,
+     70.71,
+     13.8
+    ],
+    "fits": true,
+    "overhang_area_mm2": 44.3408,
+    "bridge_area_mm2": 20.4306,
+    "bridges": 2,
+    "significant_islands": 1,
+    "significant_area_mm2": 10.4537,
+    "needs_support": false,
+    "bed_contact_mm2": 1794.0962,
+    "unsupported_mm2": 0.0,
+    "bridged_mm2": 3.4
+   },
+   "temple_right": {
+    "size": [
+     176.2,
+     29.8,
+     3.0
+    ],
+    "fits": true,
+    "overhang_area_mm2": 0.0,
+    "bridge_area_mm2": 0.0,
+    "bridges": 0,
+    "significant_islands": 0,
+    "significant_area_mm2": 0.0,
+    "needs_support": false,
+    "bed_contact_mm2": 889.0755,
+    "unsupported_mm2": 0.0,
+    "bridged_mm2": 0.0
+   },
+   "temple_left": {
+    "size": [
+     176.2,
+     29.8,
+     3.0
+    ],
+    "fits": true,
+    "overhang_area_mm2": 0.0,
+    "bridge_area_mm2": 0.0,
+    "bridges": 0,
+    "significant_islands": 0,
+    "significant_area_mm2": 0.0,
+    "needs_support": false,
+    "bed_contact_mm2": 889.0755,
+    "unsupported_mm2": 0.0,
+    "bridged_mm2": 0.0
+   },
+   "pod_body": {
+    "size": [
+     23.78,
+     13.94,
+     37.06
+    ],
+    "fits": true,
+    "overhang_area_mm2": 258.4195,
+    "bridge_area_mm2": 229.5171,
+    "bridges": 11,
+    "significant_islands": 2,
+    "significant_area_mm2": 27.1212,
+    "needs_support": false,
+    "bed_contact_mm2": 60.0461,
+    "unsupported_mm2": 0.0,
+    "bridged_mm2": 205.8
+   },
+   "pod_lid": {
+    "size": [
+     23.18,
+     15.14,
+     7.2
+    ],
+    "fits": true,
+    "overhang_area_mm2": 0.0,
+    "bridge_area_mm2": 0.0,
+    "bridges": 0,
+    "significant_islands": 0,
+    "significant_area_mm2": 0.0,
+    "needs_support": false,
+    "bed_contact_mm2": 341.9272,
+    "unsupported_mm2": 0.0,
+    "bridged_mm2": 0.0
+   },
+   "stalk_A": {
+    "size": [
+     23.83,
+     34.45,
+     36.48
+    ],
+    "fits": true,
+    "overhang_area_mm2": 115.5298,
+    "bridge_area_mm2": 102.574,
+    "bridges": 5,
+    "significant_islands": 1,
+    "significant_area_mm2": 5.9826,
+    "needs_support": true,
+    "bed_contact_mm2": 115.0156,
+    "unsupported_mm2": 7.4,
+    "bridged_mm2": 44.5
+   },
+   "stalk_B": {
+    "size": [
+     30.88,
+     29.8,
+     36.77
+    ],
+    "fits": true,
+    "overhang_area_mm2": 104.3033,
+    "bridge_area_mm2": 93.558,
+    "bridges": 5,
+    "significant_islands": 1,
+    "significant_area_mm2": 5.16,
+    "needs_support": true,
+    "bed_contact_mm2": 115.0156,
+    "unsupported_mm2": 13.9,
+    "bridged_mm2": 41.4
+   }
+  },
+  "print_orientation": {
+   "front": "face-down (front face on bed)",
+   "temple_right": "flat on outer face",
+   "temple_left": "flat on outer face",
+   "pod_body": "auto: up = (+1.00, +0.00, +0.00) (board frame)",
+   "pod_lid": "on end plate",
+   "stalk_A": "auto: up = (+1.00, +0.00, +0.00) (stalk frame)",
+   "stalk_B": "auto: up = (+1.00, +0.00, +0.00) (stalk frame)",
+   "tpu_nose_pad": "flat"
+  },
+  "print_sets": {
+   "A": {
+    "parts": [
+     "front",
+     "stalk_A",
+     "temple_right",
+     "temple_left",
+     "pod_lid",
+     "pod_body"
+    ],
+    "fits_bed": true,
+    "used_depth_mm": 162.3
+   },
+   "B": {
+    "parts": [
+     "front",
+     "stalk_B",
+     "temple_right",
+     "temple_left",
+     "pod_lid",
+     "pod_body"
+    ],
+    "fits_bed": true,
+    "used_depth_mm": 162.3
+   }
+  },
+  "leds": {
+   "A": [
+    {
+     "name": "temporal",
+     "tip_W": [
+      -59.0,
+      -21.1114,
+      -4.9867
+     ],
+     "axis_W": [
+      0.5944,
+      0.5836,
+      -0.5533
+     ],
+     "off_lens_axis": 16.3126,
+     "dist_to_eye_centre": 36.1729,
+     "aim_miss": 0.0,
+     "angle_to_cam_axis_deg": 26.8054
+    },
+    {
+     "name": "nasal",
+     "tip_W": [
+      -31.0,
+      -21.1114,
+      -4.9867
+     ],
+     "axis_W": [
+      -0.2181,
+      0.7083,
+      -0.6714
+     ],
+     "off_lens_axis": 14.3398,
+     "dist_to_eye_centre": 29.8073,
+     "aim_miss": 0.0,
+     "angle_to_cam_axis_deg": 28.7563
+    }
+   ],
+   "B": [
+    {
+     "name": "temporal",
+     "tip_W": [
+      -59.0,
+      -21.1114,
+      -4.9867
+     ],
+     "axis_W": [
+      0.5944,
+      0.5836,
+      -0.5533
+     ],
+     "off_lens_axis": 17.5721,
+     "dist_to_eye_centre": 36.1729,
+     "aim_miss": 0.0,
+     "angle_to_cam_axis_deg": 29.0637
+    },
+    {
+     "name": "nasal",
+     "tip_W": [
+      -31.0,
+      -21.1114,
+      -4.9867
+     ],
+     "axis_W": [
+      -0.2181,
+      0.7083,
+      -0.6714
+     ],
+     "off_lens_axis": 12.9739,
+     "dist_to_eye_centre": 29.8073,
+     "aim_miss": 0.0,
+     "angle_to_cam_axis_deg": 25.8018
+    }
+   ]
+  },
+  "mass_A": {
+   "rows": [
+    {
+     "item": "front",
+     "volume_mm3": 9359.5,
+     "grams": 11.89
+    },
+    {
+     "item": "temple_right",
+     "volume_mm3": 2630.3,
+     "grams": 3.34
+    },
+    {
+     "item": "temple_left",
+     "volume_mm3": 2630.3,
+     "grams": 3.34
+    },
+    {
+     "item": "pod_body",
+     "volume_mm3": 2495.2,
+     "grams": 3.17
+    },
+    {
+     "item": "pod_lid",
+     "volume_mm3": 778.6,
+     "grams": 0.99
+    },
+    {
+     "item": "stalk_A",
+     "volume_mm3": 1257.3,
+     "grams": 1.6
+    },
+    {
+     "item": "XIAO ESP32-S3 Sense (no stock camera)",
+     "volume_mm3": null,
+     "grams": 5.0
+    },
+    {
+     "item": "OV2640 + 75 mm FPC",
+     "volume_mm3": null,
+     "grams": 1.0
+    },
+    {
+     "item": "2x 850 nm 5 mm LED",
+     "volume_mm3": null,
+     "grams": 0.7
+    },
+    {
+     "item": "2x 100 ohm resistor",
+     "volume_mm3": null,
+     "grams": 0.06
+    },
+    {
+     "item": "6x M2x6 screw",
+     "volume_mm3": null,
+     "grams": 1.2
+    },
+    {
+     "item": "30 AWG wire + heat-shrink",
+     "volume_mm3": null,
+     "grams": 0.3
+    }
+   ],
+   "total_g": 32.58,
+   "target_g": 35.0,
+   "ok": true
+  },
+  "mass_B": {
+   "rows": [
+    {
+     "item": "front",
+     "volume_mm3": 9359.5,
+     "grams": 11.89
+    },
+    {
+     "item": "temple_right",
+     "volume_mm3": 2630.3,
+     "grams": 3.34
+    },
+    {
+     "item": "temple_left",
+     "volume_mm3": 2630.3,
+     "grams": 3.34
+    },
+    {
+     "item": "pod_body",
+     "volume_mm3": 2495.2,
+     "grams": 3.17
+    },
+    {
+     "item": "pod_lid",
+     "volume_mm3": 778.6,
+     "grams": 0.99
+    },
+    {
+     "item": "stalk_B",
+     "volume_mm3": 1195.1,
+     "grams": 1.52
+    },
+    {
+     "item": "XIAO ESP32-S3 Sense (no stock camera)",
+     "volume_mm3": null,
+     "grams": 5.0
+    },
+    {
+     "item": "OV2640 + 75 mm FPC",
+     "volume_mm3": null,
+     "grams": 1.0
+    },
+    {
+     "item": "2x 850 nm 5 mm LED",
+     "volume_mm3": null,
+     "grams": 0.7
+    },
+    {
+     "item": "2x 100 ohm resistor",
+     "volume_mm3": null,
+     "grams": 0.06
+    },
+    {
+     "item": "6x M2x6 screw",
+     "volume_mm3": null,
+     "grams": 1.2
+    },
+    {
+     "item": "30 AWG wire + heat-shrink",
+     "volume_mm3": null,
+     "grams": 0.3
+    }
+   ],
+   "total_g": 32.5,
+   "target_g": 35.0,
+   "ok": true
+  }
+ },
+ "dxf_crosscheck": [
+  {
+   "file": "XIAO_ESP32S3_v1.1_Dimensioning.dxf",
+   "size": [
+    19.05,
+    21.145
+   ]
+  },
+  {
+   "file": "XIAO_ESP32S3_ExpBoard_v1.0_top.dxf",
+   "size": [
+    19.05,
+    15.467
+   ]
+  }
+ ],
+ "files": [
+  "output\\assembly\\eyetracker_set_A_AS_WORN_world_frame_flat.step",
+  "output\\assembly\\eyetracker_set_A_assembly.step",
+  "output\\assembly\\eyetracker_set_B_assembly.step",
+  "output\\poses\\variant_A_pitch_minus15_assembly.step",
+  "output\\poses\\variant_A_pitch_minus15_flat.step",
+  "output\\poses\\variant_A_pitch_plus15_assembly.step",
+  "output\\poses\\variant_A_pitch_plus15_flat.step",
+  "output\\poses\\variant_A_rest_assembly.step",
+  "output\\poses\\variant_A_rest_flat.step",
+  "output\\poses\\variant_A_slot_aft_assembly.step",
+  "output\\poses\\variant_A_slot_aft_flat.step",
+  "output\\poses\\variant_A_slot_fore_assembly.step",
+  "output\\poses\\variant_A_slot_fore_flat.step",
+  "output\\poses\\variant_B_pitch_minus15_assembly.step",
+  "output\\poses\\variant_B_pitch_minus15_flat.step",
+  "output\\poses\\variant_B_pitch_plus15_assembly.step",
+  "output\\poses\\variant_B_pitch_plus15_flat.step",
+  "output\\poses\\variant_B_rest_assembly.step",
+  "output\\poses\\variant_B_rest_flat.step",
+  "output\\poses\\variant_B_slot_aft_assembly.step",
+  "output\\poses\\variant_B_slot_aft_flat.step",
+  "output\\poses\\variant_B_slot_fore_assembly.step",
+  "output\\poses\\variant_B_slot_fore_flat.step",
+  "output\\print_orientation\\front.step",
+  "output\\print_orientation\\front.stl",
+  "output\\print_orientation\\pod_body.step",
+  "output\\print_orientation\\pod_body.stl",
+  "output\\print_orientation\\pod_lid.step",
+  "output\\print_orientation\\pod_lid.stl",
+  "output\\print_orientation\\stalk_A.step",
+  "output\\print_orientation\\stalk_A.stl",
+  "output\\print_orientation\\stalk_B.step",
+  "output\\print_orientation\\stalk_B.stl",
+  "output\\print_orientation\\temple_left.step",
+  "output\\print_orientation\\temple_left.stl",
+  "output\\print_orientation\\temple_right.step",
+  "output\\print_orientation\\temple_right.stl",
+  "output\\print_sets\\print_set_A_frame_plus_stalk_A.3mf",
+  "output\\print_sets\\print_set_A_frame_plus_stalk_A.step",
+  "output\\print_sets\\print_set_A_frame_plus_stalk_A.stl",
+  "output\\print_sets\\print_set_B_frame_plus_stalk_B.3mf",
+  "output\\print_sets\\print_set_B_frame_plus_stalk_B.step",
+  "output\\print_sets\\print_set_B_frame_plus_stalk_B.stl",
+  "output\\reference\\camera_A_8p5_head_verify.step",
+  "output\\reference\\camera_A_8p5_head_verify.stl",
+  "output\\reference\\camera_B_8p5_head_verify.step",
+  "output\\reference\\camera_B_8p5_head_verify.stl",
+  "output\\reference\\face_proxy.step",
+  "output\\reference\\ir_led_nasal.step",
+  "output\\reference\\ir_led_nasal.stl",
+  "output\\reference\\ir_led_temporal.step",
+  "output\\reference\\ir_led_temporal.stl",
+  "output\\reference\\xiao_esp32s3_sense_placed.step",
+  "output\\step\\front.step",
+  "output\\step\\pod_body.step",
+  "output\\step\\pod_lid.step",
+  "output\\step\\stalk_A.step",
+  "output\\step\\stalk_B.step",
+  "output\\step\\temple_left.step",
+  "output\\step\\temple_right.step",
+  "output\\stl\\front.stl",
+  "output\\stl\\pod_body.stl",
+  "output\\stl\\pod_lid.stl",
+  "output\\stl\\stalk_A.stl",
+  "output\\stl\\stalk_B.stl",
+  "output\\stl\\temple_left.stl",
+  "output\\stl\\temple_right.stl"
+ ],
+ "build_seconds": 443.8
+}
