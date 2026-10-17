@@ -43,7 +43,7 @@ HOVER_M = 0.08  # approach height above the table
 GRASP_M = 0.015  # gripper tip height above the table when closing
 GRIPPER_OPEN = 70.0  # % of the calibrated gripper range
 GRIPPER_CLOSED = 5.0
-HANDOVER_M = 0.18  # hand-over height above the table (no drop spot)
+HANDOVER_M = 0.12  # hand-over height above the table (no drop spot); ~0.13 is the most it reaches pointing down
 HANDOVER_S = 3.0  # how long to hold it up before letting go
 
 
@@ -327,13 +327,24 @@ def grip_yaw(table: dict, obj: dict) -> float | None:
     return obj["yaw"] + table_heading(table, obj["x"], obj["y"])
 
 
+def heights(obj: dict) -> tuple[float, float, float]:
+    """(grasp, hover, hand-over) tip heights above the table in metres for this object.
+
+    grasp_mm is recorded by teach (where the jaws close - near the table for a flat bar,
+    up at the cap for a bottle); hover and hand-over keep the same clearance above it.
+    """
+    grasp = obj.get("grasp_mm", GRASP_M * 1000) / 1000
+    hover = grasp + HOVER_M - GRASP_M
+    return grasp, hover, max(HANDOVER_M, hover)
+
+
 def hover(name: str, port: str = "COM4") -> None:
     """Move above the object with the gripper open, and keep holding there (no descent)."""
     obj, _, table, cal, kin = _setup(name)
     bus = open_bus(port)
     try:
         hold(bus)
-        _run(bus, kin, cal, [(table_point(table, obj["x"], obj["y"], HOVER_M), GRIPPER_OPEN, grip_yaw(table, obj))])
+        _run(bus, kin, cal, [(table_point(table, obj["x"], obj["y"], heights(obj)[1]), GRIPPER_OPEN, grip_yaw(table, obj))])
     finally:
         bus.disconnect(disable_torque=False)
 
@@ -345,13 +356,14 @@ def pick_from_hover(name: str, port: str = "COM4", on_descend=None) -> bool:
     on_descend() is called right before the arm starts moving down (log the real descent there).
     """
     obj, drop_spot, table, cal, kin = _setup(name)
-    above = table_point(table, obj["x"], obj["y"], HOVER_M)
-    at = table_point(table, obj["x"], obj["y"], GRASP_M)
+    grasp_h, hover_h, handover_h = heights(obj)
+    above = table_point(table, obj["x"], obj["y"], hover_h)
+    at = table_point(table, obj["x"], obj["y"], grasp_h)
     yaw = grip_yaw(table, obj)
     if drop_spot:
-        finish = [(above, GRIPPER_CLOSED, yaw), (table_point(table, drop_spot["x"], drop_spot["y"], HOVER_M), GRIPPER_CLOSED)]
+        finish = [(above, GRIPPER_CLOSED, yaw), (table_point(table, drop_spot["x"], drop_spot["y"], hover_h), GRIPPER_CLOSED)]
     else:  # hand-over: straight up, hold it there for the user
-        finish = [(table_point(table, obj["x"], obj["y"], HANDOVER_M), GRIPPER_CLOSED, yaw)]
+        finish = [(table_point(table, obj["x"], obj["y"], handover_h), GRIPPER_CLOSED, yaw)]
     bus = open_bus(port)
     held = False
     try:
@@ -381,8 +393,12 @@ def teach(name: str, port: str = "COM4") -> None:
     bus = open_bus(port)
     try:
         bus.disable_torque()
-        input(f"The arm is limp. Rest the gripper tip on the centre of {name!r} on the table, pointing straight down"
-              " with the jaws turned the way they should close on it, then press Enter: ")
+        if name == "drop":
+            input("The arm is limp. Rest the gripper tip on the drop spot, then press Enter: ")
+        else:
+            input(f"The arm is limp. Put the open jaws around {name!r} exactly where they should grip it: pointing\n"
+                  "straight down, turned to close across it, at the height to grip (low for a flat bar, at the\n"
+                  "middle for a bottle lying on its side). Then press Enter: ")
         deg = to_deg(read(bus), cal)
         tip = kin.fk(deg)[:3, 3]
     finally:
@@ -396,9 +412,18 @@ def teach(name: str, port: str = "COM4") -> None:
         if obj is None:
             obj = {"name": name, "cls": name}
             objects["objects"].append(obj)
-        obj.update(x=x, y=y, yaw=round(_wrap(kin.jaw_yaw(deg) - table_heading(table, x, y)), 1))
+        grasp_mm = max(5, round((tip[2] - table_point(table, x, y, 0)[2]) * 1000))  # never aim into the table
+        obj.update(x=x, y=y, yaw=round(_wrap(kin.jaw_yaw(deg) - table_heading(table, x, y)), 1), grasp_mm=grasp_mm)
     OBJECTS.write_text(json.dumps(objects, indent=2))
-    print(f"{name} saved at table ({x}, {y}) mm" + ("" if name == "drop" else f", grip angle {obj['yaw']} deg"))
+    if name != "drop":
+        try:  # the approach starts above the grip: check the arm can get there pointing down
+            kin.with_yaw(kin.ik(table_point(table, x, y, heights(obj)[1]), deg), grip_yaw(table, obj),
+                         table_point(table, x, y, heights(obj)[1]))
+        except RuntimeError:
+            print(f"WARNING: the arm can't come down onto this grip from {heights(obj)[1] * 1000:.0f} mm up - grip lower"
+                  " (lay tall things on their side) or move it closer to the arm")
+    print(f"{name} saved at table ({x}, {y}) mm" +
+          ("" if name == "drop" else f", grip angle {obj['yaw']} deg, grip height {obj['grasp_mm']} mm"))
 
 
 def pick(name: str, port: str = "COM4") -> bool:

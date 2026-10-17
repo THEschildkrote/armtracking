@@ -25,3 +25,4 @@ arm/table_to_robot.json
 
 # Session logs and task memory written by gaze.cmd --intent
 logs/
+models/
