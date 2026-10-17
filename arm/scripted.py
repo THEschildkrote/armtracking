@@ -79,6 +79,10 @@ class Kinematics:
         chain = Chain.from_urdf_file(str(URDF), base_elements=["base_link"])
         mask = [link.name in ARM_JOINTS for link in chain.links]
         self.chain = Chain.from_urdf_file(str(URDF), base_elements=["base_link"], active_links_mask=mask)
+        # same arm with the wrist roll held where it is (inactive joints keep their initial value)
+        self.chain_fixed_roll = Chain.from_urdf_file(
+            str(URDF), base_elements=["base_link"],
+            active_links_mask=[m and link.name != "wrist_roll" for m, link in zip(mask, chain.links)])
         self.names = [link.name for link in self.chain.links]
         self.index = {j: self.names.index(j) for j in ARM_JOINTS}
         self.down_axis = self._approach_axis()
@@ -116,6 +120,37 @@ class Kinematics:
         if err > 0.015:
             raise RuntimeError(f"target {np.round(xyz, 3)} m is out of reach (IK error {err * 1000:.0f} mm)")
         return {j: math.degrees(q[i]) for j, i in self.index.items()}
+
+    def jaw_yaw(self, deg: dict[str, float]) -> float:
+        """Heading (degrees, robot frame) of a fixed horizontal axis of the gripper while it points down.
+
+        Picks compare it with the heading recorded by teach, so which axis it is doesn't matter.
+        """
+        k = next(i for i, axis in enumerate("XYZ") if axis != self.down_axis)
+        v = self.fk(deg)[:3, k]
+        return math.degrees(math.atan2(v[1], v[0]))
+
+    def with_yaw(self, deg: dict[str, float], yaw: float, xyz) -> dict[str, float]:
+        """Tip still at xyz pointing down, wrist rolled so jaw_yaw == yaw. Jaws are symmetric, so a
+        half-turn either way grips the same; take whichever leaves the roll nearest its centre.
+        The tip sits off the roll axis, so after each roll the position is re-solved with the roll held."""
+        for _ in range(4):
+            probe = {**deg, "wrist_roll": deg["wrist_roll"] + 10}
+            sign = 1.0 if _wrap(self.jaw_yaw(probe) - self.jaw_yaw(deg)) > 0 else -1.0
+            delta = _wrap(yaw - self.jaw_yaw(deg))
+            options = [deg["wrist_roll"] + sign * (delta + k * 180) for k in (-2, -1, 0, 1, 2)]
+            deg = {**deg, "wrist_roll": min(options, key=abs)}
+            q = self.chain_fixed_roll.inverse_kinematics(xyz, [0, 0, -1], orientation_mode=self.down_axis,
+                                                         initial_position=self._vector(deg))
+            deg = {j: math.degrees(q[i]) for j, i in self.index.items()}
+        err = float(np.linalg.norm(self.fk(deg)[:3, 3] - xyz))
+        if err > 0.015:
+            raise RuntimeError(f"can't reach {np.round(xyz, 3)} m with that grip angle (IK error {err * 1000:.0f} mm)")
+        return deg
+
+
+def _wrap(angle: float) -> float:
+    return (angle + 180) % 360 - 180
 
 
 # ---------- table <-> robot ----------
@@ -179,6 +214,12 @@ def table_from_robot(calib: dict, xy_m: np.ndarray) -> np.ndarray:
         m = np.asarray(calib["A"])
         return np.linalg.solve(m[:, :2], np.asarray(xy_m) - m[:, 2]) * 1000
     return np.asarray(calib["R"]).T @ (np.asarray(xy_m) - np.asarray(calib["t"])) * 1000
+
+
+def table_heading(calib: dict, x_mm: float, y_mm: float) -> float:
+    """Heading (degrees, robot frame) of the table's +x axis at a table point."""
+    d = table_point(calib, x_mm + 10, y_mm, 0) - table_point(calib, x_mm, y_mm, 0)
+    return math.degrees(math.atan2(d[1], d[0]))
 
 
 def report(result: dict) -> None:
@@ -259,12 +300,15 @@ def _setup(name: str):
 def _run(bus, kin, cal, waypoints, on_waypoint=None) -> dict[str, float]:
     """Solve every waypoint first (nothing moves if any is unreachable), then glide through them.
 
-    waypoints: [(xyz metres, gripper %), ...]; on_waypoint(i) is called just before moving to waypoint i.
+    waypoints: [(xyz metres, gripper %[, jaw heading degrees]), ...]; on_waypoint(i) is called just
+    before moving to waypoint i.
     """
     seed = to_deg(read(bus), cal)
     plan = []
-    for xyz, grip in waypoints:
+    for xyz, grip, *yaw in waypoints:
         seed = kin.ik(xyz, seed)
+        if yaw and yaw[0] is not None:
+            seed = kin.with_yaw(seed, yaw[0], xyz)
         plan.append((dict(seed), grip))
     for i, (deg, grip) in enumerate(plan):
         if on_waypoint:
@@ -276,13 +320,20 @@ def _run(bus, kin, cal, waypoints, on_waypoint=None) -> dict[str, float]:
     return seed
 
 
+def grip_yaw(table: dict, obj: dict) -> float | None:
+    """The jaw heading recorded for an object by teach (robot frame), or None to leave the wrist as IK has it."""
+    if obj.get("yaw") is None:
+        return None
+    return obj["yaw"] + table_heading(table, obj["x"], obj["y"])
+
+
 def hover(name: str, port: str = "COM4") -> None:
     """Move above the object with the gripper open, and keep holding there (no descent)."""
     obj, _, table, cal, kin = _setup(name)
     bus = open_bus(port)
     try:
         hold(bus)
-        _run(bus, kin, cal, [(table_point(table, obj["x"], obj["y"], HOVER_M), GRIPPER_OPEN)])
+        _run(bus, kin, cal, [(table_point(table, obj["x"], obj["y"], HOVER_M), GRIPPER_OPEN, grip_yaw(table, obj))])
     finally:
         bus.disconnect(disable_torque=False)
 
@@ -296,15 +347,16 @@ def pick_from_hover(name: str, port: str = "COM4", on_descend=None) -> bool:
     obj, drop_spot, table, cal, kin = _setup(name)
     above = table_point(table, obj["x"], obj["y"], HOVER_M)
     at = table_point(table, obj["x"], obj["y"], GRASP_M)
+    yaw = grip_yaw(table, obj)
     if drop_spot:
-        finish = [(above, GRIPPER_CLOSED), (table_point(table, drop_spot["x"], drop_spot["y"], HOVER_M), GRIPPER_CLOSED)]
+        finish = [(above, GRIPPER_CLOSED, yaw), (table_point(table, drop_spot["x"], drop_spot["y"], HOVER_M), GRIPPER_CLOSED)]
     else:  # hand-over: straight up, hold it there for the user
-        finish = [(table_point(table, obj["x"], obj["y"], HANDOVER_M), GRIPPER_CLOSED)]
+        finish = [(table_point(table, obj["x"], obj["y"], HANDOVER_M), GRIPPER_CLOSED, yaw)]
     bus = open_bus(port)
     held = False
     try:
         hold(bus)
-        _run(bus, kin, cal, [(above, GRIPPER_OPEN), (at, GRIPPER_OPEN), (at, GRIPPER_CLOSED)],
+        _run(bus, kin, cal, [(above, GRIPPER_OPEN, yaw), (at, GRIPPER_OPEN, yaw), (at, GRIPPER_CLOSED, yaw)],
              on_waypoint=lambda i: on_descend() if i == 1 and on_descend else None)
         # An empty gripper closes all the way; one holding an object stops short of the target.
         grip_now = read(bus)["gripper"]
@@ -329,8 +381,10 @@ def teach(name: str, port: str = "COM4") -> None:
     bus = open_bus(port)
     try:
         bus.disable_torque()
-        input(f"The arm is limp. Rest the gripper tip on the centre of {name!r} on the table, then press Enter: ")
-        tip = kin.fk(to_deg(read(bus), cal))[:3, 3]
+        input(f"The arm is limp. Rest the gripper tip on the centre of {name!r} on the table, pointing straight down"
+              " with the jaws turned the way they should close on it, then press Enter: ")
+        deg = to_deg(read(bus), cal)
+        tip = kin.fk(deg)[:3, 3]
     finally:
         bus.disconnect(disable_torque=True)
     x, y = (round(float(v)) for v in table_from_robot(table, tip[:2]))
@@ -342,9 +396,9 @@ def teach(name: str, port: str = "COM4") -> None:
         if obj is None:
             obj = {"name": name, "cls": name}
             objects["objects"].append(obj)
-        obj.update(x=x, y=y)
+        obj.update(x=x, y=y, yaw=round(_wrap(kin.jaw_yaw(deg) - table_heading(table, x, y)), 1))
     OBJECTS.write_text(json.dumps(objects, indent=2))
-    print(f"{name} saved at table ({x}, {y}) mm")
+    print(f"{name} saved at table ({x}, {y}) mm" + ("" if name == "drop" else f", grip angle {obj['yaw']} deg"))
 
 
 def pick(name: str, port: str = "COM4") -> bool:
