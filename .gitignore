@@ -46,3 +46,5 @@ reports/suggested_priors.json
 reports/factory_development_review.md
 reports/*.tmp
 intent/look_routine/data/suggested_priors.json
+
+sponsors/evaluation.local.json

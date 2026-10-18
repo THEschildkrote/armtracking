@@ -99,6 +99,11 @@ def action(name,body):
         emit('factory','Real Droid routine analysis started')
         run(CONFIG);evidence();STATE['factory']['historical']=False
         emit('factory','Fresh Factory report validated; deployment still required',session_id=STATE['factory']['session_id'])
+    elif name=='evaluate':
+        from sponsors.evaluation import run as evaluate
+        emit('eval','Custom robotics replay started')
+        STATE['evaluation']=evaluate()
+        emit('eval','Evaluation completed',run_id=STATE['evaluation']['run_id'])
     elif name=='deploy':
         if not CONFIG.chalk_enabled:raise RuntimeError('Chalk disabled')
         import os
@@ -133,6 +138,8 @@ class Handler(BaseHTTPRequestHandler):
         def work():
             try:action(self.path.rsplit('/',1)[-1],body)
             except Exception as e:
+                if self.path.endswith('evaluate'):
+                    STATE['evaluation']={'text':('Evaluation timed out after 60 seconds.' if isinstance(e,subprocess.TimeoutExpired) else 'Evaluation failed. Check configured session paths, log format and backend availability.'),'failed':True}
                 # No provider response bodies/credentials in browser output.
                 STATE['error']=('Factory timed out after 45 seconds; previous report kept.' if isinstance(e,subprocess.TimeoutExpired) and self.path.endswith('factory') else type(e).__name__+': '+('Voice unavailable; blink remains available.' if self.path.endswith('voice') else 'Action failed; see local logs/status. No simulated success.'))
                 emit('error',STATE['error'])

@@ -1,0 +1,5 @@
+{
+  "backend": "local",
+  "train": ["logs/rehearsal-training.jsonl"],
+  "test": ["logs/rehearsal-held-out.jsonl"]
+}

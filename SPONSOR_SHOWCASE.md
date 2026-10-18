@@ -107,3 +107,25 @@ file was edited for this showcase.
   commit, 2005 ms total including connection/setup; generated audio input.
 - Virtual arm reached delivered. No physical arm was commanded. Real HTTP API
   sequence passed; browser rendering/recording remains unverified in this sandbox.
+
+## Run Evaluation
+
+The button invokes the existing `intent/evals/replay.py` harness in a subprocess,
+with a 60-second timeout. It returns a readable text comparison of gaze-only versus
+gaze + history, with accuracy at 300 ms before confirmation, pre-hover coverage,
+median lead, false pre-hovers, correction counts and the logged authorization audit.
+A safety-violation exit is still displayed as a completed report with violations.
+No robot commands are sent. Results and input hashes are saved in `logs/evaluations/<run-id>/`.
+
+Without `sponsors/evaluation.local.json`, the run generates separate synthetic
+training/test fixtures and labels all metrics as a local smoke test. These numbers
+must not be presented as real user or hardware results. The grab-history CSV alone
+is insufficient: replay requires timestamped scene, gaze and confirmation events.
+
+Copy `sponsors/evaluation.example.json` to the ignored local config and supply
+separate rehearsal train/test JSONL paths. Set `backend` to `chalk` to invoke the
+harness's real Chalk offline queries, or `local` for local scoring. The harness
+rejects identical train/test files. Credentials are never stored in this config.
+The evaluator measures the existing IntentRequest gaze/history graph; it does not
+yet benchmark the newer RoutineRequest hourly-prior integration or physical grasp
+success. It is our custom robotics harness, not Chalk's native Agent Evals.
