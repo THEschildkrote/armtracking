@@ -64,3 +64,7 @@
 {"timestamp": "2026-10-18T09:24:54.139350+00:00", "query_id": "4614b2b735d04333b7628c4bbb72691a", "latency_ms": 116.5, "api_attempted": true, "result": "success"}
 {"timestamp": "2026-10-18T09:27:23.958112+00:00", "query_id": "496c64c359b54741bbe3eac4e5f27399", "latency_ms": 158.6, "api_attempted": true, "result": "success", "phase": "startup"}
 {"timestamp": "2026-10-18T09:27:24.102567+00:00", "query_id": "f3a99cc5b7f84535859390560113eddf", "latency_ms": 143.7, "api_attempted": true, "result": "success"}
+{"timestamp": "2026-10-18T09:36:23.158274+00:00", "query_id": "7c41d4ffea7741e589199a93f7a10bf8", "latency_ms": 524.2, "api_attempted": true, "result": "success", "phase": "startup"}
+{"timestamp": "2026-10-18T09:36:23.326999+00:00", "query_id": "838e5b0dcdc846f49dd312a8a031737d", "latency_ms": 165.6, "api_attempted": true, "result": "success"}
+{"timestamp": "2026-10-18T09:39:26.386214+00:00", "query_id": "28a837d03acf4198bd771153e95771ca", "latency_ms": 162.9, "api_attempted": true, "result": "success", "phase": "startup"}
+{"timestamp": "2026-10-18T09:39:26.492156+00:00", "query_id": "bb09ee47ece9482f9e74abb93fc3d69f", "latency_ms": 103.5, "api_attempted": true, "result": "success"}
