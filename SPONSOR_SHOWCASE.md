@@ -9,7 +9,9 @@ python -m sponsors.showcase.server --config sponsors/config.local.json
 Open http://127.0.0.1:8765. It binds loopback only. No API key is sent to the browser.
 For a fresh Factory run, set `FACTORY_API_KEY` in the launching shell or add
 `--factory-key-file /absolute/path/to/private-file`. The file can contain a raw key
-or `FACTORY_API_KEY=...`; it is parsed without executing shell code.
+or `FACTORY_API_KEY=...`; it is parsed without executing shell code. A shared
+file with separate raw `xai-...` and `fk-...` lines is also supported; provider
+prefixes keep the two credentials separate.
 
 ## What is real
 

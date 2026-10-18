@@ -136,11 +136,10 @@ def main():
     global CONFIG, CLIENT, PORT
     p=argparse.ArgumentParser();p.add_argument('--config',required=True);p.add_argument('--port',type=int,default=8765);p.add_argument('--factory-key-file');a=p.parse_args()
     if a.factory_key_file:
-        import os, re, shlex
-        raw=Path(a.factory_key_file).expanduser().read_text().strip()
-        match=re.search(r'(?m)^(?:export\s+)?FACTORY_API_KEY\s*=\s*(.+)$',raw)
-        key=shlex.split(match.group(1),comments=True)[0] if match else raw
-        if not key or '\n' in key:raise ValueError('Invalid Factory key file')
+        import os
+        from sponsors.credentials import read_key
+        key=read_key(a.factory_key_file,'FACTORY_API_KEY')
+        if not key:raise ValueError('Factory key missing from private file')
         os.environ['FACTORY_API_KEY']=key
     CONFIG=Config.load(a.config);CLIENT=RoutineClient(CONFIG);PORT=a.port;evidence()
     print(f'Look showcase: http://127.0.0.1:{PORT}',flush=True)

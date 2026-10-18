@@ -22,15 +22,8 @@ def api_key(config):
     key=os.environ.get('XAI_API_KEY')
     if key:return key
     if not config.xai_key_file:return None
-    raw=Path(config.xai_key_file).expanduser().read_text().strip()
-    for line in raw.splitlines():
-        match=re.match(r'(?:export\s+)?XAI_API_KEY\s*=\s*(.*)',line.strip())
-        if match:
-            parts=shlex.split(match.group(1),comments=True)
-            return parts[0] if parts else None
-    # Also accept a user-provided file containing only the key.
-    if '\n' not in raw and '=' not in raw:return raw.strip('"\'')
-    return None
+    from .credentials import read_key
+    return read_key(config.xai_key_file,'XAI_API_KEY')
 
 def parse_result(event):
     if event.get('name')!='confirm_candidate':raise ValueError('Unknown tool')
