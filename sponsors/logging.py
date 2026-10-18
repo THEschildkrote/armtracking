@@ -16,7 +16,10 @@ def log(name, **event):
             path = ROOT / 'logs' / name
             path.parent.mkdir(parents=True, exist_ok=True)
             with path.open('a') as f:
-                f.write(json.dumps({'timestamp': timestamp(), **event}, allow_nan=False)+'\n')
+                record = {'timestamp': timestamp(), **event}
+                f.write(json.dumps(record, allow_nan=False)+'\n')
+            from .call_evidence import append_receipt
+            append_receipt(name, record)
     except (OSError, ValueError):
         pass
 
