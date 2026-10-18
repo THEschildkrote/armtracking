@@ -19,6 +19,13 @@ def evidence():
     p=ROOT/'reports/suggested_priors.json'
     if p.exists():
         d=json.loads(p.read_text());STATE['factory']={'historical':True,'generated_at':d['generated_at'],'session_id':d.get('provenance',{}).get('session_id'),'summary':(ROOT/'reports/routine_summary.md').read_text()}
+        history=ROOT/'logs/factory_runs.jsonl'
+        if history.exists():
+            for line in reversed(history.read_text().splitlines()):
+                try:entry=json.loads(line)
+                except ValueError:continue
+                if entry.get('session_id')==STATE['factory']['session_id']:
+                    STATE['factory']['elapsed_s']=round(entry.get('latency_ms',0)/1000,1);break
 
 async def voice(label, pcm=None):
     import certifi, websockets
@@ -122,12 +129,12 @@ class Handler(BaseHTTPRequestHandler):
             if n>1500000:raise ValueError('Audio too large')
             body=json.loads(self.rfile.read(n) or b'{}')
         except Exception:LOCK.release();self.send(b'{}',400);return
-        STATE.update(busy=True,error=None)
+        STATE.update(busy=True,error=None,action=self.path.rsplit('/',1)[-1],started_at=time.time())
         def work():
             try:action(self.path.rsplit('/',1)[-1],body)
             except Exception as e:
                 # No provider response bodies/credentials in browser output.
-                STATE['error']=type(e).__name__+': '+('Voice unavailable; blink remains available.' if self.path.endswith('voice') else 'Action failed; see local logs/status. No simulated success.')
+                STATE['error']=('Factory timed out after 45 seconds; previous report kept.' if isinstance(e,subprocess.TimeoutExpired) and self.path.endswith('factory') else type(e).__name__+': '+('Voice unavailable; blink remains available.' if self.path.endswith('voice') else 'Action failed; see local logs/status. No simulated success.'))
                 emit('error',STATE['error'])
             finally:STATE['busy']=False;LOCK.release()
         threading.Thread(target=work,daemon=True).start();self.send(b'{"started":true}',202)

@@ -49,7 +49,9 @@ The physical launcher remains `python -m sponsors.launch --config ... --intent .
 5. 50–60s: Show the serving Chalk deployment ID and Factory-prior presence. Explain
    the remaining hardware handoff below.
 
-A fresh Factory run can exceed 60 seconds. Record it separately in real time and
+Routine runs now use a 45-second timeout. They receive the CSV contents inline, use
+low reasoning effort, and return compact hourly arrays expanded into the same validated
+priors schema. Record a fresh run separately in real time and
 label any edit/time cut. Do not claim the historical report was generated live.
 
 ## Browser recording
@@ -66,7 +68,7 @@ The recorder opens Chrome and captures the actual browser via CDP at 10 fps, mak
 fresh Chalk and Grok calls, and saves `look-live-browser.mp4`, a screenshot and JSON
 request evidence. It stops on failed API results. It does not record audio.
 Set `RUN_FACTORY=1` to additionally run Factory (requires server-side credentials;
-may add up to two minutes). It does not automatically redeploy a fresh Factory report.
+may add up to 45 seconds). It does not automatically redeploy a fresh Factory report.
 
 In the Codex restricted session Chrome exited with SIGABRT before rendering.
 Run the recorder in the Mac Terminal. No screen recording was fabricated to cover
