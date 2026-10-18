@@ -17,7 +17,7 @@ class RoutineClient:
         self.config=config;self.client=None
         self.pool=cf.ThreadPoolExecutor(max_workers=1,thread_name_prefix='routine-chalk')
         self.pending=None;self.down_until=0.;self.cache=None;self.cache_time=0.;self.cache_key=None
-        self.last={};self.init_error=None
+        self.last={};self.init_error=None;self.cloud_evidence={}
         if config.chalk_enabled:
             try:
                 from chalk.client import ChalkClient
@@ -35,8 +35,10 @@ class RoutineClient:
             R.hour_bucket:hour,R.timezone:self.config.timezone,R.labels_json:json.dumps(labels),
             R.recent_events_json:json.dumps(recent),R.agent_weight:self.config.agent_weight},
             correlation_id=qid,include_meta=True,
-            output=[R.prior_json,R.counts_7d_json,R.counts_14d_json,R.hour_frequency_json],
+            output=[R.prior_json,R.counts_7d_json,R.counts_14d_json,R.hour_frequency_json,R.agent_priors_json],
             request_timeout=timeout_s,connect_timeout=timeout_s)
+        self.cloud_evidence={"deployment_id":getattr(result.meta,"deployment_id",None),
+            "agent_priors":json.loads(result.get_feature_value(R.agent_priors_json))}
         priors=json.loads(result.get_feature_value(R.prior_json))
         if not isinstance(priors,dict) or any(k not in priors for k in labels) or any(
             isinstance(v,bool) or not isinstance(v,(int,float)) or not math.isfinite(v) or not 0<v<=1 for v in priors.values()):
@@ -92,7 +94,7 @@ class RoutineClient:
             error=type(e).__name__;self.cache=None;self.down_until=time.monotonic()+5
             if self.pending:self.pending.cancel()
         self.last=dict(query_id=qid,latency_ms=round((time.perf_counter()-started)*1000,1),
-            result='success' if priors else 'fallback',api_attempted=attempted,error=error,hour_bucket=hour,priors=priors)
+            result='success' if priors else 'fallback',api_attempted=attempted,error=error,hour_bucket=hour,priors=priors,cloud_evidence=self.cloud_evidence if priors else None)
         log('chalk_queries.jsonl',**self.last)
         if strict and priors is None:raise RuntimeError('Live Chalk query failed: '+str(error))
         return priors

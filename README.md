@@ -213,3 +213,12 @@ PYTHONPATH=intent python -m unittest discover -s intent/tests -v
 
 Tests use test doubles to exercise failures and races. The launch, ranking demo, and
 Factory analysis commands use the real providers; none has a mocked demo mode.
+
+### Interactive laptop showcase
+
+Run `python -m sponsors.showcase.server --config sponsors/config.local.json` and
+open http://127.0.0.1:8765. The dashboard makes real Chalk and Grok calls, can run a
+real Factory analysis, and displays request IDs, latencies and serving deployment
+metadata. Gaze, clock and arm are explicitly simulated; no motors are commanded.
+See [SPONSOR_SHOWCASE.md](SPONSOR_SHOWCASE.md) for recording, provenance, the
+60-second narration and the exact hardware handoff dependencies.
