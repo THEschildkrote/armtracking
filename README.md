@@ -35,7 +35,9 @@ chalk login
 Use your xAI/Factory accounts to create the keys. Chalk also accepts its standard
 `CHALK_CLIENT_ID`, `CHALK_CLIENT_SECRET`, and `CHALK_ENVIRONMENT` configuration.
 If loading a private `.env` file, export its variables in the terminal before starting
-Look. The launcher does not scan your disk or silently load arbitrary secret files.
+Look. Alternatively, set `xai_key_file` in the private config to the explicit path of a file
+containing `XAI_API_KEY=...` or the raw key. The launcher reads only that named file,
+without executing its contents. It does not scan your disk for credentials.
 
 The optional dependencies import only when needed. If microphone capture needs PortAudio,
 install it for your OS (`brew install portaudio` on macOS), and grant microphone access
@@ -129,7 +131,9 @@ Look sponsor window shows each candidate's gaze share, Chalk prior, and rank. Ro
 ranking can affect the pre-hover suggestion; **it does not override the core's blink
 selection or resolve an ambiguous grasp without the existing dwell checks**.
 
-A 500 ms query deadline runs on the existing intent worker, never on camera processing.
+An asynchronous startup query allows up to 10 seconds for authentication and cold-start
+setup; the arm keeps its original scoring during this warmup. The CLI demo waits for
+this real startup query before demonstrating the two hours. Thereafter, a 500 ms query deadline runs on the existing intent worker, never on camera processing.
 On failure, the adapter returns the original intent decision, allows only one outstanding
 query, and waits 5 seconds before trying again. Every attempted query writes
 `logs/chalk_queries.jsonl`, including timestamp, query ID, latency, hour, returned priors,

@@ -22,11 +22,11 @@ class RoutineClient:
             try:
                 from chalk.client import ChalkClient
                 from routine_features import RoutineRequest
-                self.client=ChalkClient(default_request_timeout=config.chalk_timeout_s,
-                                        default_connect_timeout=config.chalk_timeout_s)
+                self.client=ChalkClient(default_request_timeout=10,default_connect_timeout=10)
             except Exception as e:self.init_error=type(e).__name__
 
-    def _query(self,labels,as_of,hour,qid):
+    def _query(self,labels,as_of,hour,qid,timeout_s=None):
+        timeout_s=self.config.chalk_timeout_s if timeout_s is None else timeout_s
         from routine_features import RoutineRequest as R
         recent=[];path=ROOT/'logs/grab_events.csv'
         if path.exists():
@@ -36,13 +36,37 @@ class RoutineClient:
             R.recent_events_json:json.dumps(recent),R.agent_weight:self.config.agent_weight},
             correlation_id=qid,include_meta=True,
             output=[R.prior_json,R.counts_7d_json,R.counts_14d_json,R.hour_frequency_json],
-            request_timeout=self.config.chalk_timeout_s,connect_timeout=self.config.chalk_timeout_s)
+            request_timeout=timeout_s,connect_timeout=timeout_s)
         priors=json.loads(result.get_feature_value(R.prior_json))
         if not isinstance(priors,dict) or any(k not in priors for k in labels) or any(
             isinstance(v,bool) or not isinstance(v,(int,float)) or not math.isfinite(v) or not 0<v<=1 for v in priors.values()):
             raise ValueError('Invalid Chalk probabilities')
         if abs(sum(priors.values())-1)>1e-5:raise ValueError('Unnormalized Chalk probabilities')
         return priors
+
+    def warmup(self,labels,wait=False):
+        """One bounded startup request; runtime stays on core scoring while it runs."""
+        if not self.config.chalk_enabled or not self.client:
+            if wait:raise RuntimeError('Chalk credentials unavailable')
+            return
+        if self.pending and not self.pending.done():
+            future=self.pending
+        else:
+            def prepare():
+                qid=uuid.uuid4().hex;started=time.perf_counter();now=datetime.now(timezone.utc)
+                try:
+                    value=self._query(sorted(set(labels)),now.isoformat(),
+                        now.astimezone(ZoneInfo(self.config.timezone)).hour,qid,timeout_s=10)
+                    log('chalk_queries.jsonl',query_id=qid,phase='startup',result='success',api_attempted=True,
+                        latency_ms=round((time.perf_counter()-started)*1000,1),priors=value)
+                    return value
+                except Exception as e:
+                    log('chalk_queries.jsonl',query_id=qid,phase='startup',result='fallback',api_attempted=True,
+                        error=type(e).__name__,latency_ms=round((time.perf_counter()-started)*1000,1))
+                    return None
+            future=self.pool.submit(prepare);self.pending=future
+        if wait and future.result(timeout=10) is None:
+            raise RuntimeError('Chalk startup query failed; no demo fallback')
 
     def query(self,labels,*,as_of=None,hour=None,strict=False):
         labels=sorted(set(labels));now=datetime.now(timezone.utc)

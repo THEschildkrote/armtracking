@@ -39,6 +39,7 @@ def main():
         shell.emit('session',time.monotonic(),synthetic=False,mode='blink_or_voice',
                    voice_enabled=config.voice_enabled,routine_chalk=config.chalk_enabled)
         shell.scene(bridge.load_scene(),time.monotonic());resources.append(shell)
+        if config.chalk_enabled:service.client.warmup([o.cls for o in shell.objects])
         return shell,arm,log
     bridge.make_intent=make_intent
     # Separate debug window: no edits to core rendering or camera processing.

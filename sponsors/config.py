@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 @dataclass(frozen=True)
 class Config:
+    xai_key_file: str | None = None
     voice_enabled: bool = False
     chalk_enabled: bool = False
     factory_enabled: bool = False
@@ -34,6 +35,7 @@ class Config:
                 raise ValueError('Invalid '+key)
         if not 0<=c.agent_weight<=1 or not 0<c.chalk_timeout_s<=2 or not 0<c.voice_timeout_s<=2 or c.chalk_refresh_s<0.1 or c.voice_listen_s<=0:
             raise ValueError('Invalid time budget or weight')
+        if c.xai_key_file is not None and not isinstance(c.xai_key_file,str):raise ValueError('xai_key_file must be a path')
         from zoneinfo import ZoneInfo
         ZoneInfo(c.timezone)
         return c

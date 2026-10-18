@@ -19,7 +19,7 @@ from look_intent.scoring import Obj
 from sponsors.bridge import SponsorShell
 from sponsors.config import Config
 from sponsors.chalk_client import RoutineClient,rank
-from sponsors.grok import parse_result,VoiceConfirmation
+from sponsors.grok import parse_result,VoiceConfirmation,api_key
 
 class RoutineTests(unittest.TestCase):
     def test_windows_users_cancels_and_future(self):
@@ -52,6 +52,16 @@ class RoutineTests(unittest.TestCase):
                 self.assertLess(time.monotonic()-started,.08)
                 self.assertIsNone(c.query(['mug','phone']));self.assertEqual(query.call_count,1)
         finally:c.close()
+    def test_startup_warmup_uses_separate_budget(self):
+        c=RoutineClient(Config());c.config=replace(c.config,chalk_enabled=True);c.client=object()
+        try:
+            with patch.object(c,'_query',return_value={'mug':1.}) as query,patch('sponsors.chalk_client.log') as logger:
+                c.warmup(['mug'],wait=True)
+                self.assertEqual(query.call_args.kwargs['timeout_s'],10)
+                self.assertEqual(c.config.chalk_timeout_s,.5)
+                self.assertEqual(logger.call_args.kwargs['phase'],'startup')
+        finally:c.close()
+
     def test_strict_demo_never_fakes_success(self):
         c=RoutineClient(Config())
         try:
@@ -110,6 +120,13 @@ class BridgeTests(unittest.TestCase):
             self.assertFalse(self.shell.voice_result(self.token,'CONFIRM'))
 
 class VoiceTests(unittest.TestCase):
+    def test_explicit_key_file_supports_env_or_raw_without_execution(self):
+        with tempfile.TemporaryDirectory() as folder,patch.dict('os.environ',{},clear=True):
+            path=Path(folder)/'secret';config=replace(Config(),xai_key_file=str(path))
+            for content in ('test-key', 'export XAI_API_KEY = "test-key" # local'):
+                path.write_text(content);self.assertEqual(api_key(config),'test-key')
+            path.write_text('OTHER_KEY=test-key');self.assertIsNone(api_key(config))
+
     def test_tool_schema_is_strict(self):
         self.assertEqual(parse_result({'name':'confirm_candidate','arguments':'{"result":"CONFIRM"}'}),'CONFIRM')
         for args in ['{"result":"CONFIRM","object":"other"}','{"result":"yes"}','null']:

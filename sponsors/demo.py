@@ -8,6 +8,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',required=True);p.add_argument('--hours',type=int,nargs='+',default=[9,15]);a=p.parse_args()
     client=RoutineClient(Config.load(a.config))
     try:
+        client.warmup(['mug','water_bottle','phone','medication'],wait=True)
         for hour in a.hours:
             if not 0<=hour<24:raise ValueError('Hour must be 0..23')
             priors=client.query(['mug','water_bottle','phone','medication'],hour=hour,strict=True)

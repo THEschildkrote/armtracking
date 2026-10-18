@@ -4,15 +4,33 @@ import base64
 import contextlib
 import json
 import os
+import ssl
 import threading
 import time
 import uuid
+import re
+import shlex
+from pathlib import Path
 from .logging import log
 
 URL='wss://api.x.ai/v1/realtime?model=grok-voice-latest'
 TOOL={'type':'function','name':'confirm_candidate','description':'Classify the user reply to the current gaze candidate.',
       'parameters':{'type':'object','properties':{'result':{'type':'string','enum':['CONFIRM','CANCEL','UNCLEAR']}},
                     'required':['result'],'additionalProperties':False}}
+
+def api_key(config):
+    key=os.environ.get('XAI_API_KEY')
+    if key:return key
+    if not config.xai_key_file:return None
+    raw=Path(config.xai_key_file).expanduser().read_text().strip()
+    for line in raw.splitlines():
+        match=re.match(r'(?:export\s+)?XAI_API_KEY\s*=\s*(.*)',line.strip())
+        if match:
+            parts=shlex.split(match.group(1),comments=True)
+            return parts[0] if parts else None
+    # Also accept a user-provided file containing only the key.
+    if '\n' not in raw and '=' not in raw:return raw.strip('"\'')
+    return None
 
 def parse_result(event):
     if event.get('name')!='confirm_candidate':raise ValueError('Unknown tool')
@@ -34,12 +52,13 @@ class VoiceConfirmation:
         started=time.perf_counter();speech_end=None;result='ERROR';attempted=False;error=None;accepted=False
         qid=uuid.uuid4().hex;sender=None
         try:
-            key=os.environ.get('XAI_API_KEY')
+            key=api_key(self.config)
             if not key:raise RuntimeError('XAI_API_KEY missing')
             import websockets
+            import certifi
             import sounddevice as sd
             attempted=True
-            async with websockets.connect(URL,additional_headers={'Authorization':'Bearer '+key},
+            async with websockets.connect(URL,ssl=ssl.create_default_context(cafile=certifi.where()),additional_headers={'Authorization':'Bearer '+key},
                 open_timeout=self.config.voice_timeout_s,close_timeout=.2,max_queue=32) as ws:
                 await ws.send(json.dumps({'type':'session.update','session':{
                     'voice':'eve','turn_detection':{'type':'server_vad'},

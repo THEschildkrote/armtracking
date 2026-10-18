@@ -18,6 +18,7 @@ from look_routine.model import read_events,validate_suggestions
 def run(config,development=False):
     if not config.factory_enabled:raise RuntimeError('Set factory_enabled=true to run Factory')
     binary=os.environ.get('DROID_BIN') or shutil.which('droid')
+    if not binary and (Path.home()/'.local/bin/droid').is_file():binary=str(Path.home()/'.local/bin/droid')
     if not binary:raise RuntimeError('Install the Factory Droid CLI; see README')
     source=ROOT/'data/grab_log.csv';events=ROOT/'logs/grab_events.csv'
     if not source.exists():raise RuntimeError('Generate data/grab_log.csv first')
@@ -56,7 +57,11 @@ findings, or state that you found none. This is real development review, not a p
             stem='factory-review' if development else 'factory-routine'
             evidence=logs/f'{stem}-{int(time.time())}.json'
             evidence.write_text(proc.stdout)
-            if proc.returncode:raise RuntimeError('Factory CLI failed; authenticate with droid or FACTORY_API_KEY')
+            if proc.returncode:
+                detail=proc.stderr[:700]
+                key=os.environ.get('FACTORY_API_KEY')
+                if key:detail=detail.replace(key,'[REDACTED]')
+                raise RuntimeError('Factory CLI failed: '+detail)
             envelope=json.loads(proc.stdout)
             if envelope.get('is_error') or envelope.get('subtype') not in (None,'success'):
                 raise RuntimeError('Factory returned an error')
