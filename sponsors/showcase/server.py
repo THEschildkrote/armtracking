@@ -9,7 +9,9 @@ from sponsors.grok import api_key, TOOL, URL, parse_result
 from sponsors.logging import log
 HERE=Path(__file__).parent
 LOCK=threading.Lock()
-STATE={'busy':False,'events':[],'rows':[],'hour':9,'selected':None,'arm':'idle','grok':None,'cloud':None,'factory':None,'error':None}
+CONTEXT_LOCK=threading.Lock()
+LABELS=('mug','water_bottle','phone','medication')
+STATE={'busy':False,'context_busy':False,'context_error':None,'events':[],'rows':[],'hour':9,'selected':None,'arm':'idle','animation_id':None,'completed_animation_id':None,'grok':None,'cloud':None,'factory':None,'evaluation':None,'error':None}
 def emit(kind,message,**data):
     STATE['events'].append({'time':datetime.now(timezone.utc).isoformat(),'kind':kind,'message':message,**data})
     STATE['events']=STATE['events'][-40:]
@@ -34,6 +36,51 @@ def evidence():
                 except ValueError:continue
                 if entry.get('session_id')==STATE['factory']['session_id']:
                     STATE['factory']['elapsed_s']=round(entry.get('latency_ms',0)/1000,1);break
+    # Present the most recent completed report without running an evaluation or
+    # contacting a sponsor service when the showcase starts.
+    reports=ROOT/'logs/evaluations'
+    if reports.exists():
+        for path in sorted(reports.glob('*/evaluation.json'),key=lambda p:p.stat().st_mtime_ns,reverse=True):
+            try:
+                saved=json.loads(path.read_text())
+                if (not isinstance(saved,dict) or saved.get('failed')
+                    or not isinstance(saved.get('run_id'),str) or not saved['run_id']
+                    or not isinstance(saved.get('text'),str)
+                    or not isinstance(saved.get('report'),dict)
+                    or not isinstance(saved['report'].get('results'),dict)
+                    or not saved['report']['results']):continue
+            except (OSError,ValueError,TypeError):continue
+            STATE['evaluation']=saved;break
+
+def start_context(body):
+    """Fetch real routine context independently of the manual selection gate."""
+    hour=body.get('hour',9)
+    if type(hour) is not int or not 0<=hour<=23:raise ValueError('Choose an integer hour from 0 to 23')
+    profile=body.get('profile','new-user' if CONFIG.population_enabled else CONFIG.user_id)
+    if profile not in ('new-user','demo'):raise ValueError('Unknown demo profile')
+    if not CONTEXT_LOCK.acquire(False):return False
+    STATE.update(context_busy=True,context_error=None)
+    def work():
+        try:
+            from dataclasses import replace
+            emit('chalk','Refreshing routine context',hour=hour)
+            CLIENT.config=replace(CONFIG,user_id=profile)
+            CLIENT.warmup(list(LABELS),wait=True)
+            priors=CLIENT.query(list(LABELS),hour=hour,strict=True)
+            rows=rank([(label,label,.25) for label in LABELS],priors,CONFIG.routine_weight)
+            cloud=dict(CLIENT.last)
+            STATE.update(hour=hour,profile=profile,rows=rows,cloud=cloud)
+            emit('chalk','Routine context returned',**cloud)
+        except Exception:
+            # Cloud failure must not interrupt an independent object selection.
+            STATE['context_error']='Routine context unavailable; previous context kept.'
+            emit('chalk',STATE['context_error'])
+        finally:
+            STATE['context_busy']=False;CONTEXT_LOCK.release()
+    try:threading.Thread(target=work,daemon=True).start()
+    except Exception:
+        STATE['context_busy']=False;CONTEXT_LOCK.release();raise
+    return True
 
 async def voice(label, pcm=None):
     import certifi, websockets
@@ -73,24 +120,39 @@ async def voice(label, pcm=None):
 
 def action(name,body):
     if name=='rank':
-        hour=int(body.get('hour',9))
-        if hour not in (9,15):raise ValueError('Choose 09:00 or 15:00')
+        if STATE['arm']=='grabbing':raise ValueError('Wait for the current request to finish')
+        hour=body.get('hour',9)
+        if type(hour) is not int or not 0<=hour<=23:raise ValueError('Choose an integer hour from 0 to 23')
         from dataclasses import replace
         profile=body.get('profile','new-user' if CONFIG.population_enabled else CONFIG.user_id)
         if profile not in ('new-user','demo'):raise ValueError('Unknown demo profile')
         CLIENT.config=replace(CONFIG,user_id=profile)
-        STATE.update(hour=hour,selected=None,arm='idle',grok=None,profile=profile)
+        STATE.update(hour=hour,selected=None,arm='idle',animation_id=None,completed_animation_id=None,grok=None,profile=profile)
         emit('chalk','Querying deployed routine graph',hour=hour)
-        CLIENT.warmup(['mug','water_bottle','phone','medication'],wait=True)
-        p=CLIENT.query(['mug','water_bottle','phone','medication'],hour=hour,strict=True)
-        STATE['rows']=rank([('mug','mug',.5),('bottle','water_bottle',.5)],p,CONFIG.routine_weight)
+        CLIENT.warmup(list(LABELS),wait=True)
+        p=CLIENT.query(list(LABELS),hour=hour,strict=True)
+        STATE['rows']=rank([(label,label,.25) for label in LABELS],p,CONFIG.routine_weight)
         STATE['cloud']=dict(CLIENT.last)
         emit('chalk','Live prior returned; recommendation only',**CLIENT.last)
     elif name=='select':
+        if STATE['arm']=='grabbing':raise ValueError('Wait for the current request to finish')
         label=body.get('label')
-        if label not in ('mug','water_bottle'):raise ValueError('Invalid candidate')
-        STATE.update(selected=label,arm='awaiting confirmation',grok=None)
-        emit('gaze','Simulated completed dwell selects '+label)
+        if label not in LABELS:raise ValueError('Invalid candidate')
+        STATE.update(selected=label,arm='awaiting confirmation',animation_id=None,completed_animation_id=None,grok=None)
+        emit('selection','Selected '+label)
+    elif name=='confirm':
+        if not STATE['selected'] or STATE['arm']!='awaiting confirmation':raise ValueError('Select a candidate first')
+        STATE.update(arm='grabbing',animation_id=uuid.uuid4().hex,completed_animation_id=None)
+        emit('arm','Confirmed request; arm animation started',label=STATE['selected'],animation_id=STATE['animation_id'])
+    elif name=='animation_complete':
+        animation_id=body.get('animation_id')
+        # A callback is only authoritative for its own active animation. Reloads,
+        # duplicate browser callbacks and an older animation cannot finish a new one.
+        if (not isinstance(animation_id,str) or not animation_id
+            or animation_id!=STATE.get('animation_id') or STATE['arm']!='grabbing'
+            or animation_id==STATE.get('completed_animation_id')):return
+        STATE.update(arm='delivered',completed_animation_id=animation_id)
+        emit('arm','Arm animation completed',label=STATE['selected'],animation_id=animation_id)
     elif name in ('voice','blink'):
         if not STATE['selected'] or STATE['arm']!='awaiting confirmation':raise ValueError('Select a candidate first')
         if name=='voice':
@@ -148,11 +210,23 @@ class Handler(BaseHTTPRequestHandler):
         # Same-origin browser only; bind loopback and never expose credentials to JS.
         if self.headers.get('Origin') not in (None,'http://127.0.0.1:'+str(PORT),'http://localhost:'+str(PORT)):
             self.send(b'{}',403);return
+        # A slow provider request must never hold the control lock or make the
+        # studio appear busy while selecting and confirming its 3D animation.
+        if self.path=='/api/context':
+            try:
+                n=int(self.headers.get('Content-Length',0))
+                if not 0<=n<=1500000:raise ValueError('Invalid request size')
+                body=json.loads(self.rfile.read(n) or b'{}')
+                if not isinstance(body,dict):raise ValueError('Request object required')
+                started=start_context(body)
+            except (ValueError,TypeError):self.send(b'{}',400);return
+            self.send(b'{"started":true}' if started else b'{"error":"context busy"}',202 if started else 409);return
         if not LOCK.acquire(False):self.send(b'{"error":"busy"}',409);return
         try:
             n=int(self.headers.get('Content-Length',0))
-            if n>1500000:raise ValueError('Audio too large')
+            if not 0<=n<=1500000:raise ValueError('Invalid request size')
             body=json.loads(self.rfile.read(n) or b'{}')
+            if not isinstance(body,dict):raise ValueError('Request object required')
         except Exception:LOCK.release();self.send(b'{}',400);return
         STATE.update(busy=True,error=None,action=self.path.rsplit('/',1)[-1],started_at=time.time())
         def work():

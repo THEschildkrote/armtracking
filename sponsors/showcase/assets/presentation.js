@@ -25,7 +25,7 @@ function renderEvaluation(evaluation,busy) {
  root.replaceChildren();
  if(busy){root.append(node('div','eval-empty','Running the evaluation…'));return;}
  const vm=evaluationViewModel(evaluation);
- if(!vm){const empty=node('div','eval-empty',evaluation?.failed?'Evaluation could not complete.':'Run an evaluation to see the results.');empty.append(node('p','',evaluation?.failed?'Open the full report for details.':'Compare prediction accuracy and see how many observations were tested.'));root.append(empty);return;}
+ if(!vm){const empty=node('div','eval-empty',evaluation?.failed?'Evaluation could not complete.':'No saved evaluation results yet.');empty.append(node('p','',evaluation?.failed?'Open the full report for details.':'Completed evaluation reports will appear here.'));root.append(empty);return;}
  const percent=v=>v==null?'N/A':(v*100).toFixed(2)+'%';
  document.getElementById('eval-title').textContent=vm.activity?'Does time of day help?':'How well does intent prediction work?';
  root.append(node('h2','eval-heading',vm.activity?'Activity prediction on real home data':'Intent prediction on recorded sessions'));
@@ -57,7 +57,7 @@ function connectStreams(event){event.preventDefault();const urls={};
  document.getElementById('stream-help').textContent='Feeds display directly from your camera relay. They are not recorded or used for training here.';
 }
 if(typeof module!=='undefined')module.exports={evaluationViewModel};
-if(typeof document!=='undefined'){document.getElementById('stream-form').addEventListener('submit',connectStreams);queueMicrotask(refresh);}
+if(typeof document!=='undefined'){document.getElementById('stream-form').addEventListener('submit',connectStreams);queueMicrotask(initializeStudio);}
 
 let lastHighlights='';
 function renderRoutineHighlights(highlights){const key=JSON.stringify(highlights);if(key===lastHighlights)return;lastHighlights=key;const root=document.getElementById('routine-highlights');root.replaceChildren();for(const h of highlights){const card=document.createElement('div');card.className='routine-highlight';const time=document.createElement('span');time.textContent=h.time;const object=document.createElement('strong');object.textContent=({mug:'Mug',water_bottle:'Water bottle',phone:'Phone',medication:'Medication'})[h.object]||h.object;card.append(time,object);root.append(card);}}
