@@ -222,3 +222,12 @@ real Factory analysis, and displays request IDs, latencies and serving deploymen
 metadata. Gaze, clock and arm are explicitly simulated; no motors are commanded.
 See [SPONSOR_SHOWCASE.md](SPONSOR_SHOWCASE.md) for recording, provenance, the
 60-second narration and the exact hardware handoff dependencies.
+
+### CASAS real-world context and cold start
+
+An optional CASAS population prior seeds new users and decays as their own confirmed
+picks accumulate. Raw home sensor logs are streamed locally; only aggregate training
+priors are deployed. `Run Evaluation` uses a held-out real activity benchmark when
+CASAS aggregates are imported, otherwise the existing labeled synthetic replay.
+See [CASAS_DATA.md](docs/CASAS_DATA.md) for archive contents, the activity-to-object
+assumptions, reproduction, evaluation scope, personalization and national-data sources.

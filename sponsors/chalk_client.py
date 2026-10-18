@@ -33,11 +33,12 @@ class RoutineClient:
             with path.open(newline='') as f:recent=list(csv.DictReader(f))[-2000:]
         result=self.client.query(input={R.id:qid,R.user_id:self.config.user_id,R.as_of_iso:as_of,
             R.hour_bucket:hour,R.timezone:self.config.timezone,R.labels_json:json.dumps(labels),
-            R.recent_events_json:json.dumps(recent),R.agent_weight:self.config.agent_weight},
+            R.recent_events_json:json.dumps(recent),R.agent_weight:self.config.agent_weight,R.population_enabled:self.config.population_enabled},
             correlation_id=qid,include_meta=True,
-            output=[R.prior_json,R.counts_7d_json,R.counts_14d_json,R.hour_frequency_json,R.agent_priors_json],
+            output=[R.prior_json,R.counts_7d_json,R.counts_14d_json,R.hour_frequency_json,R.agent_priors_json,R.population_prior_json,R.population_weight],
             request_timeout=timeout_s,connect_timeout=timeout_s)
-        self.cloud_evidence={"deployment_id":getattr(result.meta,"deployment_id",None),
+        self.cloud_evidence={"population_prior":json.loads(result.get_feature_value(R.population_prior_json)),
+            "population_weight":result.get_feature_value(R.population_weight),"deployment_id":getattr(result.meta,"deployment_id",None),
             "agent_priors":json.loads(result.get_feature_value(R.agent_priors_json))}
         priors=json.loads(result.get_feature_value(R.prior_json))
         if not isinstance(priors,dict) or any(k not in priors for k in labels) or any(

@@ -11,6 +11,7 @@ class Config:
     voice_enabled: bool = False
     chalk_enabled: bool = False
     factory_enabled: bool = False
+    population_enabled: bool = False
     user_id: str = 'demo'
     timezone: str = 'America/New_York'
     routine_weight: float = 0.7
@@ -27,7 +28,7 @@ class Config:
         if set(raw) - {f.name for f in fields(cls)}:
             raise ValueError('Unknown sponsor config fields')
         c = cls(**raw)
-        for key in ('voice_enabled', 'chalk_enabled', 'factory_enabled'):
+        for key in ('voice_enabled', 'chalk_enabled', 'factory_enabled', 'population_enabled'):
             if type(getattr(c, key)) is not bool: raise ValueError(key + ' must be boolean')
         for key in ('routine_weight','agent_weight','chalk_timeout_s','chalk_refresh_s','voice_timeout_s','voice_listen_s'):
             v=getattr(c,key)

@@ -67,7 +67,11 @@ def action(name,body):
     if name=='rank':
         hour=int(body.get('hour',9))
         if hour not in (9,15):raise ValueError('Choose 09:00 or 15:00')
-        STATE.update(hour=hour,selected=None,arm='idle',grok=None)
+        from dataclasses import replace
+        profile=body.get('profile','new-user' if CONFIG.population_enabled else CONFIG.user_id)
+        if profile not in ('new-user','demo'):raise ValueError('Unknown demo profile')
+        CLIENT.config=replace(CONFIG,user_id=profile)
+        STATE.update(hour=hour,selected=None,arm='idle',grok=None,profile=profile)
         emit('chalk','Querying deployed routine graph',hour=hour)
         CLIENT.warmup(['mug','water_bottle','phone','medication'],wait=True)
         p=CLIENT.query(['mug','water_bottle','phone','medication'],hour=hour,strict=True)
@@ -101,7 +105,7 @@ def action(name,body):
         emit('factory','Fresh Factory report validated; deployment still required',session_id=STATE['factory']['session_id'])
     elif name=='evaluate':
         from sponsors.evaluation import run as evaluate
-        emit('eval','Custom robotics replay started')
+        emit('eval','Custom evaluation started')
         STATE['evaluation']=evaluate()
         emit('eval','Evaluation completed',run_id=STATE['evaluation']['run_id'])
     elif name=='deploy':

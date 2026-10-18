@@ -10,5 +10,6 @@
   "chalk_refresh_s": 1.0,
   "voice_timeout_s": 2.0,
   "voice_listen_s": 10.0,
-  "arm_port": "COM4"
+  "arm_port": "COM4",
+  "population_enabled": false
 }

@@ -38,6 +38,22 @@ def run():
     started=time.perf_counter();run_id=uuid.uuid4().hex
     out=ROOT/'logs/evaluations'/run_id;out.mkdir(parents=True)
     config_path=ROOT/'sponsors/evaluation.local.json'
+    counts_path=ROOT/'reports/casas_activity_counts.json'
+    if not config_path.exists() and counts_path.exists():
+        from scripts.build_casas_prior import build
+        data=json.loads(counts_path.read_text());_,report=build(data)
+        lines=['CUSTOM CONTEXT EVALUATION — REAL CASAS DATA',
+            'Local activity benchmark; no Chalk API call. Not a robotic grasp or gaze benchmark.',
+            f"Training: {report['train_recordings']} recordings. Held out: {report['test_recordings']} recordings.",
+            'Fixed held-out data yields repeatable results. Personal picks update runtime priors, not this test set.','']
+        for name,m in report['results'].items():
+            lines.extend([name,f"Top-1 activity accuracy: {m['recording_macro_top1']:.2%}",f"Log loss (lower is better): {m['recording_macro_log_loss']:.3f}",f"Held-out activity starts: {m['test_activity_starts']:,}",''])
+        lines.extend(['Metrics are averaged equally across recordings. Uniform top-1 uses expected random tie-breaking.',
+            'CASAS has activity labels, not object-choice labels; activity-to-object mapping is a design assumption.',
+            'Personalization: eight pseudo-observations seed a new user; personal confirmed picks in each hour progressively dominate.',
+            'To evaluate robotics replay instead, configure separate rehearsal files in sponsors/evaluation.local.json.'])
+        result={'run_id':run_id,'elapsed_s':round(time.perf_counter()-started,2),'text':'\n'.join(lines),'report':report,'input_sha256':{'casas_counts':hashlib.sha256(counts_path.read_bytes()).hexdigest()}}
+        (out/'evaluation.json').write_text(json.dumps(result,indent=2));(out/'summary.txt').write_text(result['text']);return result
     if config_path.exists():
         config=json.loads(config_path.read_text());backend=config.get('backend','local')
         train=[(ROOT/p).resolve() for p in config['train']];test=[(ROOT/p).resolve() for p in config['test']]

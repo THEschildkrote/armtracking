@@ -48,3 +48,6 @@ reports/*.tmp
 intent/look_routine/data/suggested_priors.json
 
 sponsors/evaluation.local.json
+
+reports/casas_activity_counts.json
+reports/casas_evaluation.json
