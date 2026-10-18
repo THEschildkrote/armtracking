@@ -35,7 +35,10 @@ def main():
                 shutil.copyfile(ROOT/'intent'/name,bundle/name)
             (bundle/'chalk.yaml').write_text('project: '+json.dumps(a.project)+'\n' +
                 'environments:\n  default:\n    requirements: requirements-chalk.txt\n')
-            subprocess.run(['chalk','apply','--force','--await=false','--no-spinners','--skip-version-check'],cwd=bundle,check=True,timeout=60)
+            env=dict(os.environ)
+            env['PATH']=str(Path(sys.executable).parent)+os.pathsep+env.get('PATH','')
+            if sys.prefix!=sys.base_prefix:env['VIRTUAL_ENV']=sys.prefix
+            subprocess.run(['chalk','apply','--force','--await=false','--no-spinners','--skip-version-check'],cwd=bundle,env=env,check=True,timeout=60)
             print('Deployment submitted. Verify readiness with python -m sponsors.demo; upload is not proof of serving.')
 
 if __name__=='__main__':main()
