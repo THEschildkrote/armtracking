@@ -1,5 +1,54 @@
-# armtracking
-Eyetracking arm for accessibility
+# Look: eye-controlled robotic assistance
+
+An eye-controlled robotic arm for accessibility, built with an SO-101 arm and custom
+eye-tracking glasses. This repository contains the hardware, vision, and control code
+behind our tabletop prototype.
+
+## Watch the demo
+
+**[Watch the full Look demo on YouTube (2:59)](https://youtu.be/8L8Ehz5CbzQ)**
+
+[![Watch Look's eye-controlled robotic arm demonstration on YouTube](https://img.youtube.com/vi/8L8Ehz5CbzQ/hqdefault.jpg)](https://youtu.be/8L8Ehz5CbzQ)
+
+[Build photos](#build-photos) · [Hardware setup](HARDWARE.md) · [Venue setup](VENUE.md) · [Sponsor integrations](#sponsor-integrations)
+
+## Build photos
+
+Our glasses, robot workspace, and build process at HackHarvard. Click any photo to
+open the larger image. [Browse all photos](docs/images/).
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <a href="docs/images/look-tabletop-workspace.jpg"><img src="docs/images/look-tabletop-workspace.jpg" alt="SO-101 robot arms beside a tabletop workspace marked with ArUco markers" height="300"></a><br>
+      <strong>Robot arms and marked workspace</strong>
+    </td>
+    <td align="center" width="50%">
+      <a href="docs/images/look-glasses-worn.jpg"><img src="docs/images/look-glasses-worn.jpg" alt="A team member wearing the Look prototype eye-tracking glasses" height="300"></a><br>
+      <strong>Wearing the eye-tracking glasses</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <a href="docs/images/look-demo-setup.jpg"><img src="docs/images/look-demo-setup.jpg" alt="The robotic arm, marker board, laptop, and glasses wearer during tabletop setup" height="300"></a><br>
+      <strong>Tabletop test setup</strong>
+    </td>
+    <td align="center" width="50%">
+      <a href="docs/images/look-glasses-cameras.jpg"><img src="docs/images/look-glasses-cameras.jpg" alt="Close-up of the camera modules and electronics mounted on the glasses frame" height="300"></a><br>
+      <strong>Camera modules and frame-mounted electronics</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <a href="docs/images/look-glasses-fit.jpg"><img src="docs/images/look-glasses-fit.jpg" alt="A ruler beside the glasses while checking frame dimensions and camera placement" height="300"></a><br>
+      <strong>Checking dimensions and component placement</strong>
+    </td>
+    <td align="center" width="50%">
+      <a href="docs/images/look-behind-the-scenes.jpg"><img src="docs/images/look-behind-the-scenes.jpg" alt="A team member giving a thumbs-up during the HackHarvard build" height="300"></a><br>
+      <strong>Behind the scenes at HackHarvard</strong>
+    </td>
+  </tr>
+</table>
 
 ## Sponsor integrations
 
