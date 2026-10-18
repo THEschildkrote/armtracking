@@ -50,3 +50,5 @@
 {"timestamp": "2026-10-18T06:08:00.617472+00:00", "query_id": "4adbf89144634ac289efd566014d3ce3", "latency_ms": 159.4, "api_attempted": true, "result": "success"}
 {"timestamp": "2026-10-18T06:08:06.624435+00:00", "query_id": "0595f273a2204ee6965129be9aaac3f9", "latency_ms": 135.0, "api_attempted": true, "result": "success", "phase": "startup"}
 {"timestamp": "2026-10-18T06:08:06.750068+00:00", "query_id": "5d3ab1466dc447f19594c792c60a8c21", "latency_ms": 124.7, "api_attempted": true, "result": "success"}
+{"timestamp": "2026-10-18T08:33:16.688763+00:00", "query_id": "042d353997cd45b58a3d70ed2d408ccc", "latency_ms": 2285.0, "api_attempted": true, "result": "success", "phase": "startup"}
+{"timestamp": "2026-10-18T08:33:16.889479+00:00", "query_id": "81237b5341a54514b528c8629c78b432", "latency_ms": 199.5, "api_attempted": true, "result": "success"}
