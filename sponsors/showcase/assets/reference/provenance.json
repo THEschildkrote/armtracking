@@ -1,0 +1,12 @@
+{
+  "source": "https://look-website-kappa.vercel.app/",
+  "purpose": "Restore the project owner\u2019s original tabletop arm previews",
+  "assets_sha256": {
+    "RobotScene-BtfShsky.js": "07e10901a8f57353083dfd6380e66b46aa9bdfe019e7c74bc44048056a693fba",
+    "RobotScene-BpX1APEz.css": "20245bebf22c533a355e8a34e8fc7c584af5f9b1177ef0e1a1ab05bf997cd2e0",
+    "jsx-runtime-DyZJNswf.js": "006c8c36904a2f42ac8e86d3e56badc6473450e8a3988d87f12c632a6487218b",
+    "SpaceScene-1ngeJWvv.js": "87c8006e4a4b5f573ec8165baf955a8fdb53eb3948c7610afb528bf30014e470",
+    "index-iCE39PLR.js (upstream)": "5affbc903e05e5447643795ef1175da9dbbbb2ab5eb32d57d9869857b287cfa4"
+  },
+  "adaptation": "render-runtime.js removes the original full-site mount and exports its existing React renderer. RobotScene and its dependencies are unchanged."
+}

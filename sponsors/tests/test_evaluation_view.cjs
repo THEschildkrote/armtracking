@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const {evaluationViewModel}=require('../showcase/assets/presentation.js');
+const data={report:{train_recordings:64,test_recordings:17,results:{'Uniform':{recording_macro_top1:.0182,test_activity_starts:70789},'Time-independent population':{recording_macro_top1:.1439,test_activity_starts:70789},'Hour-aware population':{recording_macro_top1:.1575,test_activity_starts:70789}}}};
+const v=evaluationViewModel(data);assert.equal(v.activity,true);assert.equal(v.target.count,70789);assert.ok(Math.abs(v.delta-1.36)<1e-10);assert.ok(v.axis>=.1575);
+const empty=evaluationViewModel({report:{results:{'gaze only':{fixations:0,top1_at_300ms:1},'gaze + history':{fixations:0,top1_at_300ms:1}}}});assert.equal(empty.target.accuracy,null);assert.equal(empty.delta,null);
+const negative=evaluationViewModel({report:{results:{'gaze only':{fixations:5,top1_at_300ms:.8},'gaze + history':{fixations:5,top1_at_300ms:.5}}}});assert.ok(negative.delta<0);
+assert.equal(evaluationViewModel({report:{results:{bad:{recording_macro_top1:1.5}}}}),null);
+assert.equal(evaluationViewModel(null),null);
+assert.equal(evaluationViewModel({report:{results:{bad:null}}}),null);
+assert.equal(evaluationViewModel({report:{results:[]}}),null);
+console.log('Evaluation view: activity comparison, empty evidence, negative changes and invalid data passed.');

@@ -19,6 +19,14 @@ def evidence():
     p=ROOT/'reports/suggested_priors.json'
     if p.exists():
         d=json.loads(p.read_text());STATE['factory']={'historical':True,'generated_at':d['generated_at'],'session_id':d.get('provenance',{}).get('session_id'),'summary':(ROOT/'reports/routine_summary.md').read_text()}
+        highlights=[]
+        for block,hours in [('Morning',range(6,12)),('Afternoon',range(12,18)),('Evening',range(18,24))]:
+            totals={}
+            for hour in hours:
+                for label,probability in d.get('hour_priors',{}).get(str(hour),{}).items():
+                    totals[label]=totals.get(label,0)+probability
+            if totals:highlights.append({'time':block,'object':max(totals,key=totals.get)})
+        STATE['factory']['highlights']=highlights
         history=ROOT/'logs/factory_runs.jsonl'
         if history.exists():
             for line in reversed(history.read_text().splitlines()):
@@ -126,6 +134,14 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path=='/api/state':self.send(json.dumps(STATE).encode())
         elif self.path=='/':self.send((HERE/'index.html').read_bytes(),ctype='text/html')
+        elif self.path.split('?',1)[0].startswith('/assets/'):
+            import mimetypes
+            from urllib.parse import unquote
+            assets=(HERE/'assets').resolve()
+            path=(assets/unquote(self.path.split('?',1)[0][len('/assets/'):])).resolve()
+            if path.is_relative_to(assets) and path.is_file() and path.suffix in ('.js','.css','.json','.md'):
+                self.send(path.read_bytes(),ctype=mimetypes.guess_type(path.name)[0] or 'application/octet-stream')
+            else:self.send(b'{}',404)
         elif self.path=='/confirm.wav':self.send((HERE/'confirm.wav').read_bytes(),ctype='audio/wav')
         else:self.send(b'{}',404)
     def do_POST(self):
